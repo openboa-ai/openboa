@@ -27,6 +27,37 @@ const markdownFiles = [path.join(root, "README.md"), ...walkMarkdownFiles(path.j
 
 const linkPattern = /!?\[[^\]]*]\(([^)]+)\)/g
 const missingLinks = []
+const docsRoot = path.join(root, "docs")
+
+const resolveTargetPath = (filePath, targetWithoutAnchor) => {
+  const decodedTarget = decodeURIComponent(targetWithoutAnchor)
+
+  // Mintlify route-style links should resolve against docs root.
+  if (decodedTarget.startsWith("/")) {
+    if (decodedTarget === "/") {
+      return path.join(docsRoot, "index.md")
+    }
+
+    const route = decodedTarget.replace(/^\/+/, "")
+    const candidates = [
+      path.join(docsRoot, route),
+      path.join(docsRoot, `${route}.md`),
+      path.join(docsRoot, route, "index.md"),
+      path.join(root, route),
+    ]
+
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) {
+        return candidate
+      }
+    }
+
+    // Keep deterministic fallback for error output.
+    return path.join(docsRoot, `${route}.md`)
+  }
+
+  return path.resolve(path.dirname(filePath), decodedTarget)
+}
 
 for (const filePath of markdownFiles) {
   if (!fs.existsSync(filePath)) {
@@ -61,10 +92,7 @@ for (const filePath of markdownFiles) {
       continue
     }
 
-    const resolvedPath = path.resolve(
-      path.dirname(filePath),
-      decodeURIComponent(targetWithoutAnchor),
-    )
+    const resolvedPath = resolveTargetPath(filePath, targetWithoutAnchor)
     if (!fs.existsSync(resolvedPath)) {
       missingLinks.push({
         file: path.relative(root, filePath),

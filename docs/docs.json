@@ -1,0 +1,61 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "openboa",
+  "description": "Business as Agent runtime documentation",
+  "theme": "mint",
+  "colors": {
+    "primary": "#8CC92A",
+    "dark": "#162D24",
+    "light": "#FEF6E2"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "label": "GitHub",
+      "href": "https://github.com/openboa-ai/openboa"
+    }
+  },
+  "search": {
+    "prompt": "Search BOA docs..."
+  },
+  "navigation": {
+    "languages": [
+      {
+        "language": "en",
+        "tabs": [
+          {
+            "tab": "Start",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": ["introduction", "quickstart", "development"]
+              },
+              {
+                "group": "Start",
+                "pages": ["index", "concepts/business-as-agent", "network"]
+              }
+            ]
+          },
+          {
+            "tab": "Foundation",
+            "groups": [
+              {
+                "group": "Foundation",
+                "pages": ["foundation/colors"]
+              }
+            ]
+          },
+          {
+            "tab": "Help",
+            "groups": [
+              {
+                "group": "Help",
+                "pages": ["help/faq", "help/troubleshooting-docs"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

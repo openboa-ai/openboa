@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/docs",
+      "destination": "https://REPLACE_WITH_MINTLIFY_SUBDOMAIN.mintlify.dev/docs"
+    },
+    {
+      "source": "/docs/:match*",
+      "destination": "https://REPLACE_WITH_MINTLIFY_SUBDOMAIN.mintlify.dev/docs/:match*"
+    }
+  ]
+}
