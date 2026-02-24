@@ -1,0 +1,55 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: detect-private-key
+        exclude: "(^|/)(\\.secrets\\.baseline$|\\.detect-secrets\\.cfg$)"
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args:
+          - --baseline
+          - .secrets.baseline
+          - --exclude-files
+          - "(^|/)(dist/|coverage/|node_modules/|pnpm-lock\\.yaml$)"
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.22.0
+    hooks:
+      - id: zizmor
+        args:
+          - --persona=regular
+          - --min-severity=medium
+          - --min-confidence=medium
+
+  - repo: local
+    hooks:
+      - id: biome-lint
+        name: biome-lint
+        entry: pnpm exec biome check --files-ignore-unknown=true
+        language: system
+        types_or: [javascript, jsx, ts, tsx, json]
+
+      - id: biome-format-check
+        name: biome-format-check
+        entry: pnpm exec biome format --files-ignore-unknown=true
+        language: system
+        types_or: [javascript, jsx, ts, tsx, json]
+
+      - id: typecheck-pre-push
+        name: typecheck-pre-push
+        entry: pnpm typecheck
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
