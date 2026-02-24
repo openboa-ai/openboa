@@ -1,0 +1,170 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  scope:
+    runs-on: ubuntu-latest
+    outputs:
+      docs_only: ${{ steps.flags.outputs.docs_only }}
+      docs_changed: ${{ steps.flags.outputs.docs_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Detect docs scope
+        id: filter
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        with:
+          filters: |
+            docs:
+              - "README.md"
+              - "docs/**"
+              - "**/*.md"
+            non_docs:
+              - "**"
+              - "!README.md"
+              - "!docs/**"
+              - "!**/*.md"
+
+      - name: Compute scope flags
+        id: flags
+        shell: bash
+        run: |
+          if [[ "${{ steps.filter.outputs.docs }}" == "true" ]]; then
+            echo "docs_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [[ "${{ steps.filter.outputs.docs }}" == "true" && "${{ steps.filter.outputs.non_docs }}" != "true" ]]; then
+            echo "docs_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  check:
+    needs: [scope]
+    if: needs.scope.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: "10.23.0"
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run checks
+        run: pnpm check
+
+  docs:
+    needs: [scope]
+    if: needs.scope.outputs.docs_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: "10.23.0"
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check docs
+        run: pnpm check:docs
+
+      - name: Check docs links
+        run: pnpm docs:linkcheck
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Setup Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: "3.12"
+
+      - name: Install security tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pre-commit detect-secrets==1.5.0
+
+      - name: Detect secrets baseline
+        run: detect-secrets scan --baseline .secrets.baseline
+
+      - name: Detect private keys
+        run: pre-commit run --all-files detect-private-key
+
+      - name: Lint GitHub Actions workflows
+        run: pre-commit run --all-files actionlint
+
+      - name: Audit GitHub Actions workflows
+        run: pre-commit run --all-files zizmor
+
+  required-ci:
+    name: required-ci
+    needs: [check, docs, secrets]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate job results
+        shell: bash
+        run: |
+          check_result="${{ needs.check.result }}"
+          docs_result="${{ needs.docs.result }}"
+          secrets_result="${{ needs.secrets.result }}"
+
+          echo "check:   ${check_result}"
+          echo "docs:    ${docs_result}"
+          echo "secrets: ${secrets_result}"
+
+          failed=0
+          if [[ "${check_result}" == "failure" || "${check_result}" == "cancelled" ]]; then
+            failed=1
+          fi
+          if [[ "${docs_result}" == "failure" || "${docs_result}" == "cancelled" ]]; then
+            failed=1
+          fi
+          if [[ "${secrets_result}" == "failure" || "${secrets_result}" == "cancelled" ]]; then
+            failed=1
+          fi
+
+          if [[ "${failed}" -ne 0 ]]; then
+            echo "required-ci failed"
+            exit 1
+          fi
+
+          echo "required-ci passed"
