@@ -24,7 +24,7 @@
     "docs:local": "cd docs && pnpm dlx mintlify dev --no-open"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.4.2",
     "@types/node": "^24.3.0",
     "markdownlint-cli2": "^0.18.1",
     "tsx": "^4.20.5",
