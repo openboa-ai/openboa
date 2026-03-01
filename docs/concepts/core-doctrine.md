@@ -1,9 +1,9 @@
 ---
 title: "Core Doctrine"
-summary: "BOA-0 doctrine defining core state, values, philosophy, contracts, and non-goals."
+summary: "BOA-0 doctrine defining core state, values, philosophy, decision tensions, and non-goals."
 read_when:
   - You need the invariant principles behind openboa decisions
-  - You want to understand how philosophy is translated into product contracts
+  - You want to evaluate whether roadmap or implementation choices are doctrine-aligned
 ---
 
 Core Doctrine is the highest-level decision baseline for openboa.
@@ -12,6 +12,11 @@ If roadmap, architecture, or implementation choices conflict with this page, thi
 ## Core State
 
 openboa solves the operational leverage gap that appears when turning ideas into sustained execution.
+
+## Why This Matters
+
+Ideas are abundant. Sustained execution is scarce.
+openboa targets the system-level bottlenecks: continuity, coordination, and accountable delegation.
 
 ## Core Values
 
@@ -36,6 +41,14 @@ openboa requires both to co-exist.
 1. We solve execution problems, not idea problems.
 2. The durable operating subject is the Business.
 3. Performance comes from autonomy; durability comes from process.
+
+## Decision Tensions
+
+When priorities conflict:
+
+1. Preserve Business durability first.
+2. Preserve accountable process second.
+3. Maximize autonomy within those boundaries.
 
 ## Philosophy -> Spec
 
