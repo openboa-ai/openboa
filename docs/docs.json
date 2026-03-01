@@ -32,7 +32,7 @@
               },
               {
                 "group": "Start",
-                "pages": ["index", "concepts/business-as-agent", "network"]
+                "pages": ["index", "concepts/business-as-agent", "concepts/core-doctrine", "concepts/system-contracts", "network"]
               }
             ]
           },
@@ -50,7 +50,7 @@
             "groups": [
               {
                 "group": "Help",
-                "pages": ["help/faq", "help/troubleshooting-docs"]
+                "pages": ["help/faq", "help/non-goals", "help/troubleshooting-docs"]
               }
             ]
           }
