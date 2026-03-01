@@ -15,9 +15,21 @@ openboa solves the operational leverage gap that appears when turning ideas into
 
 ## Core Values
 
-1. **Execution Leverage First**
-2. **Business as the Durable Operator**
-3. **Autonomy + Process**
+### 1) Execution Leverage First
+
+openboa prioritizes operational leverage over feature volume.
+The product succeeds when ideas become sustained execution with less operational friction.
+
+### 2) Business as the Durable Operator
+
+The Business is the durable operating subject.
+People, agents, and tools can change, but Business continuity must remain.
+
+### 3) Autonomy + Process
+
+Autonomy drives performance.
+Process drives durability.
+openboa requires both to co-exist.
 
 ## Core Philosophy
 

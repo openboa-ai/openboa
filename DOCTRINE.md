@@ -8,15 +8,21 @@ openboa solves the operational leverage gap that appears when turning ideas into
 
 ### 1) Execution Leverage First
 
+The value of openboa is measured by how much operational leverage it creates for real execution, not by how many features it ships.
+
 - Never compromise: execution leverage as the primary value function
 - Flexible: non-essential expansion
 
 ### 2) Business as the Durable Operator
 
+The durable operating subject is the Business itself. People, agents, and tools may change, but business continuity must remain intact.
+
 - Never compromise: durability of the Business as the operating subject
 - Flexible: person-first or tool-first optimization
 
 ### 3) Autonomy + Process
+
+Performance comes from agent autonomy. Durability comes from stable process. openboa treats both as required conditions, not trade-off options.
 
 - Never compromise: autonomy and process must co-exist
 - Flexible: short-term convenience-first approaches
