@@ -28,7 +28,14 @@
             "groups": [
               {
                 "group": "Get Started",
-                "pages": ["introduction", "quickstart", "development"]
+                "pages": [
+                  "introduction",
+                  "quickstart",
+                  "development",
+                  "architecture",
+                  "acknowledgements",
+                  "contributing"
+                ]
               },
               {
                 "group": "Start",
@@ -70,7 +77,14 @@
             "groups": [
               {
                 "group": "빠른 시작",
-                "pages": ["ko/introduction", "ko/quickstart", "ko/development"]
+                "pages": [
+                  "ko/introduction",
+                  "ko/quickstart",
+                  "ko/development",
+                  "ko/architecture",
+                  "ko/acknowledgements",
+                  "ko/contributing"
+                ]
               },
               {
                 "group": "개요",
