@@ -1,43 +1,71 @@
 ---
 title: "Introduction"
-summary: "High-level orientation to openboa and how to navigate the docs."
+summary: "What openboa is, why it exists, and how to move from doctrine to implementation."
 read_when:
   - You are new to openboa
-  - You want to understand scope before implementation work
+  - You want the shortest path from concept to contribution
 ---
 
-openboa is a governance-first runtime for building **Business as Agent (BOA)** systems.
-It treats the business as the durable unit and agents as an evolvable workforce.
+**openboa** is the project and brand.
+Its core concept is **Business of Agents (BOA)**, implemented through the *Business as Agent* operating model.
+
+openboa is a governance-first runtime that keeps the **Business** as the durable operating subject and treats agents as an evolvable workforce.
+
+In one line: **openboa turns ideas into sustained execution with accountable delegation.**
 
 <Note>
-openboa is currently in an early, design-first stage. Use these docs to align on concepts and workflows before expecting production-scale orchestration features.
+openboa is in an early, design-first phase. We prioritize doctrinal clarity and system contracts before production-scale orchestration.
 </Note>
+
+## Why now
+
+AI made content generation cheap.
+It did not make business execution durable.
+
+The real bottleneck is operational leverage:
+- work stalls without continuous prompting
+- context breaks across people/agents/tools
+- delegation scales faster than accountability
+
+openboa addresses this as a systems problem.
 
 ## What openboa is
 
-- A runtime model where business identity and governance persist over time.
-- A way to coordinate autonomous agents without removing human control.
-- A documentation-first project that defines concepts before scaling implementation.
+- A runtime model for **Business continuity** across changing workers and tools.
+- A framework that requires **autonomy + process** together.
+- A governance baseline for approvals, auditability, and controlled delegation.
+- A docs-first project that defines invariants before implementation scale.
 
-## What openboa is not yet
+## What openboa is not (current stage)
 
-- Not a production-ready orchestration platform.
+- Not a production-scale orchestration platform yet.
 - Not a generic chatbot framework.
-- Not a fully published runtime stack or CLI experience yet.
+- Not a no-operator fully autonomous system.
+- Not feature-count-first product development.
 
-## Start Here
+## Read in this order
 
-<CardGroup cols={2}>
-  <Card title="Quickstart" href="/quickstart">
-    Set up the repository and run the local docs workflow.
-  </Card>
-  <Card title="Development" href="/development">
-    Learn the core commands and the expected development loop.
-  </Card>
-  <Card title="Business as Agent" href="/concepts/business-as-agent">
-    Read the BOA model and core building blocks.
-  </Card>
-  <Card title="Network" href="/network">
-    Review governance-aware links and current documentation posture.
-  </Card>
-</CardGroup>
+1. **Core Doctrine** — strategic invariants and decision baseline  
+   [/concepts/core-doctrine](/concepts/core-doctrine)
+2. **System Contracts** — philosophy translated into enforceable contracts  
+   [/concepts/system-contracts](/concepts/system-contracts)
+3. **Business as Agent** — shared model and canonical terms  
+   [/concepts/business-as-agent](/concepts/business-as-agent)
+4. **Sharp Non-goals** — explicit exclusions to prevent drift  
+   [/help/non-goals](/help/non-goals)
+5. **Development / Quickstart** — local workflow and contribution loop  
+   [/development](/development), [/quickstart](/quickstart)
+
+## Start by role
+
+- **Operator / Founder**: Core Doctrine → Non-goals → Business as Agent
+- **Architect / Builder**: System Contracts → Development → Quickstart
+- **Contributor / Reviewer**: Core Doctrine → Development → docs/help pages
+
+## Contribution gate (before implementation)
+
+A proposal is ready only if all are true:
+- Improves or protects execution leverage
+- Preserves Business-level durability
+- Keeps autonomy and accountable process co-existing
+- Adds no short-term drift against doctrine

@@ -2,8 +2,8 @@
   <img src="https://github.com/user-attachments/assets/e0d06eca-7d55-42a7-9fe9-b87cff7be8b9" alt="openboa logo" width="220" />
 </p>
 
-<h1 align="center">🐍 openboa— Business as Agent</h1>
-<p align="center">A deployable business of agents.</p>
+<h1 align="center">🐍 openboa</h1>
+<p align="center"><strong>Business of Agents (BOA)</strong> — Model: Business as Agent.</p>
 <p align="center">Anyone can own a business. Anyone can run one.</p>
 
 <p align="center">
