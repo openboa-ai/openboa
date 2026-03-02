@@ -28,7 +28,14 @@
             "groups": [
               {
                 "group": "Get Started",
-                "pages": ["introduction", "quickstart", "development"]
+                "pages": [
+                  "introduction",
+                  "quickstart",
+                  "development",
+                  "architecture",
+                  "acknowledgements",
+                  "contributing"
+                ]
               },
               {
                 "group": "Start",
@@ -70,7 +77,14 @@
             "groups": [
               {
                 "group": "빠른 시작",
-                "pages": ["ko/introduction", "ko/quickstart", "ko/development"]
+                "pages": [
+                  "ko/introduction",
+                  "ko/quickstart",
+                  "ko/development",
+                  "ko/architecture",
+                  "ko/acknowledgements",
+                  "ko/contributing"
+                ]
               },
               {
                 "group": "개요",
@@ -85,10 +99,10 @@
             ]
           },
           {
-            "tab": "Foundation",
+            "tab": "기반",
             "groups": [
               {
-                "group": "Foundation",
+                "group": "기반",
                 "pages": ["ko/foundation/colors"]
               }
             ]
@@ -97,7 +111,7 @@
             "tab": "도움말",
             "groups": [
               {
-                "group": "Help",
+                "group": "도움말",
                 "pages": ["ko/help/faq", "ko/help/non-goals", "ko/help/troubleshooting-docs"]
               }
             ]
