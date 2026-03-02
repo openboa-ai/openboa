@@ -2,8 +2,8 @@
   <img src="https://github.com/user-attachments/assets/e0d06eca-7d55-42a7-9fe9-b87cff7be8b9" alt="openboa logo" width="220" />
 </p>
 
-<h1 align="center">🐍 openboa— Business as Agent</h1>
-<p align="center">A deployable business of agents.</p>
+<h1 align="center">🐍 openboa</h1>
+<p align="center"><strong>Business of Agents (BOA)</strong> — Model: Business as Agent.</p>
 <p align="center">Anyone can own a business. Anyone can run one.</p>
 
 <p align="center">
@@ -11,13 +11,14 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License" /></a>
 </p>
 
-openboa is an open-source runtime for building a **Business as Agent (boa)**: a durable business entity that runs through autonomous agents while remaining accountable to a human operator.
+openboa is an open-source runtime for building a **Business of Agents (BOA)** through the *Business as Agent* model: a durable business entity that runs through autonomous agents while remaining accountable to a human operator.
 A boa does not depend on a fixed list of agents. It can identify what the business needs next, create or reshape specialized agents for that need, and coordinate them as one operating system.
 Instead of treating agents as the product, openboa treats the business itself as the product, with governance, shared memory, and continuity built in from day one.
 
 ## Table of Contents
 - [Vision](#vision)
 - [Model](#model)
+- [BOA-0 Core Doctrine](#boa-0-core-doctrine)
 - [Operating Model (WIP)](#operating-model-wip)
 - [Project](#project)
 
@@ -111,6 +112,19 @@ Organizations need both freedom and structure.
 Conversation supports creativity, alignment, culture, and negotiation. Protocol supports propose, assign, report, request approval, and escalate.
 
 No single philosophy is forced. The operator decides how formal the business should be.
+
+## BOA-0 Core Doctrine
+
+The BOA-0 doctrine defines the baseline for strategic and product decisions:
+- Core State
+- Core Values
+- Core Philosophy
+- Philosophy -> Spec (System Contracts)
+- Sharp Non-goals
+
+Read:
+- [`DOCTRINE.md`](./DOCTRINE.md)
+- Docs: [Core Doctrine](./docs/concepts/core-doctrine.md), [System Contracts](./docs/concepts/system-contracts.md), [Sharp Non-goals](./docs/help/non-goals.md)
 
 ## Operating Model (WIP)
 

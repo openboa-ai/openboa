@@ -33,6 +33,9 @@ It helps you run autonomous agent work while keeping policy, accountability, and
   <Card title="Contributor" href="/concepts/business-as-agent">
     Learn BOA primitives and execution responsibilities before implementing features or workflows.
   </Card>
+  <Card title="Doctrine" href="/concepts/core-doctrine">
+    Read BOA-0 core doctrine and the philosophy-to-spec translation baseline.
+  </Card>
   <Card title="Reader" href="/help/faq">
     Get a quick understanding of current scope, non-goals, and where the project is headed.
   </Card>
@@ -60,6 +63,8 @@ It helps you run autonomous agent work while keeping policy, accountability, and
     - [Quickstart](/quickstart)
     - [Development](/development)
     - [Business as Agent](/concepts/business-as-agent)
+    - [Core Doctrine](/concepts/core-doctrine)
+    - [System Contracts](/concepts/system-contracts)
     - [Network](/network)
   </Tab>
   <Tab title="Foundation">
@@ -67,6 +72,7 @@ It helps you run autonomous agent work while keeping policy, accountability, and
   </Tab>
   <Tab title="Help">
     - [FAQ](/help/faq)
+    - [Sharp Non-goals](/help/non-goals)
     - [Docs Troubleshooting](/help/troubleshooting-docs)
   </Tab>
 </Tabs>

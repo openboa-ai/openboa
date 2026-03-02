@@ -134,9 +134,23 @@ jobs:
       - name: Audit GitHub Actions workflows
         run: pre-commit run --all-files zizmor
 
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
   required-ci:
     name: required-ci
-    needs: [check, docs, secrets]
+    needs: [check, docs, secrets, gitleaks]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -146,10 +160,12 @@ jobs:
           check_result="${{ needs.check.result }}"
           docs_result="${{ needs.docs.result }}"
           secrets_result="${{ needs.secrets.result }}"
+          gitleaks_result="${{ needs.gitleaks.result }}"
 
-          echo "check:   ${check_result}"
-          echo "docs:    ${docs_result}"
-          echo "secrets: ${secrets_result}"
+          echo "check:    ${check_result}"
+          echo "docs:     ${docs_result}"
+          echo "secrets:  ${secrets_result}"
+          echo "gitleaks: ${gitleaks_result}"
 
           failed=0
           if [[ "${check_result}" == "failure" || "${check_result}" == "cancelled" ]]; then
@@ -159,6 +175,9 @@ jobs:
             failed=1
           fi
           if [[ "${secrets_result}" == "failure" || "${secrets_result}" == "cancelled" ]]; then
+            failed=1
+          fi
+          if [[ "${gitleaks_result}" == "failure" || "${gitleaks_result}" == "cancelled" ]]; then
             failed=1
           fi
 
