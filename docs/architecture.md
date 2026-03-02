@@ -15,23 +15,23 @@ The goal is to identify:
 ## Reference Foundations
 
 ### 1) Event-Driven Architecture
-- Martin Fowler: <https://martinfowler.com/articles/201701-event-driven.html>
-- Microsoft Azure Architecture Center: <https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven>
+- Martin Fowler: [https://martinfowler.com/articles/201701-event-driven.html](https://martinfowler.com/articles/201701-event-driven.html)
+- Microsoft Azure Architecture Center: [https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven](https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven)
 
 ### 2) Workflow Engine Principles
-- Temporal: <https://temporal.io/blog/workflow-engine-principles>
+- Temporal: [https://temporal.io/blog/workflow-engine-principles](https://temporal.io/blog/workflow-engine-principles)
 
 ### 3) RBAC Standard Model
-- NIST RBAC: <https://www.nist.gov/publications/nist-model-role-based-access-control-towards-unified-standard>
+- NIST RBAC: [https://www.nist.gov/publications/nist-model-role-based-access-control-towards-unified-standard](https://www.nist.gov/publications/nist-model-role-based-access-control-towards-unified-standard)
 
 ### 4) Policy as Code
-- Open Policy Agent (OPA): <https://www.openpolicyagent.org/docs/latest/>
+- Open Policy Agent (OPA): [https://www.openpolicyagent.org/docs/latest/](https://www.openpolicyagent.org/docs/latest/)
 
 ### 5) Tooling Protocol Foundation
-- Model Context Protocol (MCP): <https://modelcontextprotocol.io/introduction>
+- Model Context Protocol (MCP): [https://modelcontextprotocol.io/introduction](https://modelcontextprotocol.io/introduction)
 
 ### 6) Agent-to-Agent Interoperability Foundation
-- Agent2Agent Protocol (A2A): <https://github.com/a2aproject/A2A>
+- Agent2Agent Protocol (A2A): [https://github.com/a2aproject/A2A](https://github.com/a2aproject/A2A)
 
 ---
 
