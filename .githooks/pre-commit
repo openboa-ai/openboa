@@ -9,6 +9,13 @@ if ! command -v pnpm >/dev/null 2>&1; then
   exit 1
 fi
 
+# Secret scan on staged changes
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --redact --verbose
+else
+  echo "[pre-commit] WARN: gitleaks not found, skipping secret scan"
+fi
+
 # Run minimal fast gate for every commit
 pnpm check:docs
 
