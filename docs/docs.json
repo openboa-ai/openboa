@@ -61,6 +61,24 @@
             ]
           }
         ]
+      },
+      {
+        "language": "ko",
+        "tabs": [
+          {
+            "tab": "시작",
+            "groups": [
+              {
+                "group": "빠른 시작",
+                "pages": ["ko/introduction", "ko/quickstart", "ko/development"]
+              },
+              {
+                "group": "개요",
+                "pages": ["ko/index"]
+              }
+            ]
+          }
+        ]
       }
     ]
   }
