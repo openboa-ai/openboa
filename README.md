@@ -11,7 +11,7 @@
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License" /></a>
 </p>
 
-openboa is an open-source runtime for building a **Business as Agent (boa)**: a durable business entity that runs through autonomous agents while remaining accountable to a human operator.
+openboa is an open-source runtime for building a **Business of Agents (BOA)** through the *Business as Agent* model: a durable business entity that runs through autonomous agents while remaining accountable to a human operator.
 A boa does not depend on a fixed list of agents. It can identify what the business needs next, create or reshape specialized agents for that need, and coordinate them as one operating system.
 Instead of treating agents as the product, openboa treats the business itself as the product, with governance, shared memory, and continuity built in from day one.
 

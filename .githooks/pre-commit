@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -eu
+
+echo "[pre-commit] running openboa checks..."
+
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "[pre-commit] ERROR: pnpm is not installed."
+  echo "Install: corepack enable && corepack prepare pnpm@10.23.0 --activate"
+  exit 1
+fi
+
+# Run minimal fast gate for every commit
+pnpm check:docs
+
+# If code-related files changed, run full quality gate
+CHANGED="$(git diff --cached --name-only)"
+if echo "$CHANGED" | grep -Eq '\.(ts|tsx|js|jsx|json)$|^src/|^scripts/|^package\.json|^pnpm-lock\.yaml'; then
+  pnpm check
+fi
+
+echo "[pre-commit] OK"

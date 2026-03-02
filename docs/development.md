@@ -34,6 +34,16 @@ Use this page as the baseline development contract for local work.
   </Card>
 </CardGroup>
 
+## Git Hooks (pre-commit)
+
+This repository uses a git pre-commit hook via `.githooks/pre-commit`.
+
+- Hook path: `core.hooksPath=.githooks`
+- Always runs: `pnpm check:docs`
+- Runs for code-related staged changes: `pnpm check`
+
+If `pnpm` is missing, commits are blocked with install guidance.
+
 ## Recommended Workflow
 
 <Steps>
