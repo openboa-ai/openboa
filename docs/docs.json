@@ -99,10 +99,10 @@
             ]
           },
           {
-            "tab": "Foundation",
+            "tab": "기반",
             "groups": [
               {
-                "group": "Foundation",
+                "group": "기반",
                 "pages": ["ko/foundation/colors"]
               }
             ]
@@ -111,7 +111,7 @@
             "tab": "도움말",
             "groups": [
               {
-                "group": "Help",
+                "group": "도움말",
                 "pages": ["ko/help/faq", "ko/help/non-goals", "ko/help/troubleshooting-docs"]
               }
             ]

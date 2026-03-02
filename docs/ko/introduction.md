@@ -27,8 +27,8 @@ read_when:
 - 완전 무인(무운영자) 자율 시스템 아님
 
 ## 권장 읽기 순서
-1. [Core Doctrine](/concepts/core-doctrine)
-2. [System Contracts](/concepts/system-contracts)
-3. [Business as Agent](/concepts/business-as-agent)
-4. [Sharp Non-goals](/help/non-goals)
+1. [핵심 원칙 (Core Doctrine)](/ko/concepts/core-doctrine)
+2. [시스템 계약 (System Contracts)](/ko/concepts/system-contracts)
+3. [Business as Agent](/ko/concepts/business-as-agent)
+4. [명시적 비목표 (Sharp Non-goals)](/ko/help/non-goals)
 5. [개발 가이드](/ko/development)
