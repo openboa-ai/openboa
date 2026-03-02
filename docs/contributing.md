@@ -1,4 +1,7 @@
-# Contributing
+---
+title: "Contributing"
+summary: "Documentation conventions and contribution baseline for openboa docs."
+---
 
 ## Documentation Conventions
 
