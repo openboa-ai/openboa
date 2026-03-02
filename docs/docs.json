@@ -74,7 +74,31 @@
               },
               {
                 "group": "개요",
-                "pages": ["ko/index"]
+                "pages": [
+                  "ko/index",
+                  "ko/concepts/business-as-agent",
+                  "ko/concepts/core-doctrine",
+                  "ko/concepts/system-contracts",
+                  "ko/network"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Foundation",
+            "groups": [
+              {
+                "group": "Foundation",
+                "pages": ["ko/foundation/colors"]
+              }
+            ]
+          },
+          {
+            "tab": "도움말",
+            "groups": [
+              {
+                "group": "Help",
+                "pages": ["ko/help/faq", "ko/help/non-goals", "ko/help/troubleshooting-docs"]
               }
             ]
           }
