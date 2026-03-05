@@ -1,0 +1,43 @@
+name: PR Convention
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  convention:
+    name: convention
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title/body convention
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          title="$(jq -r '.pull_request.title // ""' "$GITHUB_EVENT_PATH")"
+          body="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
+
+          errors=0
+
+          if ! printf '%s\n' "$title" | grep -Eq '^(feat|fix|docs|chore|refactor|test|ci|build|perf|revert): .+'; then
+            echo "::error title=PR title convention::PR title must match: type: description"
+            echo "Example: docs: refine fundamentals chat contract"
+            errors=$((errors + 1))
+          fi
+
+          for section in Summary Checklist Validation Related; do
+            if ! printf '%s\n' "$body" | grep -Eq "^##[[:space:]]+${section}\\b"; then
+              echo "::error title=PR body convention::Missing section: ## ${section}"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ "$errors" -ne 0 ]; then
+            echo "PR convention check failed with ${errors} error(s)."
+            exit 1
+          fi
+
+          echo "PR convention check passed."
