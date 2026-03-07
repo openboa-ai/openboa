@@ -35,6 +35,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: commit-msg-convention
+        name: commit-msg-convention
+        entry: bash scripts/validate-commit-msg.sh
+        language: system
+        pass_filenames: true
+        stages: [commit-msg]
+
       - id: biome-lint
         name: biome-lint
         entry: pnpm exec biome check --files-ignore-unknown=true
