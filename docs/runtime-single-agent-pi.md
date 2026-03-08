@@ -92,6 +92,25 @@ When `required: true`, turns fail fast until a Codex token is configured.
   - `.openboa/chat/chats/*.jsonl`
   - `.openboa/agents/*/sessions/*.jsonl`
 
+## Recovery / Triage
+
+- Storage locations:
+  - chat: `.openboa/chat/chats/<chatId>.jsonl`
+  - session: `.openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
+- Missing file behavior:
+  - treated as empty history (no crash)
+- Malformed file behavior:
+  - malformed trailing line is skipped (tolerated)
+  - malformed non-trailing line fails fast for integrity
+- Quick inspection commands:
+  - `tail -n 20 .openboa/chat/chats/<chatId>.jsonl`
+  - `tail -n 20 .openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
+  - `tail -n 20 .openboa/chat/chats/<chatId>.jsonl | jq -c .`
+
+Participant kind constraints:
+- `sender.kind` and `recipient.kind` must be one of: `human`, `agent`
+- Other values are rejected as `invalid turn envelope`
+
 ## Protocol Envelope Example
 
 ```json
