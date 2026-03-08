@@ -162,16 +162,14 @@ pnpm docs:linkcheck
 
 ## PR Reviewer Quick-Verify
 
-- `pnpm -s vitest run test/runtime.context-builder.test.ts`
-  - expected: exact-budget keeps newest turns, over-budget trims deterministically
-- `pnpm -s vitest run test/runtime.gateway.validation.test.ts`
-  - expected: invalid envelope and unsupported protocol checks stay green
+- `pnpm check`
+  - expected: format/lint/type/test all pass
 - `pnpm check:docs`
   - expected: markdown/docs checks pass
+- `pnpm -s vitest run test/runtime.single-agent.test.ts test/runtime.gateway.validation.test.ts`
+  - expected: runtime core + gateway contract tests pass
 
-Artifacts to spot-check after a sample run:
-- `.openboa/chat/chats/<chatId>.jsonl`
-- `.openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
+If fail, check this first: run in repo root and ensure Node/pnpm deps are installed (`pnpm install --frozen-lockfile`).
 
 ## AC to Test Matrix (Issue #16)
 

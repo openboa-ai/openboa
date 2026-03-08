@@ -146,6 +146,30 @@ describe("gateway turn envelope validation", () => {
     ).rejects.toThrow("invalid turn envelope")
   })
 
+
+  it("returns invalid turn envelope for syntactically valid but semantically invalid payload", async () => {
+    const workspaceDir = await createWorkspace()
+    const { gateway } = createMinimalPiRuntime(workspaceDir)
+
+    const semanticallyInvalidEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "human", id: "operator" },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: { text: "hello" },
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(semanticallyInvalidEnvelope))) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
+  })
+
   it("returns unsupported protocol error for wrong protocol version", async () => {
     const workspaceDir = await createWorkspace()
     const { gateway } = createMinimalPiRuntime(workspaceDir)
