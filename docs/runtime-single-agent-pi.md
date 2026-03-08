@@ -25,7 +25,7 @@ This page documents the minimal runtime path added for the single-agent Pi imple
   - `.openboa/system/agents/<agentId>.prompt`
 - Minimal Codex auth reference path:
   - `CODEX_API_KEY` env first
-  - fallback `.openboa/auth/codex.token`
+  - fallback `.openboa/auth/codex.oauth.json`
 
 ## Run Locally
 
@@ -41,6 +41,12 @@ Quick setup command:
 
 ```bash
 pnpm dev -- setup-codex-pi-agent [agentId]
+```
+
+Run Codex browser login + workspace OAuth sync:
+
+```bash
+pnpm dev -- codex-login
 ```
 
 Default auth method is `oauth-browser` and default UI mode is `tui`.
@@ -66,17 +72,16 @@ Create `.openboa/agents/pi-agent/agent.json`:
 Auth resolution order:
 - `CODEX_API_KEY` env
 - fallback `.openboa/auth/codex.oauth.json` (valid/unexpired `accessToken`)
-- fallback `.openboa/auth/codex.token`
 
 When `required: true`, turns fail fast until a Codex token is configured.
-If both oauth JSON and token file are present, oauth JSON is preferred when unexpired.
 
 ## Failure Modes / Quick Triage
 
 - Auth required but missing:
   - `run 'codex login' to open browser oauth first`
+  - then run `pnpm dev -- codex-login`
 - Token lookup order to verify quickly:
-  - `CODEX_API_KEY` -> `.openboa/auth/codex.oauth.json` -> `.openboa/auth/codex.token`
+  - `CODEX_API_KEY` -> `.openboa/auth/codex.oauth.json`
 - Inspect runtime artifacts:
   - `.openboa/chat/chats/*.jsonl`
   - `.openboa/agents/*/sessions/*.jsonl`

@@ -157,7 +157,7 @@ describe("minimal single-agent runtime on pi", () => {
     )
   })
 
-  it("supports codex-auth-required agent once token is configured", async () => {
+  it("supports codex-auth-required agent once oauth token is configured", async () => {
     const workspaceDir = await createWorkspace()
     await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
     await writeFile(
@@ -165,8 +165,13 @@ describe("minimal single-agent runtime on pi", () => {
       JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
       "utf8",
     )
+
     await mkdir(join(workspaceDir, ".openboa", "auth"), { recursive: true })
-    await writeFile(join(workspaceDir, ".openboa", "auth", "codex.token"), "token-value\n", "utf8")
+    await writeFile(
+      join(workspaceDir, ".openboa", "auth", "codex.oauth.json"),
+      JSON.stringify({ accessToken: "oauth-token", expiresAt: 4102444800 }),
+      "utf8",
+    )
 
     const frames = await collectFrames(
       workspaceDir,
@@ -174,10 +179,10 @@ describe("minimal single-agent runtime on pi", () => {
     )
     const final = frames[frames.length - 1] as TurnFinalEvent
     expect(final.kind).toBe("turn.final")
-    expect(final.authMode).toBe("codex-file")
+    expect(final.authMode).toBe("codex-oauth")
   })
 
-  it("falls back to codex token file when oauth token is expired", async () => {
+  it("does not fall back to codex.token when oauth token is expired", async () => {
     const workspaceDir = await createWorkspace()
     await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
     await writeFile(
@@ -193,42 +198,11 @@ describe("minimal single-agent runtime on pi", () => {
       JSON.stringify({ accessToken: "expired-token", expiresAt: 1 }),
       "utf8",
     )
-    await writeFile(join(authDir, "codex.token"), "fallback-token\n", "utf8")
+    await writeFile(join(authDir, "codex.token"), "legacy-fallback-token\n", "utf8")
 
-    const frames = await collectFrames(
-      workspaceDir,
-      buildEnvelope({ message: "expired oauth should fallback" }),
-    )
-    const final = frames[frames.length - 1] as TurnFinalEvent
-    expect(final.kind).toBe("turn.final")
-    expect(final.authMode).toBe("codex-file")
-  })
-
-  it("prefers oauth token over fallback token file when both exist", async () => {
-    const workspaceDir = await createWorkspace()
-    await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
-    await writeFile(
-      join(workspaceDir, ".openboa", "agents", "pi-agent", "agent.json"),
-      JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
-      "utf8",
-    )
-
-    const authDir = join(workspaceDir, ".openboa", "auth")
-    await mkdir(authDir, { recursive: true })
-    await writeFile(
-      join(authDir, "codex.oauth.json"),
-      JSON.stringify({ accessToken: "oauth-token", expiresAt: 4102444800 }),
-      "utf8",
-    )
-    await writeFile(join(authDir, "codex.token"), "fallback-token\n", "utf8")
-
-    const frames = await collectFrames(
-      workspaceDir,
-      buildEnvelope({ message: "oauth should win over file fallback" }),
-    )
-    const final = frames[frames.length - 1] as TurnFinalEvent
-    expect(final.kind).toBe("turn.final")
-    expect(final.authMode).toBe("codex-oauth")
+    await expect(
+      collectFrames(workspaceDir, buildEnvelope({ message: "expired oauth no fallback" })),
+    ).rejects.toThrow("run 'codex login' to open browser oauth first")
   })
 
   it("runs minimal codex setup -> run -> chat success flow with oauth", async () => {

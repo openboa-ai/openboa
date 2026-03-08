@@ -1,3 +1,4 @@
+import { runCodexOauthLoginAndSync } from "./runtime/auth/codex-oauth-login.js"
 import { runChatTurn } from "./runtime/chat.js"
 import { ensureCodexPiAgentConfig } from "./runtime/setup.js"
 import { runTuiChat } from "./runtime/tui.js"
@@ -25,6 +26,12 @@ async function runCli(): Promise<void> {
     return
   }
 
+  if (args[0] === "codex-login") {
+    const result = await runCodexOauthLoginAndSync(process.cwd())
+    process.stdout.write(`oauth synced: ${result.oauthPath}\n`)
+    return
+  }
+
   if (args[0] === "tui") {
     const agentId = args[1] ?? "pi-agent"
     await runTuiChat(process.cwd(), agentId)
@@ -35,6 +42,7 @@ async function runCli(): Promise<void> {
   if (!message) {
     console.log('usage: pnpm dev -- "hello pi runtime"')
     console.log("setup: pnpm dev -- setup-codex-pi-agent [agentId]")
+    console.log("login: pnpm dev -- codex-login")
     console.log("tui: pnpm dev -- tui [agentId]")
     return
   }

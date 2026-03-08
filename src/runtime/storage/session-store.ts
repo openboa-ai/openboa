@@ -15,7 +15,7 @@ export interface SessionRecord {
   agentId: string
   requestMessage: string
   responseMessage: string
-  authMode: "none" | "codex-env" | "codex-file" | "codex-oauth"
+  authMode: "none" | "codex-env" | "codex-oauth"
   checkpoint: SessionCheckpoint
 }
 

@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 
-export type AuthMode = "none" | "codex-env" | "codex-file" | "codex-oauth"
+export type AuthMode = "none" | "codex-env" | "codex-oauth"
 
 export interface CodexAuth {
   mode: AuthMode
@@ -56,19 +56,6 @@ export class CodexAuthProvider {
       }
     } catch {
       // No oauth token file.
-    }
-
-    const tokenFilePath = join(this.workspaceDir, ".openboa", "auth", "codex.token")
-    try {
-      const token = (await readFile(tokenFilePath, "utf8")).trim()
-      if (token.length > 0) {
-        return {
-          mode: "codex-file",
-          token,
-        }
-      }
-    } catch {
-      // No local token file.
     }
 
     return {
