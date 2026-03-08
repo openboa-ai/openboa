@@ -22,18 +22,22 @@ function parseTurnEnvelope(rawPayload: string): TurnEnvelope {
   }
 }
 
+function hasText(value: string | undefined): boolean {
+  return typeof value === "string" && value.trim().length > 0
+}
+
 function validateTurnEnvelope(envelope: TurnEnvelope): void {
   if (envelope.protocol !== "boa.turn.v1") {
     throw new Error(`unsupported protocol: ${envelope.protocol}`)
   }
 
   if (
-    !envelope.chatId ||
-    !envelope.sessionId ||
-    !envelope.agentId ||
-    !envelope.message ||
-    !envelope.sender?.id ||
-    !envelope.recipient?.id
+    !hasText(envelope.chatId) ||
+    !hasText(envelope.sessionId) ||
+    !hasText(envelope.agentId) ||
+    !hasText(envelope.message) ||
+    !hasText(envelope.sender?.id) ||
+    !hasText(envelope.recipient?.id)
   ) {
     throw new Error("invalid turn envelope")
   }

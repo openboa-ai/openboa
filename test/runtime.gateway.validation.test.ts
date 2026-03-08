@@ -56,6 +56,47 @@ describe("gateway turn envelope validation", () => {
     ).rejects.toThrow("invalid turn envelope")
   })
 
+  it("returns invalid turn envelope for whitespace-only critical fields", async () => {
+    const workspaceDir = await createWorkspace()
+    const { gateway } = createMinimalPiRuntime(workspaceDir)
+
+    const whitespaceMessageEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "human", id: "operator" },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: "   ",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(whitespaceMessageEnvelope))) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
+
+    const whitespaceSenderEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "human", id: "   " },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: "hello",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(whitespaceSenderEnvelope))) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
+  })
+
   it("returns invalid turn envelope when participant kinds are outside protocol", async () => {
     const workspaceDir = await createWorkspace()
     const { gateway } = createMinimalPiRuntime(workspaceDir)

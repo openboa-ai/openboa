@@ -173,6 +173,16 @@ Artifacts to spot-check after a sample run:
 - `.openboa/chat/chats/<chatId>.jsonl`
 - `.openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
 
+## AC to Test Matrix (Issue #16)
+
+| Acceptance Criteria | Evidence |
+| --- | --- |
+| Single-agent e2e turn path | `test/runtime.single-agent.test.ts` |
+| Restart recovery (checkpoint) | `test/runtime.single-agent.test.ts` |
+| Protocol/gateway input safety | `test/runtime.gateway.validation.test.ts` |
+| Context budget trimming boundary | `test/runtime.context-builder.test.ts` |
+| Runtime flow + triage docs | `docs/runtime-single-agent-pi.md` |
+
 ## Verification Targets
 
 - Local single-agent startup without external infrastructure
