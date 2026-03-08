@@ -177,6 +177,33 @@ describe("minimal single-agent runtime on pi", () => {
     expect(final.authMode).toBe("codex-file")
   })
 
+  it("falls back to codex token file when oauth token is expired", async () => {
+    const workspaceDir = await createWorkspace()
+    await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
+    await writeFile(
+      join(workspaceDir, ".openboa", "agents", "pi-agent", "agent.json"),
+      JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
+      "utf8",
+    )
+
+    const authDir = join(workspaceDir, ".openboa", "auth")
+    await mkdir(authDir, { recursive: true })
+    await writeFile(
+      join(authDir, "codex.oauth.json"),
+      JSON.stringify({ accessToken: "expired-token", expiresAt: 1 }),
+      "utf8",
+    )
+    await writeFile(join(authDir, "codex.token"), "fallback-token\n", "utf8")
+
+    const frames = await collectFrames(
+      workspaceDir,
+      buildEnvelope({ message: "expired oauth should fallback" }),
+    )
+    const final = frames[frames.length - 1] as TurnFinalEvent
+    expect(final.kind).toBe("turn.final")
+    expect(final.authMode).toBe("codex-file")
+  })
+
   it("runs minimal codex setup -> run -> chat success flow with oauth", async () => {
     const workspaceDir = await createWorkspace()
     const agentDir = join(workspaceDir, ".openboa", "agents", "pi-agent")

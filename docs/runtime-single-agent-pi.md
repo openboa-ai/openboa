@@ -65,6 +65,7 @@ Create `.openboa/agents/pi-agent/agent.json`:
 
 Auth resolution order:
 - `CODEX_API_KEY` env
+- fallback `.openboa/auth/codex.oauth.json` (valid/unexpired `accessToken`)
 - fallback `.openboa/auth/codex.token`
 
 When `required: true`, turns fail fast until a Codex token is configured.
