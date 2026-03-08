@@ -1,4 +1,5 @@
 import { createMinimalPiRuntime } from "./runtime/factory.js"
+import { ensureCodexPiAgentConfig } from "./runtime/setup.js"
 
 export const OPENBOA_VERSION = "0.1.0"
 
@@ -10,11 +11,21 @@ export type {
   TurnEvent,
   TurnFinalEvent,
 } from "./runtime/protocol.js"
+export { ensureCodexPiAgentConfig } from "./runtime/setup.js"
 
 async function runCli(): Promise<void> {
-  const message = process.argv.slice(2).join(" ").trim()
+  const args = process.argv.slice(2)
+  if (args[0] === "setup-codex-pi-agent") {
+    const agentId = args[1] ?? "pi-agent"
+    const result = await ensureCodexPiAgentConfig(process.cwd(), agentId)
+    process.stdout.write(`${result.created ? "created" : "exists"}: ${result.configPath}\n`)
+    return
+  }
+
+  const message = args.join(" ").trim()
   if (!message) {
     console.log('usage: pnpm dev -- "hello pi runtime"')
+    console.log("setup: pnpm dev -- setup-codex-pi-agent [agentId]")
     return
   }
 

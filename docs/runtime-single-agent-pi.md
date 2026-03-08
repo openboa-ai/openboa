@@ -37,6 +37,12 @@ This executes one local turn with the minimal runtime and writes JSONL artifacts
 
 ## Agent Setup: Codex Auth + Pi Runtime
 
+Quick setup command:
+
+```bash
+pnpm dev -- setup-codex-pi-agent [agentId]
+```
+
 Create `.openboa/agents/pi-agent/agent.json`:
 
 ```json
