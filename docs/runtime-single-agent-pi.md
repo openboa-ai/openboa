@@ -43,6 +43,14 @@ Quick setup command:
 pnpm dev -- setup-codex-pi-agent [agentId]
 ```
 
+Default auth method is `oauth-browser` and default UI mode is `tui`.
+
+Run interactive TUI chat:
+
+```bash
+pnpm dev -- tui [agentId]
+```
+
 Create `.openboa/agents/pi-agent/agent.json`:
 
 ```json

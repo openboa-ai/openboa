@@ -33,7 +33,7 @@ export interface TurnFinalEvent {
   checkpointId: string
   recoveredFromCheckpoint: boolean
   recoveredCheckpointId: string | null
-  authMode: "none" | "codex-env" | "codex-file"
+  authMode: "none" | "codex-env" | "codex-file" | "codex-oauth"
 }
 
 export type TurnEvent = TurnChunkEvent | TurnFinalEvent

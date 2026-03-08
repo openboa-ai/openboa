@@ -43,6 +43,11 @@ export class BoaRuntime {
       agentConfig.auth.required &&
       auth.mode === "none"
     ) {
+      if (agentConfig.auth.method === "oauth-browser") {
+        throw new Error(
+          `codex auth required for agent: ${turn.agentId}. run 'codex login' to open browser oauth first`,
+        )
+      }
       throw new Error(`codex auth required for agent: ${turn.agentId}`)
     }
 

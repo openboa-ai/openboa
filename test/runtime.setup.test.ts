@@ -20,7 +20,7 @@ afterEach(async () => {
 })
 
 describe("runtime setup", () => {
-  it("creates default codex+pi agent config when missing", async () => {
+  it("creates default codex+pi+tui agent config when missing", async () => {
     const workspaceDir = await createWorkspace()
 
     const result = await ensureCodexPiAgentConfig(workspaceDir, "pi-agent")
@@ -29,12 +29,15 @@ describe("runtime setup", () => {
     const raw = await readFile(result.configPath, "utf8")
     const parsed = JSON.parse(raw) as {
       runtime: string
-      auth: { provider: string; required: boolean }
+      auth: { provider: string; required: boolean; method: string }
+      ui: { mode: string }
     }
 
     expect(parsed.runtime).toBe("pi")
     expect(parsed.auth.provider).toBe("codex")
     expect(parsed.auth.required).toBe(true)
+    expect(parsed.auth.method).toBe("oauth-browser")
+    expect(parsed.ui.mode).toBe("tui")
   })
 
   it("does not overwrite existing agent config", async () => {
@@ -42,7 +45,7 @@ describe("runtime setup", () => {
     const first = await ensureCodexPiAgentConfig(workspaceDir, "pi-agent")
     await writeFile(
       first.configPath,
-      '{"runtime":"pi","auth":{"provider":"codex","required":false}}\n',
+      '{"runtime":"pi","auth":{"provider":"codex","required":false,"method":"api-key"},"ui":{"mode":"tui"}}\n',
       "utf8",
     )
 
@@ -50,6 +53,6 @@ describe("runtime setup", () => {
     expect(second.created).toBe(false)
 
     const raw = await readFile(first.configPath, "utf8")
-    expect(raw).toContain('"required":false')
+    expect(raw).toContain('"method":"api-key"')
   })
 })

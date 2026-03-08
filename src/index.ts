@@ -1,8 +1,10 @@
-import { createMinimalPiRuntime } from "./runtime/factory.js"
+import { runChatTurn } from "./runtime/chat.js"
 import { ensureCodexPiAgentConfig } from "./runtime/setup.js"
+import { runTuiChat } from "./runtime/tui.js"
 
 export const OPENBOA_VERSION = "0.1.0"
 
+export { runChatTurn } from "./runtime/chat.js"
 export { createMinimalPiRuntime } from "./runtime/factory.js"
 export type {
   ParticipantRef,
@@ -12,6 +14,7 @@ export type {
   TurnFinalEvent,
 } from "./runtime/protocol.js"
 export { ensureCodexPiAgentConfig } from "./runtime/setup.js"
+export { runTuiChat } from "./runtime/tui.js"
 
 async function runCli(): Promise<void> {
   const args = process.argv.slice(2)
@@ -22,37 +25,31 @@ async function runCli(): Promise<void> {
     return
   }
 
+  if (args[0] === "tui") {
+    const agentId = args[1] ?? "pi-agent"
+    await runTuiChat(process.cwd(), agentId)
+    return
+  }
+
   const message = args.join(" ").trim()
   if (!message) {
     console.log('usage: pnpm dev -- "hello pi runtime"')
     console.log("setup: pnpm dev -- setup-codex-pi-agent [agentId]")
+    console.log("tui: pnpm dev -- tui [agentId]")
     return
   }
 
-  const { gateway } = createMinimalPiRuntime(process.cwd())
-
-  const envelope = {
-    protocol: "boa.turn.v1" as const,
+  const result = await runChatTurn({
+    workspaceDir: process.cwd(),
+    agentId: "pi-agent",
     chatId: "local-chat",
     sessionId: "local-session",
-    agentId: "pi-agent",
-    sender: { kind: "human" as const, id: "operator" },
-    recipient: { kind: "agent" as const, id: "pi-agent" },
+    senderId: "operator",
     message,
-  }
+  })
 
-  for await (const frame of gateway.handleWebSocketMessage(JSON.stringify(envelope))) {
-    const event = JSON.parse(frame) as { kind: string; delta?: string; response?: string }
-    if (event.kind === "turn.chunk") {
-      process.stdout.write(event.delta ?? "")
-      continue
-    }
-
-    if (event.kind === "turn.final") {
-      process.stdout.write("\n")
-      process.stdout.write(`checkpoint=${event.response ? "stored" : "none"}\n`)
-    }
-  }
+  process.stdout.write(`${result.chunks.join("")}\n`)
+  process.stdout.write(`checkpoint=${result.final.response ? "stored" : "none"}\n`)
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

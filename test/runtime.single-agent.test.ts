@@ -143,7 +143,7 @@ describe("minimal single-agent runtime on pi", () => {
     expect(secondFinal.recoveredCheckpointId).toBe(firstFinal.checkpointId)
   })
 
-  it("requires codex auth when agent config marks auth as required", async () => {
+  it("requires codex auth with browser oauth guidance by default", async () => {
     const workspaceDir = await createWorkspace()
     await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
     await writeFile(
@@ -153,7 +153,7 @@ describe("minimal single-agent runtime on pi", () => {
     )
 
     await expect(collectFrames(workspaceDir, buildEnvelope())).rejects.toThrow(
-      "codex auth required for agent: pi-agent",
+      "run 'codex login' to open browser oauth first",
     )
   })
 
@@ -177,17 +177,25 @@ describe("minimal single-agent runtime on pi", () => {
     expect(final.authMode).toBe("codex-file")
   })
 
-  it("runs minimal codex-auth pi conversation flow from agent setup", async () => {
+  it("runs minimal codex setup -> run -> chat success flow with oauth", async () => {
     const workspaceDir = await createWorkspace()
     const agentDir = join(workspaceDir, ".openboa", "agents", "pi-agent")
     await mkdir(agentDir, { recursive: true })
     await writeFile(
       join(agentDir, "agent.json"),
-      JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
+      JSON.stringify({
+        runtime: "pi",
+        auth: { provider: "codex", required: true, method: "oauth-browser" },
+        ui: { mode: "tui" },
+      }),
       "utf8",
     )
     await mkdir(join(workspaceDir, ".openboa", "auth"), { recursive: true })
-    await writeFile(join(workspaceDir, ".openboa", "auth", "codex.token"), "token-value\n", "utf8")
+    await writeFile(
+      join(workspaceDir, ".openboa", "auth", "codex.oauth.json"),
+      JSON.stringify({ accessToken: "oauth-token", expiresAt: 4102444800 }),
+      "utf8",
+    )
 
     const frames = await collectFrames(
       workspaceDir,
@@ -202,7 +210,7 @@ describe("minimal single-agent runtime on pi", () => {
     const final = frames[frames.length - 1] as TurnFinalEvent
     expect(chunkCount).toBeGreaterThan(0)
     expect(final.kind).toBe("turn.final")
-    expect(final.authMode).toBe("codex-file")
+    expect(final.authMode).toBe("codex-oauth")
     expect(final.response).toContain("codex-auth")
     expect(final.response).toContain("answer:hello from codex setup")
 

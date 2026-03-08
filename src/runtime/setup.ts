@@ -6,6 +6,10 @@ const DEFAULT_AGENT_CONFIG = {
   auth: {
     provider: "codex",
     required: true,
+    method: "oauth-browser",
+  },
+  ui: {
+    mode: "tui",
   },
 } as const
 
