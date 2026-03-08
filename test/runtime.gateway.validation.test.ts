@@ -55,4 +55,50 @@ describe("gateway turn envelope validation", () => {
       })(),
     ).rejects.toThrow("invalid turn envelope")
   })
+
+  it("returns invalid turn envelope when participant kinds are outside protocol", async () => {
+    const workspaceDir = await createWorkspace()
+    const { gateway } = createMinimalPiRuntime(workspaceDir)
+
+    const invalidEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "system", id: "scheduler" },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: "hello",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(invalidEnvelope))) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
+  })
+
+  it("returns unsupported protocol error for wrong protocol version", async () => {
+    const workspaceDir = await createWorkspace()
+    const { gateway } = createMinimalPiRuntime(workspaceDir)
+
+    const invalidEnvelope = {
+      protocol: "boa.turn.v0",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "human", id: "operator" },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: "hello",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(invalidEnvelope))) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("unsupported protocol: boa.turn.v0")
+  })
 })

@@ -99,6 +99,9 @@ When `required: true`, turns fail fast until a Codex token is configured.
   - session: `.openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
 - Missing file behavior:
   - treated as empty history (no crash)
+- Error split:
+  - malformed payload / missing required fields / invalid participant kind => `invalid turn envelope`
+  - unsupported protocol version => `unsupported protocol: <value>`
 - Malformed file behavior:
   - malformed trailing line is skipped (tolerated)
   - malformed non-trailing line fails fast for integrity
@@ -110,6 +113,22 @@ When `required: true`, turns fail fast until a Codex token is configured.
 Participant kind constraints:
 - `sender.kind` and `recipient.kind` must be one of: `human`, `agent`
 - Other values are rejected as `invalid turn envelope`
+
+Invalid protocol quick example:
+
+```json
+{
+  "protocol": "boa.turn.v0",
+  "chatId": "local-chat",
+  "sessionId": "local-session",
+  "agentId": "pi-agent",
+  "sender": { "kind": "human", "id": "operator" },
+  "recipient": { "kind": "agent", "id": "pi-agent" },
+  "message": "status check"
+}
+```
+
+Expected error: `unsupported protocol: boa.turn.v0`
 
 ## Protocol Envelope Example
 

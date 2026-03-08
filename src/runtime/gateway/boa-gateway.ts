@@ -37,4 +37,12 @@ function validateTurnEnvelope(envelope: TurnEnvelope): void {
   ) {
     throw new Error("invalid turn envelope")
   }
+
+  if (!isParticipantKind(envelope.sender.kind) || !isParticipantKind(envelope.recipient.kind)) {
+    throw new Error("invalid turn envelope")
+  }
+}
+
+function isParticipantKind(value: string): value is "human" | "agent" {
+  return value === "human" || value === "agent"
 }
