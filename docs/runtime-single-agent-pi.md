@@ -160,6 +160,19 @@ pnpm check:docs
 pnpm docs:linkcheck
 ```
 
+## PR Reviewer Quick-Verify
+
+- `pnpm -s vitest run test/runtime.context-builder.test.ts`
+  - expected: exact-budget keeps newest turns, over-budget trims deterministically
+- `pnpm -s vitest run test/runtime.gateway.validation.test.ts`
+  - expected: invalid envelope and unsupported protocol checks stay green
+- `pnpm check:docs`
+  - expected: markdown/docs checks pass
+
+Artifacts to spot-check after a sample run:
+- `.openboa/chat/chats/<chatId>.jsonl`
+- `.openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
+
 ## Verification Targets
 
 - Local single-agent startup without external infrastructure
