@@ -13,6 +13,15 @@ export interface CodexOauthSyncResult {
   oauthPath: string
 }
 
+export function resolveCodexCliAuthPath(env: NodeJS.ProcessEnv = process.env): string {
+  const fromEnv = env.OPENBOA_CODEX_AUTH_FILE?.trim()
+  if (fromEnv) {
+    return fromEnv
+  }
+
+  return join(homedir(), ".codex", "auth.json")
+}
+
 export async function runCodexLoginCommand(): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     const child = spawn("codex", ["login"], { stdio: "inherit" })
@@ -31,7 +40,7 @@ export async function runCodexLoginCommand(): Promise<void> {
 
 export async function syncCodexOauthFromCodexCli(
   workspaceDir: string,
-  sourceAuthPath = join(homedir(), ".codex", "auth.json"),
+  sourceAuthPath = resolveCodexCliAuthPath(),
 ): Promise<CodexOauthSyncResult> {
   const raw = await readFile(sourceAuthPath, "utf8")
   const parsed = JSON.parse(raw) as CodexCliAuthShape
@@ -39,7 +48,7 @@ export async function syncCodexOauthFromCodexCli(
     typeof parsed.tokens?.access_token === "string" ? parsed.tokens.access_token.trim() : ""
 
   if (!accessToken) {
-    throw new Error("codex oauth token not found in ~/.codex/auth.json")
+    throw new Error("codex oauth token not found in codex cli auth file")
   }
 
   const authDir = join(workspaceDir, ".openboa", "auth")
@@ -59,5 +68,5 @@ export async function runCodexOauthLoginAndSync(
   workspaceDir: string,
 ): Promise<CodexOauthSyncResult> {
   await runCodexLoginCommand()
-  return syncCodexOauthFromCodexCli(workspaceDir)
+  return syncCodexOauthFromCodexCli(workspaceDir, resolveCodexCliAuthPath())
 }

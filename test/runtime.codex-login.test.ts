@@ -3,7 +3,10 @@ import { join } from "node:path"
 
 import { afterEach, describe, expect, it } from "vitest"
 
-import { syncCodexOauthFromCodexCli } from "../src/runtime/auth/codex-oauth-login.js"
+import {
+  resolveCodexCliAuthPath,
+  syncCodexOauthFromCodexCli,
+} from "../src/runtime/auth/codex-oauth-login.js"
 
 const temporaryRoots: string[] = []
 
@@ -50,7 +53,15 @@ describe("codex oauth login sync", () => {
     await writeFile(sourceAuthPath, JSON.stringify({ tokens: {} }), "utf8")
 
     await expect(syncCodexOauthFromCodexCli(workspaceDir, sourceAuthPath)).rejects.toThrow(
-      "codex oauth token not found in ~/.codex/auth.json",
+      "codex oauth token not found in codex cli auth file",
     )
+  })
+
+  it("uses OPENBOA_CODEX_AUTH_FILE when provided", () => {
+    const resolved = resolveCodexCliAuthPath({
+      OPENBOA_CODEX_AUTH_FILE: "/tmp/custom-codex-auth.json",
+    })
+
+    expect(resolved).toBe("/tmp/custom-codex-auth.json")
   })
 })

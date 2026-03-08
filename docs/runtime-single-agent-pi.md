@@ -49,6 +49,12 @@ Run Codex browser login + workspace OAuth sync:
 pnpm dev -- codex-login
 ```
 
+Optional auth source override (avoid fixed local assumptions):
+
+```bash
+OPENBOA_CODEX_AUTH_FILE=/path/to/codex-auth.json pnpm dev -- codex-login
+```
+
 Default auth method is `oauth-browser` and default UI mode is `tui`.
 
 Run interactive TUI chat:
