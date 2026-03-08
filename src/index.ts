@@ -5,10 +5,10 @@ export const OPENBOA_VERSION = "0.1.0"
 export { createMinimalPiRuntime } from "./runtime/factory.js"
 export type {
   ParticipantRef,
+  TurnChunkEvent,
   TurnEnvelope,
   TurnEvent,
   TurnFinalEvent,
-  TurnChunkEvent,
 } from "./runtime/protocol.js"
 
 async function runCli(): Promise<void> {

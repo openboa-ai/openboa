@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { OPENBOA_VERSION, createMinimalPiRuntime } from "../src/index.js"
+import { createMinimalPiRuntime, OPENBOA_VERSION } from "../src/index.js"
 
 describe("openboa bootstrap", () => {
   it("exposes a semantic version string", () => {
