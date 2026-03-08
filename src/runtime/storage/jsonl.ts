@@ -25,9 +25,7 @@ export async function readJsonl<T>(filePath: string): Promise<T[]> {
       try {
         records.push(JSON.parse(trimmed) as T)
       } catch (error) {
-        const hasNonEmptyAfter = lines
-          .slice(index + 1)
-          .some((line) => line.trim().length > 0)
+        const hasNonEmptyAfter = lines.slice(index + 1).some((line) => line.trim().length > 0)
 
         if (!hasNonEmptyAfter) {
           // tolerate partially written trailing line
