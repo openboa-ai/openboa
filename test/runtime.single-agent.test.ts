@@ -26,6 +26,19 @@ async function collectFrames(
   return frames
 }
 
+function buildEnvelope(overrides: Partial<TurnEnvelope> = {}): TurnEnvelope {
+  return {
+    protocol: "boa.turn.v1",
+    chatId: "chat-1",
+    sessionId: "session-1",
+    agentId: "pi-agent",
+    sender: { kind: "human", id: "fox-tail" },
+    recipient: { kind: "agent", id: "pi-agent" },
+    message: "status check",
+    ...overrides,
+  }
+}
+
 afterEach(async () => {
   await Promise.all(
     temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })),
@@ -36,15 +49,7 @@ describe("minimal single-agent runtime on pi", () => {
   it("runs end-to-end turn and stores chat/session boundaries", async () => {
     const workspaceDir = await createWorkspace()
 
-    const frames = await collectFrames(workspaceDir, {
-      protocol: "boa.turn.v1",
-      chatId: "chat-1",
-      sessionId: "session-1",
-      agentId: "pi-agent",
-      sender: { kind: "human", id: "fox-tail" },
-      recipient: { kind: "agent", id: "pi-agent" },
-      message: "status check",
-    })
+    const frames = await collectFrames(workspaceDir, buildEnvelope())
 
     const final = frames[frames.length - 1] as TurnFinalEvent
     expect(final.kind).toBe("turn.final")
@@ -106,15 +111,15 @@ describe("minimal single-agent runtime on pi", () => {
   it("recovers from latest session checkpoint after restart", async () => {
     const workspaceDir = await createWorkspace()
 
-    const firstRun = await collectFrames(workspaceDir, {
-      protocol: "boa.turn.v1",
-      chatId: "chat-restart",
-      sessionId: "session-restart",
-      agentId: "pi-agent",
-      sender: { kind: "human", id: "operator" },
-      recipient: { kind: "agent", id: "pi-agent" },
-      message: "first turn",
-    })
+    const firstRun = await collectFrames(
+      workspaceDir,
+      buildEnvelope({
+        chatId: "chat-restart",
+        sessionId: "session-restart",
+        sender: { kind: "human", id: "operator" },
+        message: "first turn",
+      }),
+    )
 
     const firstFinal = firstRun[firstRun.length - 1] as TurnFinalEvent
 
@@ -122,19 +127,53 @@ describe("minimal single-agent runtime on pi", () => {
     await mkdir(join(workspaceDir, ".openboa", "bootstrap"), { recursive: true })
     await writeFile(bootstrapPath, JSON.stringify({ tokenBudget: 400 }), { encoding: "utf8" })
 
-    const secondRun = await collectFrames(workspaceDir, {
-      protocol: "boa.turn.v1",
-      chatId: "chat-restart",
-      sessionId: "session-restart",
-      agentId: "pi-agent",
-      sender: { kind: "human", id: "operator" },
-      recipient: { kind: "agent", id: "pi-agent" },
-      message: "second turn",
-    })
+    const secondRun = await collectFrames(
+      workspaceDir,
+      buildEnvelope({
+        chatId: "chat-restart",
+        sessionId: "session-restart",
+        sender: { kind: "human", id: "operator" },
+        message: "second turn",
+      }),
+    )
 
     const secondFinal = secondRun[secondRun.length - 1] as TurnFinalEvent
 
     expect(secondFinal.recoveredFromCheckpoint).toBe(true)
     expect(secondFinal.recoveredCheckpointId).toBe(firstFinal.checkpointId)
+  })
+
+  it("requires codex auth when agent config marks auth as required", async () => {
+    const workspaceDir = await createWorkspace()
+    await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
+    await writeFile(
+      join(workspaceDir, ".openboa", "agents", "pi-agent", "agent.json"),
+      JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
+      "utf8",
+    )
+
+    await expect(collectFrames(workspaceDir, buildEnvelope())).rejects.toThrow(
+      "codex auth required for agent: pi-agent",
+    )
+  })
+
+  it("supports codex-auth-required agent once token is configured", async () => {
+    const workspaceDir = await createWorkspace()
+    await mkdir(join(workspaceDir, ".openboa", "agents", "pi-agent"), { recursive: true })
+    await writeFile(
+      join(workspaceDir, ".openboa", "agents", "pi-agent", "agent.json"),
+      JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
+      "utf8",
+    )
+    await mkdir(join(workspaceDir, ".openboa", "auth"), { recursive: true })
+    await writeFile(join(workspaceDir, ".openboa", "auth", "codex.token"), "token-value\n", "utf8")
+
+    const frames = await collectFrames(
+      workspaceDir,
+      buildEnvelope({ message: "auth required turn" }),
+    )
+    const final = frames[frames.length - 1] as TurnFinalEvent
+    expect(final.kind).toBe("turn.final")
+    expect(final.authMode).toBe("codex-file")
   })
 })

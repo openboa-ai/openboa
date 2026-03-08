@@ -35,6 +35,26 @@ pnpm dev -- "hello pi runtime"
 
 This executes one local turn with the minimal runtime and writes JSONL artifacts under `.openboa/`.
 
+## Agent Setup: Codex Auth + Pi Runtime
+
+Create `.openboa/agents/pi-agent/agent.json`:
+
+```json
+{
+  "runtime": "pi",
+  "auth": {
+    "provider": "codex",
+    "required": true
+  }
+}
+```
+
+Auth resolution order:
+- `CODEX_API_KEY` env
+- fallback `.openboa/auth/codex.token`
+
+When `required: true`, turns fail fast until a Codex token is configured.
+
 ## Protocol Envelope Example
 
 ```json

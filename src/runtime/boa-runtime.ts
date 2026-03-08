@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto"
 
 import { PiRuntimeAdapter } from "./adapter/pi-adapter.js"
+import { loadAgentConfig } from "./agent-config.js"
 import { CodexAuthProvider } from "./auth/codex-auth.js"
 import { buildSystemPrompt, loadBootstrapConfig } from "./bootstrap.js"
 import { buildContext } from "./context-builder.js"
@@ -31,6 +32,20 @@ export class BoaRuntime {
   }
 
   async *runTurn(turn: TurnEnvelope): AsyncGenerator<TurnEvent> {
+    const agentConfig = await loadAgentConfig(this.options.workspaceDir, turn.agentId)
+    if (agentConfig.runtime !== "pi") {
+      throw new Error(`unsupported agent runtime: ${agentConfig.runtime}`)
+    }
+
+    const auth = await this.authProvider.resolve()
+    if (
+      agentConfig.auth.provider === "codex" &&
+      agentConfig.auth.required &&
+      auth.mode === "none"
+    ) {
+      throw new Error(`codex auth required for agent: ${turn.agentId}`)
+    }
+
     const timestamp = turn.timestamp ?? nowIsoString()
     const previousCheckpoint = await this.sessionStore.latestCheckpoint(
       turn.agentId,
@@ -52,7 +67,6 @@ export class BoaRuntime {
     const systemPrompt = await buildSystemPrompt(this.options.workspaceDir, turn.agentId)
     const history = await this.chatStore.list(turn.chatId)
     const context = buildContext(history, systemPrompt, turn.message, bootstrap.tokenBudget)
-    const auth = await this.authProvider.resolve()
 
     const response = this.adapter.buildResponse({
       agentId: turn.agentId,
