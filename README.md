@@ -185,6 +185,7 @@ Early stage. Design-first. Defining primitives before scaling implementation.
 A minimal local-first single-agent runtime path is now available for development and acceptance testing.
 
 Run:
+
 ```bash
 pnpm dev -- "hello pi runtime"
 ```
