@@ -146,7 +146,6 @@ describe("gateway turn envelope validation", () => {
     ).rejects.toThrow("invalid turn envelope")
   })
 
-
   it("returns invalid turn envelope for syntactically valid but semantically invalid payload", async () => {
     const workspaceDir = await createWorkspace()
     const { gateway } = createMinimalPiRuntime(workspaceDir)
@@ -163,7 +162,9 @@ describe("gateway turn envelope validation", () => {
 
     await expect(
       (async () => {
-        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(semanticallyInvalidEnvelope))) {
+        for await (const _ of gateway.handleWebSocketMessage(
+          JSON.stringify(semanticallyInvalidEnvelope),
+        )) {
           // no-op
         }
       })(),
