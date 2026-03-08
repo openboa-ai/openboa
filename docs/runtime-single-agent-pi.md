@@ -187,3 +187,19 @@ If fail, check this first: run in repo root and ensure Node/pnpm deps are instal
 - End-to-end turn execution with persisted chat/session logs
 - Single protocol route for Agent ↔ Human and Agent ↔ Agent
 - Checkpoint chain available for restart recovery
+
+## Validation Matrix
+
+| Acceptance Criteria | Evidence |
+| --- | --- |
+| Agent setup + runtime turn success | `test/runtime.single-agent.test.ts` |
+| Baseline runtime harness health | `test/smoke.test.ts` |
+| Runtime docs + link integrity | `pnpm check:docs` |
+
+Run commands:
+
+```bash
+pnpm check
+pnpm check:docs
+pnpm -s vitest run test/runtime.single-agent.test.ts test/smoke.test.ts
+```
