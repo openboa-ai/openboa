@@ -72,7 +72,9 @@ describe("gateway turn envelope validation", () => {
 
     await expect(
       (async () => {
-        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(whitespaceMessageEnvelope))) {
+        for await (const _ of gateway.handleWebSocketMessage(
+          JSON.stringify(whitespaceMessageEnvelope),
+        )) {
           // no-op
         }
       })(),
@@ -90,7 +92,9 @@ describe("gateway turn envelope validation", () => {
 
     await expect(
       (async () => {
-        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(whitespaceSenderEnvelope))) {
+        for await (const _ of gateway.handleWebSocketMessage(
+          JSON.stringify(whitespaceSenderEnvelope),
+        )) {
           // no-op
         }
       })(),
