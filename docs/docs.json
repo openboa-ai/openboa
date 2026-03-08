@@ -32,7 +32,6 @@
                   "introduction",
                   "quickstart",
                   "development",
-                  "runtime-single-agent-pi",
                   "architecture",
                   "acknowledgements",
                   "contributing"
@@ -46,6 +45,27 @@
                   "concepts/core-doctrine",
                   "concepts/system-contracts",
                   "network"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Agent",
+            "groups": [
+              {
+                "group": "Agent",
+                "pages": [
+                  "runtime-single-agent-pi",
+                  "agent/fundamentals/index",
+                  "agent/fundamentals/01-architecture",
+                  "agent/fundamentals/02-chat",
+                  "agent/fundamentals/03-runtime",
+                  "agent/fundamentals/04-turn",
+                  "agent/fundamentals/05-bootstrap",
+                  "agent/fundamentals/06-system-prompt",
+                  "agent/fundamentals/07-context",
+                  "agent/fundamentals/08-workspace",
+                  "agent/fundamentals/09-ouath"
                 ]
               }
             ]

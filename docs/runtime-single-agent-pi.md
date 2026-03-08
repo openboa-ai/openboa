@@ -69,6 +69,7 @@ Auth resolution order:
 - fallback `.openboa/auth/codex.token`
 
 When `required: true`, turns fail fast until a Codex token is configured.
+If both oauth JSON and token file are present, oauth JSON is preferred when unexpired.
 
 ## Protocol Envelope Example
 
