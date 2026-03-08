@@ -181,6 +181,20 @@ Early stage. Design-first. Defining primitives before scaling implementation.
 - A runnable stack and CLI are not published yet.
 - Until then, use repository Issues and Discussions as temporary collaboration channels.
 
+### Minimal Single-Agent Runtime (Pi)
+A minimal local-first single-agent runtime path is now available for development and acceptance testing.
+
+Run:
+```bash
+pnpm dev -- "hello pi runtime"
+```
+
+This executes one turn and persists:
+- chat source of truth at `.openboa/chat/chats/<chatId>.jsonl`
+- session metadata/checkpoints at `.openboa/agents/<agentId>/sessions/<sessionId>.jsonl`
+
+See docs: `docs/runtime-single-agent-pi.md`.
+
 ### Contributing (WIP)
 Contributions are welcome, especially around:
 - design discussions for core primitives
