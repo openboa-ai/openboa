@@ -176,4 +176,49 @@ describe("minimal single-agent runtime on pi", () => {
     expect(final.kind).toBe("turn.final")
     expect(final.authMode).toBe("codex-file")
   })
+
+  it("runs minimal codex-auth pi conversation flow from agent setup", async () => {
+    const workspaceDir = await createWorkspace()
+    const agentDir = join(workspaceDir, ".openboa", "agents", "pi-agent")
+    await mkdir(agentDir, { recursive: true })
+    await writeFile(
+      join(agentDir, "agent.json"),
+      JSON.stringify({ runtime: "pi", auth: { provider: "codex", required: true } }),
+      "utf8",
+    )
+    await mkdir(join(workspaceDir, ".openboa", "auth"), { recursive: true })
+    await writeFile(join(workspaceDir, ".openboa", "auth", "codex.token"), "token-value\n", "utf8")
+
+    const frames = await collectFrames(
+      workspaceDir,
+      buildEnvelope({
+        chatId: "chat-codex-min",
+        sessionId: "session-codex-min",
+        message: "hello from codex setup",
+      }),
+    )
+
+    const chunkCount = frames.filter((frame) => frame.kind === "turn.chunk").length
+    const final = frames[frames.length - 1] as TurnFinalEvent
+    expect(chunkCount).toBeGreaterThan(0)
+    expect(final.kind).toBe("turn.final")
+    expect(final.authMode).toBe("codex-file")
+    expect(final.response).toContain("codex-auth")
+    expect(final.response).toContain("answer:hello from codex setup")
+
+    const chatPath = join(workspaceDir, ".openboa", "chat", "chats", "chat-codex-min.jsonl")
+    const sessionPath = join(
+      workspaceDir,
+      ".openboa",
+      "agents",
+      "pi-agent",
+      "sessions",
+      "session-codex-min.jsonl",
+    )
+    const chatLines = (await readFile(chatPath, "utf8")).trim().split("\n")
+    const sessionLines = (await readFile(sessionPath, "utf8")).trim().split("\n")
+
+    expect(chatLines).toHaveLength(2)
+    expect(sessionLines).toHaveLength(1)
+  })
 })
