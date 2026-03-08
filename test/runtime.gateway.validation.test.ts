@@ -60,7 +60,7 @@ describe("gateway turn envelope validation", () => {
     const workspaceDir = await createWorkspace()
     const { gateway } = createMinimalPiRuntime(workspaceDir)
 
-    const invalidEnvelope = {
+    const invalidSenderEnvelope = {
       protocol: "boa.turn.v1",
       chatId: "chat-1",
       sessionId: "session-1",
@@ -72,7 +72,25 @@ describe("gateway turn envelope validation", () => {
 
     await expect(
       (async () => {
-        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(invalidEnvelope))) {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(invalidSenderEnvelope))) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
+
+    const invalidRecipientEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "human", id: "operator" },
+      recipient: { kind: "daemon", id: "scheduler" },
+      message: "hello",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(JSON.stringify(invalidRecipientEnvelope))) {
           // no-op
         }
       })(),

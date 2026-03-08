@@ -144,6 +144,22 @@ Expected error: `unsupported protocol: boa.turn.v0`
 }
 ```
 
+## CI / PR Triage (Issue #16 scope)
+
+For this runtime track, CI intentionally splits runtime checks from docs-only changes:
+
+- `check` job runs format/lint/type/test when non-doc files changed
+- `docs` job runs markdown + link checks when docs changed
+- `required-ci` is the single gate expected by branch protection
+
+Quick local parity commands:
+
+```bash
+pnpm check
+pnpm check:docs
+pnpm docs:linkcheck
+```
+
 ## Verification Targets
 
 - Local single-agent startup without external infrastructure
