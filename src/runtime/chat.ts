@@ -15,6 +15,27 @@ export interface ChatTurnResult {
   final: TurnFinalEvent
 }
 
+function isTurnFinalEvent(value: unknown): value is TurnFinalEvent {
+  if (typeof value !== "object" || value === null) {
+    return false
+  }
+
+  return (
+    "kind" in value &&
+    value.kind === "turn.final" &&
+    "response" in value &&
+    typeof value.response === "string"
+  )
+}
+
+function isTurnChunkEvent(value: unknown): value is { kind: "turn.chunk"; delta: string } {
+  if (typeof value !== "object" || value === null) {
+    return false
+  }
+
+  return "kind" in value && value.kind === "turn.chunk" && "delta" in value
+}
+
 export async function runChatTurn(input: ChatTurnInput): Promise<ChatTurnResult> {
   const { gateway } = createMinimalPiRuntime(input.workspaceDir)
 
@@ -32,14 +53,14 @@ export async function runChatTurn(input: ChatTurnInput): Promise<ChatTurnResult>
   let final: TurnFinalEvent | null = null
 
   for await (const frame of gateway.handleWebSocketMessage(JSON.stringify(envelope))) {
-    const event = JSON.parse(frame) as Record<string, unknown>
-    if (event.kind === "turn.chunk") {
+    const event = JSON.parse(frame) as unknown
+    if (isTurnChunkEvent(event)) {
       chunks.push(String(event.delta ?? ""))
       continue
     }
 
-    if (event.kind === "turn.final") {
-      final = event as TurnFinalEvent
+    if (isTurnFinalEvent(event)) {
+      final = event
     }
   }
 
