@@ -13,17 +13,39 @@ interface OauthTokenFile {
   expiresAt?: unknown
 }
 
+function isExpiredAt(expiresAt: unknown): boolean {
+  const nowSeconds = Math.floor(Date.now() / 1000)
+
+  if (typeof expiresAt === "number" && Number.isFinite(expiresAt)) {
+    return expiresAt <= nowSeconds
+  }
+
+  if (typeof expiresAt === "string") {
+    const trimmed = expiresAt.trim()
+    if (!trimmed) {
+      return false
+    }
+
+    const asNumber = Number(trimmed)
+    if (Number.isFinite(asNumber) && trimmed === String(asNumber)) {
+      return asNumber <= nowSeconds
+    }
+
+    const parsedDate = Date.parse(trimmed)
+    return Number.isFinite(parsedDate) && parsedDate / 1000 <= nowSeconds
+  }
+
+  return false
+}
+
 function toValidOauthToken(parsed: OauthTokenFile): string | null {
   const token = typeof parsed.accessToken === "string" ? parsed.accessToken.trim() : ""
   if (!token) {
     return null
   }
 
-  if (typeof parsed.expiresAt === "number" && Number.isFinite(parsed.expiresAt)) {
-    const nowSeconds = Math.floor(Date.now() / 1000)
-    if (parsed.expiresAt <= nowSeconds) {
-      return null
-    }
+  if (isExpiredAt(parsed.expiresAt)) {
+    return null
   }
 
   return token
