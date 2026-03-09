@@ -1,5 +1,6 @@
 import type { CodexAuth } from "../auth/codex-auth.js"
 import type { BuiltContext } from "../context-builder.js"
+import { CodexModelClient } from "./codex-model-client.js"
 
 export interface PiTurnInput {
   agentId: string
@@ -10,7 +11,22 @@ export interface PiTurnInput {
 }
 
 export class PiRuntimeAdapter {
-  buildResponse(input: PiTurnInput): string {
+  constructor(private readonly modelClient: CodexModelClient = new CodexModelClient()) {}
+
+  async generateResponse(input: PiTurnInput): Promise<string> {
+    if (input.auth.mode === "codex-env" && input.auth.token) {
+      return this.modelClient.complete({
+        apiKey: input.auth.token,
+        systemPrompt: input.systemPrompt,
+        context: input.context,
+        message: input.message,
+      })
+    }
+
+    return this.buildFallbackResponse(input)
+  }
+
+  private buildFallbackResponse(input: PiTurnInput): string {
     const modeTag = input.auth.mode === "none" ? "offline" : "codex-auth"
     const hasSystemPrompt = input.systemPrompt.length > 0 ? "yes" : "no"
     return [

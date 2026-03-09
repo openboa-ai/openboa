@@ -1,3 +1,4 @@
+import { startChatApiServer } from "./runtime/api-server.js"
 import { runCodexOauthLoginAndSync } from "./runtime/auth/codex-oauth-login.js"
 import { runChatTurn } from "./runtime/chat.js"
 import { ensureCodexPiAgentConfig } from "./runtime/setup.js"
@@ -5,6 +6,7 @@ import { runTuiChat } from "./runtime/tui.js"
 
 export const OPENBOA_VERSION = "0.1.0"
 
+export { startChatApiServer } from "./runtime/api-server.js"
 export { runChatTurn } from "./runtime/chat.js"
 export { createMinimalPiRuntime } from "./runtime/factory.js"
 export type {
@@ -38,12 +40,25 @@ async function runCli(): Promise<void> {
     return
   }
 
+  if (args[0] === "serve") {
+    const host = process.env.OPENBOA_API_HOST ?? "0.0.0.0"
+    const port = Number(process.env.OPENBOA_API_PORT ?? "8787")
+    const server = await startChatApiServer({
+      workspaceDir: process.cwd(),
+      host,
+      port,
+    })
+    process.stdout.write(`openboa api listening on http://${server.host}:${server.port}\n`)
+    return
+  }
+
   const message = args.join(" ").trim()
   if (!message) {
     console.log('usage: pnpm dev -- "hello pi runtime"')
     console.log("setup: pnpm dev -- setup-codex-pi-agent [agentId]")
     console.log("login: pnpm dev -- codex-login")
     console.log("tui: pnpm dev -- tui [agentId]")
+    console.log("serve: pnpm dev -- serve")
     return
   }
 

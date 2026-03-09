@@ -35,6 +35,62 @@ pnpm dev -- "hello pi runtime"
 
 This executes one local turn with the minimal runtime and writes JSONL artifacts under `.openboa/`.
 
+## API Mode (Pi, API-key only)
+
+Start API server:
+
+```bash
+export CODEX_API_KEY="your-key"
+pnpm dev -- serve
+```
+
+Health check:
+
+```bash
+curl -s http://127.0.0.1:8787/health
+```
+
+Chat call:
+
+```bash
+curl -s http://127.0.0.1:8787/chat \
+  -H 'content-type: application/json' \
+  -d '{"message":"hello from pi"}'
+```
+
+Notes:
+- API key is env-only (`CODEX_API_KEY`), never committed in files.
+- `/chat` enforces request size limit and timeout with normalized error responses.
+- Session continuity is preserved through default ids (`api-chat` / `api-session`) or caller-provided ids.
+
+## Operation Modes (Pi)
+
+- One-loop (single turn):
+  - `pnpm dev -- "hello pi runtime"`
+- Forever (HTTP service):
+  - `pnpm dev -- serve`
+
+Minimal `systemd` service sketch:
+
+```ini
+[Unit]
+Description=openboa pi chat api
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/openboa
+Environment=CODEX_API_KEY=REDACTED
+Environment=OPENBOA_API_HOST=0.0.0.0
+Environment=OPENBOA_API_PORT=8787
+ExecStart=/usr/bin/env pnpm dev -- serve
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ## Agent Setup: Codex Auth + Pi Runtime
 
 Quick setup command:

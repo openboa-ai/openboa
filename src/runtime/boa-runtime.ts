@@ -73,7 +73,7 @@ export class BoaRuntime {
     const history = await this.chatStore.list(turn.chatId)
     const context = buildContext(history, systemPrompt, turn.message, bootstrap.tokenBudget)
 
-    const response = this.adapter.buildResponse({
+    const response = await this.adapter.generateResponse({
       agentId: turn.agentId,
       message: turn.message,
       systemPrompt,
