@@ -3,8 +3,22 @@ import readline from "node:readline/promises"
 
 import { runChatTurn } from "./chat.js"
 
-export async function runTuiChat(workspaceDir: string, agentId = "pi-agent"): Promise<void> {
+export interface TuiChatOptions {
+  chatId?: string
+  sessionId?: string
+  senderId?: string
+}
+
+export async function runTuiChat(
+  workspaceDir: string,
+  agentId = "pi-agent",
+  options: TuiChatOptions = {},
+): Promise<void> {
   const rl = readline.createInterface({ input, output })
+
+  const chatId = options.chatId ?? `${agentId}-chat`
+  const sessionId = options.sessionId ?? `${agentId}-session`
+  const senderId = options.senderId ?? "operator"
 
   output.write(`tui ready for agent=${agentId} (type 'exit' to quit)\n`)
   try {
@@ -20,9 +34,9 @@ export async function runTuiChat(workspaceDir: string, agentId = "pi-agent"): Pr
       const result = await runChatTurn({
         workspaceDir,
         agentId,
-        chatId: "tui-chat",
-        sessionId: "tui-session",
-        senderId: "operator",
+        chatId,
+        sessionId,
+        senderId,
         message,
       })
 

@@ -8,6 +8,43 @@ read_when:
 
 This page documents the minimal runtime path added for the single-agent Pi implementation.
 
+## CLI-first bootstrap (OpenClaw-style)
+
+Use the repo-local CLI via `pnpm openboa ...`:
+
+## Global install (next-step, CLI-first)
+
+If you want the same ergonomics as `openclaw` (install once, run anywhere):
+
+- build once:
+  - `pnpm build`
+- install from source tree:
+  - `pnpm install -g .` (or package-specific publish flow)
+- then run directly:
+  - `openboa setup`
+  - `openboa agent spawn --name <agent_id>`
+  - `openboa agent chat --name <agent_id>`
+
+Current repository state currently exposes a local CLI entry (`pnpm openboa`).
+Global install + Homebrew formula generation is planned once packaging policy is finalized.
+
+- `pnpm openboa setup`
+  - creates `.openboa` workspace scaffold (`bootstrap/runtime.json`, `system/base.prompt`, required folders)
+- `pnpm openboa agent spawn --name <agent_id>`
+  - creates agent runtime config under `.openboa/agents/<agent_id>/agent.json`
+- `pnpm openboa agent list`
+  - lists configured agents
+- `pnpm openboa agent chat --name <agent_id>`
+  - starts interactive chat with that agent
+- `pnpm openboa setup-codex-pi-agent <agent_id>`
+  - legacy alias of `agent spawn`
+- `pnpm openboa codex-login`
+  - launches oauth flow and writes `.openboa/auth/codex.oauth.json`
+
+Deprecated/compat path (still available):
+- `pnpm dev -- "hello pi runtime"` for one-shot turn with default agent
+- `pnpm dev -- tui [agentId]` for direct TUI
+
 ## What It Includes
 
 - Unified turn envelope protocol for both Agent ↔ Human and Agent ↔ Agent:
@@ -27,20 +64,42 @@ This page documents the minimal runtime path added for the single-agent Pi imple
   - `CODEX_API_KEY` env first
   - fallback `.openboa/auth/codex.oauth.json`
 
-## Run Locally
+## New quick flow (recommended)
 
 ```bash
-pnpm dev -- "hello pi runtime"
+pnpm openboa setup
+pnpm openboa agent spawn --name agent_1
+pnpm openboa agent chat --name agent_1
 ```
 
-This executes one local turn with the minimal runtime and writes JSONL artifacts under `.openboa/`.
+Example:
+
+```bash
+# first-time setup
+pnpm openboa setup
+
+# optional: use env key per shell
+export CODEX_API_KEY=...
+
+# create one isolated agent runtime
+pnpm openboa agent spawn --name agent_1
+
+# start a persistent interactive session
+pnpm openboa agent chat --name agent_1
+# type 'exit' to quit
+```
+
+Notes:
+- Agent config is created with `auth.required: true` by default.
+- If code key is unavailable, use `pnpm openboa codex-login` first.
+- No secrets are printed or committed.
 
 ## API Mode (Pi, API-key only)
 
 Start API server:
 
 ```bash
-export CODEX_API_KEY="your-key"
+export OPENAI_API_KEY="<your-openai-api-key>"
 pnpm dev -- serve
 ```
 
@@ -59,7 +118,7 @@ curl -s http://127.0.0.1:8787/chat \
 ```
 
 Notes:
-- API key is env-only (`CODEX_API_KEY`), never committed in files.
+- API key is env-only (`OPENAI_API_KEY`), never committed in files.
 - `/chat` enforces request size limit and timeout with normalized error responses.
 - Session continuity is preserved through default ids (`api-chat` / `api-session`) or caller-provided ids.
 
@@ -91,57 +150,11 @@ RestartSec=3
 WantedBy=multi-user.target
 ```
 
-## Agent Setup: Codex Auth + Pi Runtime
-
-Quick setup command:
-
-```bash
-pnpm dev -- setup-codex-pi-agent [agentId]
-```
-
-Run Codex browser login + workspace OAuth sync:
-
-```bash
-pnpm dev -- codex-login
-```
-
-Optional auth source override (avoid fixed local assumptions):
-
-```bash
-OPENBOA_CODEX_AUTH_FILE=/path/to/codex-auth.json pnpm dev -- codex-login
-```
-
-Default auth method is `oauth-browser` and default UI mode is `tui`.
-
-Run interactive TUI chat:
-
-```bash
-pnpm dev -- tui [agentId]
-```
-
-Create `.openboa/agents/pi-agent/agent.json`:
-
-```json
-{
-  "runtime": "pi",
-  "auth": {
-    "provider": "codex",
-    "required": true
-  }
-}
-```
-
-Auth resolution order:
-- `CODEX_API_KEY` env
-- fallback `.openboa/auth/codex.oauth.json` (valid/unexpired `accessToken`)
-
-When `required: true`, turns fail fast until a Codex token is configured.
-
 ## Failure Modes / Quick Triage
 
 - Auth required but missing:
-  - `run 'codex login' to open browser oauth first`
-  - then run `pnpm dev -- codex-login`
+  - `run 'openboa codex-login' for oauth`
+  - or set `CODEX_API_KEY`
 - Token lookup order to verify quickly:
   - `CODEX_API_KEY` -> `.openboa/auth/codex.oauth.json`
 - Inspect runtime artifacts:
@@ -216,17 +229,11 @@ pnpm check:docs
 pnpm docs:linkcheck
 ```
 
-## Verification Targets
-
-- Local single-agent startup without external infrastructure
-- End-to-end turn execution with persisted chat/session logs
-- Single protocol route for Agent ↔ Human and Agent ↔ Agent
-- Checkpoint chain available for restart recovery
-
 ## Validation Matrix (Canonical)
 
 | Acceptance Criteria | Evidence (file) | Verify command |
 | --- | --- | --- |
+| CLI bootstrap + agent lifecycle | `src/index.ts`, `src/runtime/setup.ts`, `docs/runtime-single-agent-pi.md` | `pnpm openboa setup && pnpm openboa agent spawn --name agent_1 && pnpm openboa agent list` |
 | Single-agent e2e turn path | `test/runtime.single-agent.test.ts` | `pnpm -s vitest run test/runtime.single-agent.test.ts` |
 | Restart recovery (checkpoint) | `test/runtime.single-agent.test.ts` | `pnpm -s vitest run test/runtime.single-agent.test.ts -t "checkpoint"` |
 | Protocol/gateway input safety | `test/runtime.gateway.validation.test.ts` | `pnpm -s vitest run test/runtime.gateway.validation.test.ts` |
