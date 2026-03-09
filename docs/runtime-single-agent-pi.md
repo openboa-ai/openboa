@@ -225,16 +225,15 @@ pnpm docs:linkcheck
 
 ## Validation Matrix (Canonical)
 
-| Acceptance Criteria | Evidence |
-| --- | --- |
-| Single-agent e2e turn path | `test/runtime.single-agent.test.ts` |
-| Restart recovery (checkpoint) | `test/runtime.single-agent.test.ts` |
-| Protocol/gateway input safety | `test/runtime.gateway.validation.test.ts` |
-| Context budget trimming boundary | `test/runtime.context-builder.test.ts` |
-| Agent setup + runtime turn success | `test/runtime.single-agent.test.ts` |
-| Baseline runtime harness health | `test/smoke.test.ts` |
-| Runtime flow + triage docs | `docs/runtime-single-agent-pi.md` |
-| Runtime docs + link integrity | `pnpm check:docs` |
+| Acceptance Criteria | Evidence (file) | Verify command |
+| --- | --- | --- |
+| Single-agent e2e turn path | `test/runtime.single-agent.test.ts` | `pnpm -s vitest run test/runtime.single-agent.test.ts` |
+| Restart recovery (checkpoint) | `test/runtime.single-agent.test.ts` | `pnpm -s vitest run test/runtime.single-agent.test.ts -t "checkpoint"` |
+| Protocol/gateway input safety | `test/runtime.gateway.validation.test.ts` | `pnpm -s vitest run test/runtime.gateway.validation.test.ts` |
+| Context budget trimming boundary | `test/runtime.context-builder.test.ts` | `pnpm -s vitest run test/runtime.context-builder.test.ts` |
+| Agent setup + runtime turn success | `test/runtime.single-agent.test.ts` | `pnpm -s vitest run test/runtime.single-agent.test.ts` |
+| Baseline runtime harness health | `test/smoke.test.ts` | `pnpm -s vitest run test/smoke.test.ts` |
+| Runtime flow + triage docs | `docs/runtime-single-agent-pi.md` | `pnpm check:docs && pnpm docs:linkcheck` |
 
 Run commands:
 

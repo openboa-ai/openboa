@@ -99,6 +99,46 @@ describe("gateway turn envelope validation", () => {
         }
       })(),
     ).rejects.toThrow("invalid turn envelope")
+
+    const whitespaceChatEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "   ",
+      sessionId: "session-1",
+      agentId: "pi-agent",
+      sender: { kind: "human", id: "operator" },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: "hello",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(
+          JSON.stringify(whitespaceChatEnvelope),
+        )) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
+
+    const whitespaceAgentEnvelope = {
+      protocol: "boa.turn.v1",
+      chatId: "chat-1",
+      sessionId: "session-1",
+      agentId: "   ",
+      sender: { kind: "human", id: "operator" },
+      recipient: { kind: "agent", id: "pi-agent" },
+      message: "hello",
+    }
+
+    await expect(
+      (async () => {
+        for await (const _ of gateway.handleWebSocketMessage(
+          JSON.stringify(whitespaceAgentEnvelope),
+        )) {
+          // no-op
+        }
+      })(),
+    ).rejects.toThrow("invalid turn envelope")
   })
 
   it("returns invalid turn envelope when participant kinds are outside protocol", async () => {
