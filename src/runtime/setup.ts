@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, writeFile } from "node:fs/promises"
+import { mkdir, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 
 const DEFAULT_AGENT_CONFIG = {
@@ -31,19 +31,31 @@ export interface OpenboaSetupResult {
   basePromptPath: string
 }
 
+function isEexist(err: unknown): boolean {
+  return err instanceof Error && "code" in err && (err as { code: string }).code === "EEXIST"
+}
+
 export async function ensureCodexPiAgentConfig(
   workspaceDir: string,
   agentId = "pi-agent",
 ): Promise<SetupResult> {
   const configPath = join(workspaceDir, ".openboa", "agents", agentId, "agent.json")
+  const agentDir = join(workspaceDir, ".openboa", "agents", agentId)
+
+  await mkdir(agentDir, { recursive: true })
 
   try {
-    await readFile(configPath, "utf8")
-    return { created: false, configPath }
-  } catch {
-    await mkdir(join(workspaceDir, ".openboa", "agents", agentId), { recursive: true })
-    await writeFile(configPath, `${JSON.stringify(DEFAULT_AGENT_CONFIG, null, 2)}\n`, "utf8")
+    await writeFile(configPath, `${JSON.stringify(DEFAULT_AGENT_CONFIG, null, 2)}\n`, {
+      encoding: "utf8",
+      flag: "wx",
+    })
     return { created: true, configPath }
+  } catch (error) {
+    if (isEexist(error)) {
+      return { created: false, configPath }
+    }
+
+    throw error
   }
 }
 
@@ -69,17 +81,27 @@ export async function ensureOpenboaSetup(workspaceDir: string): Promise<OpenboaS
 
   // Keep bootstrap/system files idempotent and optional overwrite-free for safety.
   try {
-    await access(bootstrapConfigPath)
-  } catch {
-    await writeFile(bootstrapConfigPath, `${JSON.stringify(DEFAULT_BOOTSTRAP, null, 2)}\n`, "utf8")
+    await writeFile(bootstrapConfigPath, `${JSON.stringify(DEFAULT_BOOTSTRAP, null, 2)}\n`, {
+      encoding: "utf8",
+      flag: "wx",
+    })
     created = true
+  } catch (error) {
+    if (!isEexist(error)) {
+      throw error
+    }
   }
 
   try {
-    await access(basePromptPath)
-  } catch {
-    await writeFile(basePromptPath, `${DEFAULT_BASE_PROMPT}\n`, "utf8")
+    await writeFile(basePromptPath, `${DEFAULT_BASE_PROMPT}\n`, {
+      encoding: "utf8",
+      flag: "wx",
+    })
     created = true
+  } catch (error) {
+    if (!isEexist(error)) {
+      throw error
+    }
   }
 
   return {
