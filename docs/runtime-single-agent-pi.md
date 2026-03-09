@@ -160,27 +160,6 @@ pnpm check:docs
 pnpm docs:linkcheck
 ```
 
-## PR Reviewer Quick-Verify
-
-- `pnpm check`
-  - expected: format/lint/type/test all pass
-- `pnpm check:docs`
-  - expected: markdown/docs checks pass
-- `pnpm -s vitest run test/runtime.single-agent.test.ts test/runtime.gateway.validation.test.ts`
-  - expected: runtime core + gateway contract tests pass
-
-If fail, check this first: run in repo root and ensure Node/pnpm deps are installed (`pnpm install --frozen-lockfile`).
-
-## AC to Test Matrix (Issue #16)
-
-| Acceptance Criteria | Evidence |
-| --- | --- |
-| Single-agent e2e turn path | `test/runtime.single-agent.test.ts` |
-| Restart recovery (checkpoint) | `test/runtime.single-agent.test.ts` |
-| Protocol/gateway input safety | `test/runtime.gateway.validation.test.ts` |
-| Context budget trimming boundary | `test/runtime.context-builder.test.ts` |
-| Runtime flow + triage docs | `docs/runtime-single-agent-pi.md` |
-
 ## Verification Targets
 
 - Local single-agent startup without external infrastructure
@@ -188,12 +167,17 @@ If fail, check this first: run in repo root and ensure Node/pnpm deps are instal
 - Single protocol route for Agent ↔ Human and Agent ↔ Agent
 - Checkpoint chain available for restart recovery
 
-## Validation Matrix
+## Validation Matrix (Canonical)
 
 | Acceptance Criteria | Evidence |
 | --- | --- |
+| Single-agent e2e turn path | `test/runtime.single-agent.test.ts` |
+| Restart recovery (checkpoint) | `test/runtime.single-agent.test.ts` |
+| Protocol/gateway input safety | `test/runtime.gateway.validation.test.ts` |
+| Context budget trimming boundary | `test/runtime.context-builder.test.ts` |
 | Agent setup + runtime turn success | `test/runtime.single-agent.test.ts` |
 | Baseline runtime harness health | `test/smoke.test.ts` |
+| Runtime flow + triage docs | `docs/runtime-single-agent-pi.md` |
 | Runtime docs + link integrity | `pnpm check:docs` |
 
 Run commands:
@@ -201,5 +185,7 @@ Run commands:
 ```bash
 pnpm check
 pnpm check:docs
-pnpm -s vitest run test/runtime.single-agent.test.ts test/smoke.test.ts
+pnpm -s vitest run test/runtime.single-agent.test.ts test/runtime.gateway.validation.test.ts test/runtime.context-builder.test.ts test/smoke.test.ts
 ```
+
+If fail, check this first: run commands from repo root (`openboa/`) and ensure Node/pnpm deps are installed (`pnpm install --frozen-lockfile`).
