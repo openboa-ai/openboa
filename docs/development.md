@@ -79,9 +79,9 @@ Merge-gate v1 uses `strict-required core only`.
 
 - Required statuses: `ci / required-ci`, `PR Convention / convention`
 - Advisory statuses: `codeql / analyze (javascript-typescript)` and the individual `ci` sub-jobs
-- Canonical policy: see [Contributing](../CONTRIBUTING.md#merge-gate-check-matrix-v1)
+- Canonical policy: see [Contributing](/contributing#merge-gate-check-matrix-v1)
 
-If a required check appears to be a false failure, use the documented single-PR admin bypass path in [Contributing](../CONTRIBUTING.md#temporary-bypass-path-false-failures-only). Bypasses are exceptional, auditable, and time-bounded.
+If a required check appears to be a false failure, use the documented single-PR admin bypass path in [Contributing](/contributing#temporary-bypass-path-false-failures-only). Bypasses are exceptional, auditable, and time-bounded.
 
 ## Merge Gate (Main PRs)
 
