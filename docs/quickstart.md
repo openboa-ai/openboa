@@ -40,8 +40,22 @@ The project is still early-stage. Treat this as a contributor quickstart, not a 
   </Step>
 </Steps>
 
+## Minimal Runtime Smoke Run
+
+Run one local turn through the minimal single-agent Pi runtime:
+
+```bash
+pnpm dev -- "hello pi runtime"
+```
+
+Then inspect generated local artifacts:
+
+- `.openboa/chat/chats/local-chat.jsonl`
+- `.openboa/agents/pi-agent/sessions/local-session.jsonl`
+
 ## Next Reading
 
 - [Development](/development)
+- [Single-Agent Runtime (Pi)](/runtime-single-agent-pi)
 - [Docs Troubleshooting](/help/troubleshooting-docs)
 - [FAQ](/help/faq)

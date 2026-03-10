@@ -8,6 +8,7 @@ Mintlify navigation is configured in `docs/docs.json`, and theme styling is defi
 - [Introduction](./introduction.md) - High-level project orientation and scope.
 - [Quickstart](./quickstart.md) - Minimal local setup and docs validation flow.
 - [Development](./development.md) - Core commands and recommended contribution workflow.
+- [Single-Agent Runtime (Pi)](./runtime-single-agent-pi.md) - Minimal Pi-backed runtime path and storage boundaries.
 - [Docs Portal](./index.md) - Entry point with key links and current docs status.
 - [Business as Agent](./concepts/business-as-agent.md) - BOA definition and core building blocks.
 - [Network hub](./network.md) - Governance-aware network documentation entrypoint.
