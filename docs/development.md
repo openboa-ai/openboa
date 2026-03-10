@@ -54,13 +54,34 @@ The gate measures `task_enqueued_at -> first_worker_ack_at` in UTC JSONL records
 
 ## Git Hooks (pre-commit)
 
-This repository uses a git pre-commit hook via `.githooks/pre-commit`.
+This repository uses a mandatory v1 pre-commit profile via `.pre-commit-config.yaml`.
 
-- Hook path: `core.hooksPath=.githooks`
-- Always runs: `pnpm check:docs`
-- Runs for code-related staged changes: `pnpm check`
+- Hard-block baseline: repository hygiene hooks + `pnpm precommit:check`
+- `pnpm precommit:check` runs:
+  - `pnpm format:check`
+  - `pnpm lint`
+  - `pnpm typecheck`
+- Advisory/manual checks:
+  - `pnpm test`
+  - `detect-secrets`
+  - `actionlint`
+  - `zizmor`
 
-If `pnpm` is missing, commits are blocked with install guidance.
+Verify the mandatory baseline with:
+
+```bash
+pnpm precommit:check
+```
+
+## Merge Gate (Main PRs)
+
+Merge-gate v1 uses `strict-required core only`.
+
+- Required statuses: `ci / required-ci`, `PR Convention / convention`
+- Advisory statuses: `codeql / analyze (javascript-typescript)` and the individual `ci` sub-jobs
+- Canonical policy: see [Contributing](../CONTRIBUTING.md#merge-gate-check-matrix-v1)
+
+If a required check appears to be a false failure, use the documented single-PR admin bypass path in [Contributing](../CONTRIBUTING.md#temporary-bypass-path-false-failures-only). Bypasses are exceptional, auditable, and time-bounded.
 
 ## Merge Gate (Main PRs)
 
@@ -82,7 +103,7 @@ If a required check appears to be a false failure, use the documented single-PR 
     Keep scope small and prefer incremental changes with clear commit boundaries.
   </Step>
   <Step title="Validate locally">
-    Run `pnpm check` for code changes and docs checks for documentation changes.
+    Run `pnpm precommit:check` before commit, then `pnpm check` when you need the full code gate.
   </Step>
   <Step title="Validate Mintlify structure">
     ```bash

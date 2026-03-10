@@ -24,6 +24,8 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "format:check": "biome format .",
+    "precommit:check": "pnpm format:check && pnpm lint && pnpm typecheck",
+    "precommit:advisory": "pnpm test",
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "pnpm check:policy && pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",

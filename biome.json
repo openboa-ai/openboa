@@ -2,7 +2,8 @@
   "$schema": "https://biomejs.dev/schemas/2.4.2/schema.json",
   "files": {
     "ignoreUnknown": true,
-    "includes": [
+    "ignore": ["dist/**", "coverage/**", "node_modules/**"],
+    "include": [
       "src/**",
       "test/**",
       "scripts/**",
