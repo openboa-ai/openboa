@@ -23,6 +23,7 @@ describe("queue latency gate", () => {
 
     expect(stdout).toContain("status=PASS")
     expect(stdout).toContain("samples=20")
+    expect(stdout).toContain("samples=20")
     expect(stdout).toContain("full_run_p95_ms=2600")
     expect(stdout).toContain("rolling_window_p95_ms=2950")
   })
@@ -61,6 +62,25 @@ describe("queue latency gate", () => {
     ).rejects.toMatchObject({
       code: 1,
       stdout: expect.stringContaining("status=FAIL"),
+    })
+  })
+
+  it("fails when the evidence fixture is missing a required field", async () => {
+    await expect(
+      execFileAsync("node", [
+        scriptPath,
+        "--input",
+        join(process.cwd(), "test", "fixtures", "queue-latency-invalid.jsonl"),
+        "--window-size",
+        "1",
+        "--threshold-ms",
+        "3000",
+      ]),
+    ).rejects.toMatchObject({
+      code: 1,
+      stderr: expect.stringContaining(
+        "queue-latency-check-error=line 1 missing required field: first_worker_ack_at",
+      ),
     })
   })
 })

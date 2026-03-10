@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
-import { readFile } from "node:fs/promises"
 import process from "node:process"
+
+import {
+  loadLatencyEvidenceRecords,
+  loadLatencyEvidenceSchema,
+  validateLatencyEvidenceRecord,
+} from "./validate-latency-evidence.mjs"
 
 function parseArgs(argv) {
   const args = {
@@ -93,14 +98,13 @@ function computeMetrics(latencies, windowSize) {
 }
 
 async function loadLatencies(filePath) {
-  const raw = await readFile(filePath, "utf8")
-  const lines = raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
+  const schema = await loadLatencyEvidenceSchema(
+    new URL("../tools/latency_evidence_schema.json", import.meta.url),
+  )
+  const records = await loadLatencyEvidenceRecords(filePath)
 
-  return lines.map((line, index) => {
-    const record = JSON.parse(line)
+  return records.map((record, index) => {
+    validateLatencyEvidenceRecord(record, schema, index + 1)
     const enqueuedAt = parseUtcTimestamp(
       record.task_enqueued_at,
       `line ${index + 1} task_enqueued_at`,

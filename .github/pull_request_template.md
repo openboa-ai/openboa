@@ -19,6 +19,8 @@ Examples:
 ## Validation
 - Commands run:
 - Key outputs/results:
+- Latency evidence artifact path (if queue-latency changed):
+- Latency evidence validator command (if applicable): `node scripts/validate-latency-evidence.mjs <artifact-path>`
 
 ## Related
 - Issue/Thread/PR:
