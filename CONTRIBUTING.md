@@ -10,8 +10,10 @@ Thanks for contributing to openboa.
 ## Setup
 ```bash
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 ```
+
+If you switch branches or pull changes that update tooling, rerun `pnpm install --frozen-lockfile` before trusting local `pnpm precommit:check` results. This keeps Biome and other repo-pinned CLIs aligned with CI.
 
 ## Pre-commit Setup
 ```bash
