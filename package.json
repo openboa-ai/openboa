@@ -16,6 +16,7 @@
     "dev": "tsx src/index.ts",
     "openboa": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
+    "check:policy": "node scripts/validate-ci-policy.mjs",
     "build:cli": "pnpm build",
     "prepublishOnly": "pnpm build",
     "typecheck": "tsc --noEmit",
@@ -24,7 +25,7 @@
     "format:check": "biome format .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "check": "pnpm check:policy && pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
     "check:docs": "markdownlint-cli2 \"README.md\" \"docs/**/*.md\"",
     "docs:linkcheck": "node scripts/check-doc-links.mjs",
     "docs:local": "cd docs && pnpm dlx mintlify dev --no-open"

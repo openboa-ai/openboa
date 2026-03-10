@@ -153,9 +153,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Node
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "22"
+
+      - name: Validate CI policy baseline
+        run: node scripts/validate-ci-policy.mjs
+
   required-ci:
     name: required-ci
-    needs: [check, docs, secrets, gitleaks]
+    needs: [check, docs, secrets, gitleaks, policy]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -167,11 +181,13 @@ jobs:
           docs_result="${{ needs.docs.result }}"
           secrets_result="${{ needs.secrets.result }}"
           gitleaks_result="${{ needs.gitleaks.result }}"
+          policy_result="${{ needs.policy.result }}"
 
           echo "check:    ${check_result}"
           echo "docs:     ${docs_result}"
           echo "secrets:  ${secrets_result}"
           echo "gitleaks: ${gitleaks_result}"
+          echo "policy:   ${policy_result}"
 
           failed=0
           if [[ "${check_result}" == "failure" || "${check_result}" == "cancelled" ]]; then
@@ -184,6 +200,9 @@ jobs:
             failed=1
           fi
           if [[ "${gitleaks_result}" == "failure" || "${gitleaks_result}" == "cancelled" ]]; then
+            failed=1
+          fi
+          if [[ "${policy_result}" == "failure" || "${policy_result}" == "cancelled" ]]; then
             failed=1
           fi
 
