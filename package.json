@@ -17,6 +17,7 @@
     "openboa": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "check:policy": "node scripts/validate-ci-policy.mjs",
+    "check:queue-latency": "node scripts/check-queue-latency.mjs --input test/fixtures/queue-latency-regression.jsonl --window-size 10 --threshold-ms 3000",
     "build:cli": "pnpm build",
     "prepublishOnly": "pnpm build",
     "typecheck": "tsc --noEmit",
