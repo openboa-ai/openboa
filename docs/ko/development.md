@@ -35,3 +35,13 @@ pnpm docs:linkcheck
 - 실행 가능한 결과 우선
 - 트레이드오프를 명시
 - 결정 이유를 문서화
+
+## 머지 게이트 (main PR)
+
+v1 머지 게이트는 `strict-required core only` 를 사용합니다.
+
+- 필수 상태: `ci / required-ci`, `PR Convention / convention`
+- 참고 상태: `codeql / analyze (javascript-typescript)` 와 `ci` 내부 개별 잡
+- 기준 문서: [기여 가이드](/ko/contributing#머지-게이트-체크-매트릭스-v1)
+
+필수 체크가 거짓 실패로 보이면 [기여 가이드](/ko/contributing#임시-우회-경로-오탐거짓-실패-전용) 의 단건 관리자 우회 절차를 사용합니다. 우회는 예외적이어야 하며, 기록 가능하고, 시간 제한이 있어야 합니다.
