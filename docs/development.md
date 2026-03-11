@@ -32,7 +32,25 @@ Use this page as the baseline development contract for local work.
     pnpm docs:linkcheck
     ```
   </Card>
+  <Card title="Queue latency gate">
+    ```bash
+    pnpm check:queue-latency
+    ```
+  </Card>
 </CardGroup>
+
+## MVP Queue-Latency Fixture
+
+Issue `#36` adds a deterministic evidence path for queue-latency readiness:
+
+- fixture spec: `config/queue-latency-fixture.json`
+- regression log: `test/fixtures/queue-latency-regression.jsonl`
+- calculator: `scripts/check-queue-latency.mjs`
+
+The gate measures `task_enqueued_at -> first_worker_ack_at` in UTC JSONL records and exits non-zero when either:
+
+- rolling-window p95 exceeds `3000ms`
+- full-run p95 exceeds `3000ms`
 
 ## Git Hooks (pre-commit)
 
