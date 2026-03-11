@@ -61,6 +61,11 @@ Examples:
 - `docs: refine fundamentals chat contract`
 - `feat: add runtime checkpoint recovery`
 
+Dependabot compatibility:
+
+- `dependabot[bot]` PRs may use generated dependency-update titles such as `Bump vite from 7.1.10 to 7.1.11`.
+- Dependabot PR bodies are not required to include the human PR template sections.
+
 ### Body sections (required)
 
 - `## Summary`
