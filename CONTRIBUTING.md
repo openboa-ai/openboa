@@ -24,10 +24,18 @@ pre-commit run --all-files
 
 ## Standard Checks
 ```bash
+pnpm check:policy
 pnpm check
 pnpm check:docs
 pnpm docs:linkcheck
 ```
+
+## CI Ownership And Exception SLA
+
+- `.github/CODEOWNERS` must use real GitHub owners. Placeholder values are blocked in CI.
+- Temporary CI/security exceptions live in `.github/ci-exceptions.json`.
+- Each exception must include `id`, `owner`, `openedOn`, `expiresOn`, `reason`, and `trackingIssue`.
+- Default SLA is 14 days. CI fails if an exception is expired or exceeds that SLA.
 
 ## Commit Convention
 
@@ -52,6 +60,11 @@ Examples:
 
 - `docs: refine fundamentals chat contract`
 - `feat: add runtime checkpoint recovery`
+
+Dependabot compatibility:
+
+- `dependabot[bot]` PRs may use generated dependency-update titles such as `Bump vite from 7.1.10 to 7.1.11`.
+- Dependabot PR bodies are not required to include the human PR template sections.
 
 ### Body sections (required)
 
@@ -78,4 +91,3 @@ Repository admins should enforce:
   - `PR Convention / convention`
 - at least 1 approving review
 - dismiss stale approvals on new commits
-
