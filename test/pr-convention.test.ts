@@ -64,8 +64,6 @@ describe("pr convention validator", () => {
         title: "docs: update vite",
         body: "",
       }),
-    ).toEqual([
-      "Dependabot PR title must match 'build(deps): ...' or 'Bump ... from ... to ...'",
-    ])
+    ).toEqual(["Dependabot PR title must match 'build(deps): ...' or 'Bump ... from ... to ...'"])
   })
 })
