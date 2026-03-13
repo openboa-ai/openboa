@@ -83,7 +83,7 @@ Merge-gate v1 uses `strict-required core only`.
 
 If a required check appears to be a false failure, use the documented single-PR admin bypass path in [Contributing](/contributing#temporary-bypass-path-false-failures-only). Bypasses are exceptional, auditable, and time-bounded.
 
-## Merge Gate (Main PRs)
+## Merge Gate (Reference)
 
 Merge-gate v1 uses `strict-required core only`.
 
