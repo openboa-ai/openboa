@@ -23,3 +23,11 @@ If a secret is exposed:
 3. Replace history if required by provider policy.
 4. Open a remediation PR and describe impact.
 
+## CI Exceptions
+
+Security or CI exceptions must be temporary and accountable.
+
+- Record them in `.github/ci-exceptions.json`.
+- Every exception needs a named GitHub owner and a tracking issue or PR.
+- Default SLA is 14 days from `openedOn` to `expiresOn`.
+- Expired exceptions are expected to fail CI until renewed or removed.

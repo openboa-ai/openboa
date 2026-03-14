@@ -1,0 +1,29 @@
+{
+  "fixtureId": "boa-36-demo-queue-latency-v1",
+  "description": "Deterministic MVP queue-latency workload for task_enqueued_at -> first_worker_ack_at measurement.",
+  "totalRequests": 20,
+  "durationSeconds": 120,
+  "rollingWindowSize": 10,
+  "thresholdMs": 3000,
+  "seedPolicy": {
+    "mode": "fixed",
+    "seed": "boa-36-demo-queue-latency-v1"
+  },
+  "requestMix": [
+    {
+      "name": "steady",
+      "share": 0.9,
+      "targetAckMsRange": [800, 2600]
+    },
+    {
+      "name": "tail",
+      "share": 0.1,
+      "targetAckMsRange": [2600, 2950]
+    }
+  ],
+  "logContract": {
+    "format": "jsonl",
+    "requiredFields": ["task_id", "task_enqueued_at", "first_worker_ack_at"],
+    "timestampFormat": "UTC ISO-8601 with trailing Z"
+  }
+}
