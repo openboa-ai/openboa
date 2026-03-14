@@ -1,22 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.2/schema.json",
   "files": {
-    "ignoreUnknown": true,
-    "includes": [
-      "src/**",
-      "test/**",
-      "scripts/**",
-      "docs/**/*.md",
-      "*.ts",
-      "*.js",
-      "*.md",
-      "*.json",
-      "package.json",
-      "biome.json",
-      "tsconfig.json",
-      "pnpm-lock.yaml",
-      ".pre-commit-config.yaml"
-    ]
+    "ignoreUnknown": true
   },
   "formatter": {
     "enabled": true,
