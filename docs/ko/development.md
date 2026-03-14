@@ -9,6 +9,7 @@ read_when:
 
 ```bash
 pnpm dev
+pnpm precommit:check
 pnpm test
 pnpm check
 pnpm check:docs
@@ -19,16 +20,30 @@ pnpm docs:linkcheck
 
 1. 의도 정렬: Doctrine/Contracts 먼저 확인
 2. 작은 단위로 구현
-3. 로컬 검증 (`pnpm check`, docs checks)
+3. 로컬 검증 (`pnpm precommit:check`, 필요 시 `pnpm check`, docs checks)
 4. 커밋/PR
 
 ## Git Hook
 
-- 경로: `.githooks/pre-commit`
-- 동작:
-  - `gitleaks` staged scan
-  - `pnpm check:docs`
-  - 코드 변경 시 `pnpm check`
+- 기준 파일: `.pre-commit-config.yaml`
+- 필수 차단:
+  - 저장소 hygiene 훅
+  - `pnpm precommit:check`
+- `pnpm precommit:check` 구성:
+  - `pnpm format:check`
+  - `pnpm lint`
+  - `pnpm typecheck`
+- 권고/수동:
+  - `pnpm test`
+  - `detect-secrets`
+  - `actionlint`
+  - `zizmor`
+
+검증 명령:
+
+```bash
+pnpm precommit:check
+```
 
 ## 품질 원칙
 

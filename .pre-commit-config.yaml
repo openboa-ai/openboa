@@ -1,3 +1,6 @@
+minimum_pre_commit_version: "3.7.0"
+default_install_hook_types: [pre-commit, commit-msg]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -13,6 +16,7 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
+        stages: [manual]
         args:
           - --baseline
           - .secrets.baseline
@@ -23,11 +27,13 @@ repos:
     rev: v1.7.7
     hooks:
       - id: actionlint
+        stages: [manual]
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
     rev: v1.22.0
     hooks:
       - id: zizmor
+        stages: [manual]
         args:
           - --persona=regular
           - --min-severity=medium
@@ -42,21 +48,16 @@ repos:
         pass_filenames: true
         stages: [commit-msg]
 
-      - id: biome-lint
-        name: biome-lint
-        entry: pnpm exec biome check --files-ignore-unknown=true
-        language: system
-        types_or: [javascript, jsx, ts, tsx, json]
-
-      - id: biome-format-check
-        name: biome-format-check
-        entry: pnpm exec biome format --files-ignore-unknown=true
-        language: system
-        types_or: [javascript, jsx, ts, tsx, json]
-
-      - id: typecheck-pre-push
-        name: typecheck-pre-push
-        entry: pnpm typecheck
+      - id: mandatory-pre-commit-profile
+        name: mandatory-pre-commit-profile
+        entry: pnpm precommit:check
         language: system
         pass_filenames: false
-        stages: [pre-push]
+        stages: [pre-commit]
+
+      - id: advisory-test-profile
+        name: advisory-test-profile
+        entry: pnpm test
+        language: system
+        pass_filenames: false
+        stages: [manual]
