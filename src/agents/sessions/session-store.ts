@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events"
 import type { Dirent } from "node:fs"
 import type { FileHandle } from "node:fs/promises"
-import { mkdir, open, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises"
+import { link, mkdir, open, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises"
 import { basename, dirname, join } from "node:path"
 import { isUuidV7, makeUuidV7 } from "../../foundation/ids.js"
 import { appendJsonl, readJsonl } from "../../foundation/storage/jsonl.js"
@@ -700,51 +700,51 @@ export class SessionStore {
       treatInvalidAsStale: boolean
     },
   ): Promise<SessionWakeLeaseRecord | null> {
+    const record = buildWakeLeaseRecord(scopeId, owner)
+    const candidatePath = `${lockPath}.${owner}.candidate`
+    const retiredPath = `${lockPath}.${owner}.stale`
     let handle: FileHandle | null = null
     try {
-      handle = await open(lockPath, "wx", 0o600)
-      const record = buildWakeLeaseRecord(scopeId, owner)
+      handle = await open(candidatePath, "wx", 0o600)
       await writeWakeLeaseRecordToHandle(handle, record)
-      return record
-    } catch (error) {
-      if (!hasErrorCode(error, "EEXIST")) {
+    } finally {
+      await handle?.close().catch(() => undefined)
+    }
+
+    const linkCandidate = async (): Promise<boolean> => {
+      try {
+        await link(candidatePath, lockPath)
+        return true
+      } catch (error) {
+        if (hasErrorCode(error, "EEXIST") || hasErrorCode(error, "ENOENT")) {
+          return false
+        }
         throw error
       }
-    } finally {
-      await handle?.close().catch(() => undefined)
-    }
-
-    const current = await this.readWakeLease(lockPath)
-    if (!isWakeLeaseStale(current, staleAfterMs, options.treatInvalidAsStale)) {
-      return null
-    }
-
-    const retiredPath = `${lockPath}.${owner}.stale`
-    try {
-      await rename(lockPath, retiredPath)
-    } catch (error) {
-      if (hasErrorCode(error, "ENOENT")) {
-        return null
-      }
-      if (hasErrorCode(error, "EEXIST")) {
-        await rm(retiredPath, { force: true }).catch(() => undefined)
-        return null
-      }
-      throw error
     }
 
     try {
-      handle = await open(lockPath, "wx", 0o600)
-      const record = buildWakeLeaseRecord(scopeId, owner)
-      await writeWakeLeaseRecordToHandle(handle, record)
-      return record
-    } catch (error) {
-      if (hasErrorCode(error, "EEXIST") || hasErrorCode(error, "ENOENT")) {
+      if (await linkCandidate()) {
+        return record
+      }
+
+      const current = await this.readWakeLease(lockPath)
+      if (!isWakeLeaseStale(current, staleAfterMs, options.treatInvalidAsStale)) {
         return null
       }
-      throw error
+
+      try {
+        await rename(lockPath, retiredPath)
+      } catch (error) {
+        if (hasErrorCode(error, "ENOENT") || hasErrorCode(error, "EEXIST")) {
+          return null
+        }
+        throw error
+      }
+
+      return (await linkCandidate()) ? record : null
     } finally {
-      await handle?.close().catch(() => undefined)
+      await rm(candidatePath, { force: true }).catch(() => undefined)
       await rm(retiredPath, { force: true }).catch(() => undefined)
     }
   }

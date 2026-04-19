@@ -93,10 +93,6 @@ function normalizePositiveInteger(value: unknown): number | undefined {
   return normalized > 0 ? normalized : undefined
 }
 
-function hasErrorCode(error: unknown, code: string): boolean {
-  return error instanceof Error && "code" in error && error.code === code
-}
-
 async function openWritableFile(actualPath: string): Promise<Awaited<ReturnType<typeof open>>> {
   return open(actualPath, "a+", 0o600)
 }
@@ -1053,26 +1049,21 @@ export class LocalSandbox implements Sandbox {
     const replaceAll = record.replaceAll === true
 
     const outcome = await this.withWriteLease(resolution, async () => {
-      const handle = await open(resolution.actualPath, "r+")
-      try {
-        const current = await handle.readFile("utf8")
-        const occurrences = current.split(oldText).length - 1
-        if (occurrences === 0) {
-          throw new Error(
-            `replace_text could not find the requested text in ${resolution.virtualPath}`,
-          )
-        }
-        const nextContent = replaceAll
-          ? current.split(oldText).join(newText)
-          : current.replace(oldText, newText)
-        await overwriteUtf8Handle(handle, nextContent)
-        return {
-          occurrences,
-          replacements: replaceAll ? occurrences : 1,
-          charCount: nextContent.length,
-        }
-      } finally {
-        await handle.close()
+      const current = await readFile(resolution.actualPath, "utf8")
+      const occurrences = current.split(oldText).length - 1
+      if (occurrences === 0) {
+        throw new Error(
+          `replace_text could not find the requested text in ${resolution.virtualPath}`,
+        )
+      }
+      const nextContent = replaceAll
+        ? current.split(oldText).join(newText)
+        : current.replace(oldText, newText)
+      await writeUtf8FileWithSecureCreate(resolution.actualPath, nextContent)
+      return {
+        occurrences,
+        replacements: replaceAll ? occurrences : 1,
+        charCount: nextContent.length,
       }
     })
 
