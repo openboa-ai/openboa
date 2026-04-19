@@ -1,0 +1,24 @@
+# RUN-20260408-1346-chat-live-hydration-app-owned-state
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260408-1342-chat-live-hydration-baseline`
+- `Owner skill`: `auto-coding`
+- `Baseline`: The chat shell could look credible, but every active transcript and thread read still came from fixed demo exports, so changing the selected conversation was not part of the surface architecture.
+- `Hypothesis`: If `App` owns one persisted sidebar selection state and a shared runtime builder derives the active chat shell plus transcript view from that selection, then the shell will behave like a live app without needing full ledger hydration in the same PR.
+- `Single bounded change`:
+  - add `src/shell/web/chat-runtime.ts` to derive active chat shell state from one selected sidebar item
+  - persist the selected sidebar item in `App`
+  - pass chat state through `ChatWorkspace`, `ChatSidebar`, `TranscriptPane`, and `ThreadPane`
+  - collapse the thread pane when the selected transcript view has no active thread
+  - add runtime tests for restricted channels and inbox-open semantics
+- `Measurement`:
+  - `pnpm test -- test/company-chat-runtime.test.ts test/company-shell-web.test.ts test/company-app.test.ts test/company-shell-desktop.test.ts test/company-shell-vite-config.test.ts`
+  - `pnpm build:web`
+- `Evidence`:
+  - runtime tests passed with `12` files and `69` tests green
+  - production build succeeded after the new runtime module and prop wiring were added
+  - the chat surface now derives `ops`, `dm-alpha`, and `dm-sam` views from the selected sidebar item instead of one hardcoded transcript
+- `Quality axis targeted`: runtime ownership, interaction continuity, and frontier resumability
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-qa`

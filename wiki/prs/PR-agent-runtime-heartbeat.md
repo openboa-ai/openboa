@@ -1,0 +1,60 @@
+# PR-agent-runtime-heartbeat
+
+- `Title`: Agent runtime heartbeat and self-direction
+- `Branch`: `codex/agent-runtime-heartbeat`
+- `Goal`: Strengthen the domain-agnostic Agent core so one agent can wake, inspect prior runtime state, run one bounded loop, decide whether to sleep or continue, and persist its checkpoint without relying on Chat semantics.
+- `Metric`: An agent can accept durable activations, execute one bounded runtime tick through an owner-aware scheduler-backed ingress, persist runtime continuity files plus heartbeat/session/scheduler records, request both immediate follow-ups and explicit future queued activations through the runtime contract, capture reusable learnings under `learn/`, and boot with a durable workspace markdown substrate aligned with the OpenClaw reference shape.
+- `Quality target`: Agent runtime should feel like a self-directed execution substrate rather than a one-turn chat helper. It must keep domain knowledge out of the core while making wake reason, checkpoint, follow-up, and runtime limits explicit and testable.
+- `Owned boundary`:
+  - `src/agents/agent-config.ts`
+  - `src/agents/runtime/*`
+  - `src/agents/setup.ts`
+  - `src/agents/runners/*`
+  - `src/agents/providers/codex-model-client.ts`
+  - `src/shared/llm-context.ts`
+  - `src/chat/policy/rooms/context-builder.ts`
+  - `src/index.ts`
+  - `test/agent-runtime.test.ts`
+  - `test/index.test.ts`
+  - `test/setup.test.ts`
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-agent-runtime-heartbeat.md`
+  - `wiki/runs/RUN-*.md`
+- `Acceptance criteria`:
+  - Agent config includes explicit heartbeat defaults and limits.
+  - Spawn/setup creates the filesystem surface needed for runtime heartbeat persistence.
+  - A CLI command can trigger one heartbeat tick for an agent.
+  - A CLI command can enqueue a durable activation and a scheduler command can execute it.
+  - A CLI daemon command can run a longer-lived owner-aware agent loop and stop cleanly when idle.
+  - The heartbeat loop persists a durable runtime record plus a matching session checkpoint.
+  - The runtime persists checkpoint, session-state, and working-buffer continuity files under `.openboa/agents/<id>/runtime/`.
+  - The runtime can enforce a maximum consecutive follow-up limit.
+  - The core agent runtime no longer depends on a chat-owned context type.
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: No blocking agent-layer defect is currently visible inside the MVP boundary. The remaining work now sits above this frontier: richer capability-aware context hydration for Chat/Work and any future deployment-grade background service story beyond the local daemon surface.
+- `Latest winning run`: `RUN-20260408-2048-agent-daemon-surface-pass`
+- `Latest failed run`: `none`
+- `Final signoff checklist`:
+  - one heartbeat tick is callable from the CLI
+  - activation enqueue plus scheduler execution are both callable from the CLI
+  - heartbeat persistence is durable per agent under `.openboa/agents/<id>/runtime`
+  - runtime continuity files are durable per agent under `.openboa/agents/<id>/runtime`
+  - the agent runtime itself can emit future queued activations
+  - newly spawned agents receive a seeded markdown workspace substrate
+  - runtime execution consumes the seeded workspace markdown
+  - reusable learnings can be captured durably under `.openboa/agents/<id>/learn/`
+  - promoted runtime learnings can be written back into workspace `MEMORY.md`
+  - scheduler ownership and lease state are durable per agent under `.openboa/agents/<id>/runtime/scheduler.json`
+  - follow-up limit is runtime-enforced and tested
+  - agent runtime no longer imports a chat-owned context type
+  - next runtime gap is recorded clearly for the following frontier
+- `Why this PR is not ready yet`: The agent layer is materially stronger, but this frontier is still intentionally open because the user wants the Agent MVP pushed further toward production quality before signoff. The remaining gaps are still inside the agent boundary rather than purely follow-on product work.
+- `Open risks`:
+- `Why this PR is at final-signoff`: The agent layer now has production-MVP essentials inside its owned boundary: session-safe UUID v7 contracts, durable activation queue, owner-aware scheduler state, a dedicated daemon surface, runtime continuity files, learnings capture plus `MEMORY.md` promotion, and a thinner Chat delivery seam. The strongest remaining gaps belong to the next frontier rather than this one.
+- `Open risks`:
+  - Wake reasons are modeled, but only CLI and self-follow-up triggers exist today.
+  - Heartbeat summaries and loop directives are still prompt-shaped rather than validated through a richer contract.
+  - Richer capability-aware context hydration for Chat/Work still sits outside this frontier.
+- `Next action`: Request human final signoff on the Agent MVP, then open the next frontier around thin capability-pack seams and richer external activation sources.

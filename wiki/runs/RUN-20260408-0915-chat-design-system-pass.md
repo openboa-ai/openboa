@@ -1,0 +1,21 @@
+# RUN-20260408-0915-chat-design-system-pass
+
+- `PR`: `PR-chat-surface-credibility`
+- `Triggered by`: `auto-project`
+- `Owner skill`: `auto-ui`
+- `Baseline`: `RUN-20260408-0845-chat-surface-baseline`
+- `Hypothesis`: Tightening the shared design-system layer first will remove recurring alignment and hierarchy defects more effectively than continuing one-off surface patches.
+- `Single bounded change`: Added composed system patterns for pane headers, list-row anatomy, and composer shells; tightened control-size tokens in shared primitives; reapplied those patterns across the chat sidebar, transcript header, transcript composer, message rows, and thread.
+- `Measurement`: Re-capture the full chat surface plus component-level clips for the sidebar header, sidebar list, transcript header, message row, composer, and thread pane. Compare them against the baseline quality gap described in the PR page and `docs/DESIGN.md`.
+- `Evidence`:
+  - `/tmp/openboa-chat-ds-pass2-full.png`
+  - `/tmp/openboa-chat-ds-pass2-sidebar-header.png`
+  - `/tmp/openboa-chat-ds-pass2-sidebar-list.png`
+  - `/tmp/openboa-chat-ds-pass2-transcript-header.png`
+  - `/tmp/openboa-chat-ds-pass2-message-row.png`
+  - `/tmp/openboa-chat-ds-pass2-composer.png`
+  - `/tmp/openboa-chat-ds-pass2-thread-pane.png`
+- `Quality axis targeted`: `consistency`, `spacing`, `hierarchy`, `affordance`
+- `Net quality delta`: `positive` — the surface now relies on shared pane/header/row/composer patterns instead of multiple local fixes, and the most visible alignment defects are no longer recurring across components.
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-ui`

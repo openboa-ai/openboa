@@ -1,0 +1,21 @@
+# RUN-20260408-0945-chat-ui-audit
+
+- `PR`: `PR-chat-surface-credibility`
+- `Triggered by`: `auto-project`
+- `Owner skill`: `auto-ui`
+- `Baseline`: `RUN-20260408-0915-chat-design-system-pass`
+- `Hypothesis`: A component-level audit will reveal the next highest-leverage quality gaps more clearly than continuing unsystematic surface polish.
+- `Single bounded change`: No product code changes. Performed a research-backed audit against the current design canon, the active chat surface, and component-level captures of the sidebar header, sidebar list, transcript header, message row, composer, and thread pane.
+- `Measurement`: Check whether the current surface is signoff-ready or whether remaining gaps are still visible in component-level evidence.
+- `Evidence`:
+  - `/tmp/openboa-chat-ds-pass2-full.png`
+  - `/tmp/openboa-chat-ds-pass2-sidebar-header.png`
+  - `/tmp/openboa-chat-ds-pass2-sidebar-list.png`
+  - `/tmp/openboa-chat-ds-pass2-transcript-header.png`
+  - `/tmp/openboa-chat-ds-pass2-message-row.png`
+  - `/tmp/openboa-chat-ds-pass2-composer.png`
+  - `/tmp/openboa-chat-ds-pass2-thread-pane.png`
+- `Quality axis targeted`: `hierarchy`, `density`, `consistency`, `affordance`
+- `Net quality delta`: `diagnostic` — the surface is meaningfully stronger than the baseline, but the audit surfaced a small number of systemic gaps that still block final signoff.
+- `Decision`: `continue`
+- `Next recommended owner`: `auto-ui`

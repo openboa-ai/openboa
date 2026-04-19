@@ -1,0 +1,4 @@
+interface:
+  display_name: "Brain Openboa"
+  short_description: "Frame openboa strategy and meaning from repo truth"
+  default_prompt: "Use $brain-openboa to frame openboa product meaning, wedge, governance, or roadmap semantics in a way that aligns with this repository's maintained wiki and operating program."

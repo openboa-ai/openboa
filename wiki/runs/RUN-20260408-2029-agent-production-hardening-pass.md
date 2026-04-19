@@ -1,0 +1,26 @@
+# RUN-20260408-2029-agent-production-hardening-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Status`: `kept`
+- `Hypothesis`: The proactive runtime is runnable, but it still is not production-grade if session handling is ad hoc and Chat still knows too much about concrete agent delivery internals. Hardening session contracts and thinning the Chat seam should materially improve the Agent layer without widening domain scope.
+- `Changes`:
+  - Added a pure session-bound agent command path under `src/agents/command/session-chat.ts`.
+  - Added session context reconstruction and session inspection surfaces:
+    - `src/agents/sessions/context-builder.ts`
+    - `src/agents/command/session-inspect.ts`
+    - `openboa agent sessions`
+    - `openboa agent logs`
+  - Switched new pure agent session ids to UUID v7 by default and validated provided ids as UUID v7 only through `src/agents/sessions/session-id.ts`.
+  - Moved concrete chat-bound delivery internals behind `src/agents/command/chat-delivery.ts` so `ChatCommandService` depends on a thinner `delivery` seam instead of directly constructing auth + runner execution.
+- `Verification`:
+  - `pnpm test -- test/session-id.test.ts test/index.test.ts test/chat-command-service.test.ts test/agent-runtime.test.ts test/runtime-scheduler.test.ts test/codex-model-client.test.ts`
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm check:docs`
+  - `git diff --check -- src test docs wiki`
+  - `pnpm openboa agent chat --name alpha --message "hello there"`
+  - `pnpm openboa agent chat --name alpha --session main --message "should fail"`
+  - `pnpm openboa agent sessions --name alpha`
+  - `pnpm openboa agent logs --name alpha --session 019d6cd1-a920-72bf-a077-bd1a58bb398b --limit 1`
+- `Result`: The Agent CLI is now much closer to a production MVP: pure agent traffic is session-bound, session ids are strongly typed as UUID v7, sessions are inspectable from the CLI, and Chat owns less concrete knowledge about runtime execution plumbing.
+- `Next gap`: The Agent layer still lacks richer learnings memory, daemon-grade scheduler ownership outside the CLI loop, and a narrower runtime/context seam for future Chat/Work capability packs.

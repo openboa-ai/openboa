@@ -1,0 +1,2419 @@
+[
+  {
+    "number": 1,
+    "id": "bootstrap_quote_001",
+    "category": "bootstrap_quote",
+    "title": "Quote AGENTS.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc0-efe9-7572-b770-c131b9031ddc",
+    "startedAt": "2026-04-11T18:14:49.578Z",
+    "finishedAt": "2026-04-11T18:14:54.090Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/AGENTS.md. Then quote two exact non-empty full lines from AGENTS.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "# AGENTS.md You are scenario-loop-a8, an openboa agent.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from AGENTS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 2,
+    "id": "bootstrap_quote_002",
+    "category": "bootstrap_quote",
+    "title": "Quote AGENTS.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-018b-7003-b33d-6251a01266cf",
+    "startedAt": "2026-04-11T18:14:54.091Z",
+    "finishedAt": "2026-04-11T18:14:59.004Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/AGENTS.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "# AGENTS.md You are scenario-loop-a8, an openboa agent. These are the first two exact non-empty lines from /workspace/agent/AGENTS.md.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from AGENTS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 3,
+    "id": "bootstrap_quote_003",
+    "category": "bootstrap_quote",
+    "title": "Quote AGENTS.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-14bc-70f8-9993-11f0b3a4bae8",
+    "startedAt": "2026-04-11T18:14:59.005Z",
+    "finishedAt": "2026-04-11T18:15:08.611Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/AGENTS.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "# AGENTS.md You are scenario-loop-a8, an openboa agent. This file identifies the agent and sets concise operating guidance to work privately, stay bounded, and keep continuity high signal.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from AGENTS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 4,
+    "id": "bootstrap_quote_004",
+    "category": "bootstrap_quote",
+    "title": "Quote AGENTS.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-3a43-718f-8236-0fc83bda8551",
+    "startedAt": "2026-04-11T18:15:08.612Z",
+    "finishedAt": "2026-04-11T18:15:13.132Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from AGENTS.md by reading /workspace/agent/AGENTS.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "# AGENTS.md You are scenario-loop-a8, an openboa agent.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from AGENTS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 5,
+    "id": "bootstrap_quote_005",
+    "category": "bootstrap_quote",
+    "title": "Quote SOUL.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-4bec-7686-b2f8-9089ab5aad52",
+    "startedAt": "2026-04-11T18:15:13.133Z",
+    "finishedAt": "2026-04-11T18:15:18.155Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/SOUL.md. Then quote two exact non-empty full lines from SOUL.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "- Calm - Reliable",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 1 exact line(s) from SOUL.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 6,
+    "id": "bootstrap_quote_006",
+    "category": "bootstrap_quote",
+    "title": "Quote SOUL.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-5f8c-776c-9f3e-f31262b77c19",
+    "startedAt": "2026-04-11T18:15:18.157Z",
+    "finishedAt": "2026-04-11T18:15:24.685Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/SOUL.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "- Calm - Reliable These are the first two non-empty bullet lines in /workspace/agent/SOUL.md.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 1 exact line(s) from SOUL.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 7,
+    "id": "bootstrap_quote_007",
+    "category": "bootstrap_quote",
+    "title": "Quote SOUL.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-790e-743d-b8d9-b5f97a275459",
+    "startedAt": "2026-04-11T18:15:24.687Z",
+    "finishedAt": "2026-04-11T18:15:31.987Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/SOUL.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "- Calm - Reliable The file presents a concise set of agent character traits emphasizing steadiness, boundedness, and honesty about uncertainty.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 1 exact line(s) from SOUL.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 8,
+    "id": "bootstrap_quote_008",
+    "category": "bootstrap_quote",
+    "title": "Quote SOUL.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-9594-729b-bf60-7e45c5caf4b0",
+    "startedAt": "2026-04-11T18:15:31.989Z",
+    "finishedAt": "2026-04-11T18:15:37.891Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from SOUL.md by reading /workspace/agent/SOUL.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "- Calm - Reliable",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 1 exact line(s) from SOUL.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 9,
+    "id": "bootstrap_quote_009",
+    "category": "bootstrap_quote",
+    "title": "Quote TOOLS.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-aca4-7293-9768-8bd86ed69321",
+    "startedAt": "2026-04-11T18:15:37.893Z",
+    "finishedAt": "2026-04-11T18:15:43.721Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/TOOLS.md. Then quote two exact non-empty full lines from TOOLS.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "# TOOLS.md - Use only the tools that are currently available in runtime.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from TOOLS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 10,
+    "id": "bootstrap_quote_010",
+    "category": "bootstrap_quote",
+    "title": "Quote TOOLS.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-c36a-717e-a93b-210f98c11645",
+    "startedAt": "2026-04-11T18:15:43.723Z",
+    "finishedAt": "2026-04-11T18:15:48.829Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/TOOLS.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "- Use only the tools that are currently available in runtime. - Prefer the narrowest tool that solves the current bounded move. These lines come directly from /workspace/agent/TOOLS.md.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from TOOLS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 11,
+    "id": "bootstrap_quote_011",
+    "category": "bootstrap_quote",
+    "title": "Quote TOOLS.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-d75e-73b0-b5e0-f7ef8d47531d",
+    "startedAt": "2026-04-11T18:15:48.831Z",
+    "finishedAt": "2026-04-11T18:15:54.053Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/TOOLS.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "- Use only the tools that are currently available in runtime. - Prefer the narrowest tool that solves the current bounded move. These lines instruct the agent to rely only on currently available runtime tools and to choose the most specifi…",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from TOOLS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 12,
+    "id": "bootstrap_quote_012",
+    "category": "bootstrap_quote",
+    "title": "Quote TOOLS.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-ebc6-763b-ae96-a8be56d1d4e2",
+    "startedAt": "2026-04-11T18:15:54.054Z",
+    "finishedAt": "2026-04-11T18:15:59.046Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from TOOLS.md by reading /workspace/agent/TOOLS.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "- Use only the tools that are currently available in runtime. - Prefer the narrowest tool that solves the current bounded move.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from TOOLS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 13,
+    "id": "bootstrap_quote_013",
+    "category": "bootstrap_quote",
+    "title": "Quote IDENTITY.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc1-ff47-76e9-a50c-781d2549abe5",
+    "startedAt": "2026-04-11T18:15:59.048Z",
+    "finishedAt": "2026-04-11T18:16:03.584Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/IDENTITY.md. Then quote two exact non-empty full lines from IDENTITY.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "- Agent id: `scenario-loop-a8` - Runtime role: openboa worker",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from IDENTITY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 14,
+    "id": "bootstrap_quote_014",
+    "category": "bootstrap_quote",
+    "title": "Quote IDENTITY.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-1101-722d-925c-c8a74bb59821",
+    "startedAt": "2026-04-11T18:16:03.586Z",
+    "finishedAt": "2026-04-11T18:16:08.580Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/IDENTITY.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "- Agent id: `scenario-loop-a8` - Runtime role: openboa worker These are two exact non-empty lines read from /workspace/agent/IDENTITY.md.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from IDENTITY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 15,
+    "id": "bootstrap_quote_015",
+    "category": "bootstrap_quote",
+    "title": "Quote IDENTITY.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-2485-772d-a5cb-857eb02ea76f",
+    "startedAt": "2026-04-11T18:16:08.582Z",
+    "finishedAt": "2026-04-11T18:16:13.968Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/IDENTITY.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "- Agent id: `scenario-loop-a8` - Runtime role: openboa worker The file identifies this agent as scenario-loop-a8 and states that its runtime role is an openboa worker.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from IDENTITY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 16,
+    "id": "bootstrap_quote_016",
+    "category": "bootstrap_quote",
+    "title": "Quote IDENTITY.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-3991-71fb-913a-ca3884df8382",
+    "startedAt": "2026-04-11T18:16:13.970Z",
+    "finishedAt": "2026-04-11T18:16:30.194Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from IDENTITY.md by reading /workspace/agent/IDENTITY.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "- Agent id: `scenario-loop-a8` - Runtime role: openboa worker",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from IDENTITY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 17,
+    "id": "bootstrap_quote_017",
+    "category": "bootstrap_quote",
+    "title": "Quote USER.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-78f3-7258-8df5-0321b0ad6baa",
+    "startedAt": "2026-04-11T18:16:30.196Z",
+    "finishedAt": "2026-04-11T18:16:37.908Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/USER.md. Then quote two exact non-empty full lines from USER.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "# USER.md The primary operator is the openboa builder working in this repository.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from USER.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 18,
+    "id": "bootstrap_quote_018",
+    "category": "bootstrap_quote",
+    "title": "Quote USER.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-9715-76e8-9586-8b2a52a0d93f",
+    "startedAt": "2026-04-11T18:16:37.910Z",
+    "finishedAt": "2026-04-11T18:16:42.810Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/USER.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "# USER.md - Be concise. These exact lines come from /workspace/agent/USER.md and emphasize concise operation.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from USER.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 19,
+    "id": "bootstrap_quote_019",
+    "category": "bootstrap_quote",
+    "title": "Quote USER.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-aa3b-700a-b864-d6c231ccc36d",
+    "startedAt": "2026-04-11T18:16:42.812Z",
+    "finishedAt": "2026-04-11T18:16:52.005Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/USER.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "- Be concise. - Preserve repo intent. These lines instruct the agent to keep responses brief and aligned with the repository’s intended direction.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from USER.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 20,
+    "id": "bootstrap_quote_020",
+    "category": "bootstrap_quote",
+    "title": "Quote USER.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-ce26-73fc-8fee-62c2ee1612d1",
+    "startedAt": "2026-04-11T18:16:52.007Z",
+    "finishedAt": "2026-04-11T18:16:58.281Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from USER.md by reading /workspace/agent/USER.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "The primary operator is the openboa builder working in this repository. - Be concise.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from USER.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 21,
+    "id": "bootstrap_quote_021",
+    "category": "bootstrap_quote",
+    "title": "Quote HEARTBEAT.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc2-e6aa-76cf-9ee8-d91b911194fa",
+    "startedAt": "2026-04-11T18:16:58.283Z",
+    "finishedAt": "2026-04-11T18:17:05.088Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/HEARTBEAT.md. Then quote two exact non-empty full lines from HEARTBEAT.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "# HEARTBEAT.md 1. Read the pending session events carefully.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from HEARTBEAT.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 22,
+    "id": "bootstrap_quote_022",
+    "category": "bootstrap_quote",
+    "title": "Quote HEARTBEAT.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-0142-76fb-b1a5-a29b1a44cbef",
+    "startedAt": "2026-04-11T18:17:05.091Z",
+    "finishedAt": "2026-04-11T18:17:10.193Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/HEARTBEAT.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "1. Read the pending session events carefully. 4. If later revisit is needed, request a queued wake explicitly. These lines come directly from /workspace/agent/HEARTBEAT.md and match the current file contents.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from HEARTBEAT.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 23,
+    "id": "bootstrap_quote_023",
+    "category": "bootstrap_quote",
+    "title": "Quote HEARTBEAT.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-1532-730f-86a1-e32da4e7977d",
+    "startedAt": "2026-04-11T18:17:10.195Z",
+    "finishedAt": "2026-04-11T18:17:17.229Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/HEARTBEAT.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "1. Read the pending session events carefully. 4. If later revisit is needed, request a queued wake explicitly. These lines say the session should first inspect pending events and, if more work is needed later, schedule an explicit queued w…",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from HEARTBEAT.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 24,
+    "id": "bootstrap_quote_024",
+    "category": "bootstrap_quote",
+    "title": "Quote HEARTBEAT.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-30ae-722f-b202-0666f09f042d",
+    "startedAt": "2026-04-11T18:17:17.231Z",
+    "finishedAt": "2026-04-11T18:17:22.178Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from HEARTBEAT.md by reading /workspace/agent/HEARTBEAT.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "1. Read the pending session events carefully. 2. Read current runtime continuity before acting.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from HEARTBEAT.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 25,
+    "id": "bootstrap_quote_025",
+    "category": "bootstrap_quote",
+    "title": "Quote BOOTSTRAP.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-4403-752a-9eb1-e328860d5eb6",
+    "startedAt": "2026-04-11T18:17:22.180Z",
+    "finishedAt": "2026-04-11T18:17:27.635Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/BOOTSTRAP.md. Then quote two exact non-empty full lines from BOOTSTRAP.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "# BOOTSTRAP.md This workspace was seeded automatically.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from BOOTSTRAP.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 26,
+    "id": "bootstrap_quote_026",
+    "category": "bootstrap_quote",
+    "title": "Quote BOOTSTRAP.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-5954-734d-871b-ed98e2fa7668",
+    "startedAt": "2026-04-11T18:17:27.637Z",
+    "finishedAt": "2026-04-11T18:17:34.289Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/BOOTSTRAP.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "# BOOTSTRAP.md This workspace was seeded automatically. These are the first two exact non-empty lines from /workspace/agent/BOOTSTRAP.md.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from BOOTSTRAP.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 27,
+    "id": "bootstrap_quote_027",
+    "category": "bootstrap_quote",
+    "title": "Quote BOOTSTRAP.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-7352-74ba-924d-bf39717cbafe",
+    "startedAt": "2026-04-11T18:17:34.291Z",
+    "finishedAt": "2026-04-11T18:17:40.981Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/BOOTSTRAP.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "# BOOTSTRAP.md - Keep durable guidance in markdown files, not only in chat history. BOOTSTRAP.md says this workspace was auto-seeded and should keep durable guidance in markdown, with optional later personalization or reduction.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from BOOTSTRAP.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 28,
+    "id": "bootstrap_quote_028",
+    "category": "bootstrap_quote",
+    "title": "Quote BOOTSTRAP.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-8d76-73a9-868a-a7531c91c811",
+    "startedAt": "2026-04-11T18:17:40.983Z",
+    "finishedAt": "2026-04-11T18:17:45.978Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from BOOTSTRAP.md by reading /workspace/agent/BOOTSTRAP.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "# BOOTSTRAP.md This workspace was seeded automatically.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from BOOTSTRAP.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 29,
+    "id": "bootstrap_quote_029",
+    "category": "bootstrap_quote",
+    "title": "Quote MEMORY.md (1)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-a0fc-76ef-b9a1-77bf44c26a60",
+    "startedAt": "2026-04-11T18:17:45.980Z",
+    "finishedAt": "2026-04-11T18:17:50.489Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call read with path /workspace/agent/MEMORY.md. Then quote two exact non-empty full lines from MEMORY.md, including any leading markdown markers and punctuation. Copy the lines verbatim with no decorative quotes."
+    ],
+    "responsePreview": "# MEMORY.md Curated long-term memory for scenario-loop-a8.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from MEMORY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 30,
+    "id": "bootstrap_quote_030",
+    "category": "bootstrap_quote",
+    "title": "Quote MEMORY.md (2)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-b29a-7742-8fef-ce1af1b952e1",
+    "startedAt": "2026-04-11T18:17:50.491Z",
+    "finishedAt": "2026-04-11T18:17:55.327Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use read on /workspace/agent/MEMORY.md. Return two exact non-empty full lines from the file, including leading markdown markers and punctuation, plus one short grounded sentence. Do not paraphrase or decorate the quoted lines."
+    ],
+    "responsePreview": "# MEMORY.md ## Managed Memory Notes These are exact non-empty lines from /workspace/agent/MEMORY.md.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 1 exact line(s) from MEMORY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 31,
+    "id": "bootstrap_quote_031",
+    "category": "bootstrap_quote",
+    "title": "Quote MEMORY.md (3)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-c580-7447-ad21-14667d4596d8",
+    "startedAt": "2026-04-11T18:17:55.329Z",
+    "finishedAt": "2026-04-11T18:18:01.223Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read /workspace/agent/MEMORY.md and answer with two exact full lines plus one grounded summary sentence. Preserve the exact line text, including leading markdown markers and punctuation. Do not rewrite the quoted text."
+    ],
+    "responsePreview": "## Promoted Runtime Learnings _No promoted runtime learnings yet._ The file is a curated long-term memory template for scenario-loop-a8 with sections for promoted runtime learnings and managed memory notes, both currently empty.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 1 exact line(s) from MEMORY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 32,
+    "id": "bootstrap_quote_032",
+    "category": "bootstrap_quote",
+    "title": "Quote MEMORY.md (4)",
+    "mode": "wake",
+    "sessionId": "019d7dc3-dc89-71f8-9cc8-faf36abc1d82",
+    "startedAt": "2026-04-11T18:18:01.226Z",
+    "finishedAt": "2026-04-11T18:18:07.668Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Quote exact text from MEMORY.md by reading /workspace/agent/MEMORY.md: give me two exact non-empty full lines from the file, preserving leading markdown markers and punctuation, and nothing speculative."
+    ],
+    "responsePreview": "# MEMORY.md Curated long-term memory for scenario-loop-a8.",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "quoted 2 exact line(s) from MEMORY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 33,
+    "id": "introspection_033",
+    "category": "introspection",
+    "title": "State the agent name",
+    "mode": "wake",
+    "sessionId": "019d7dc3-f5b5-7379-a272-729480922253",
+    "startedAt": "2026-04-11T18:18:10.468Z",
+    "finishedAt": "2026-04-11T18:18:10.468Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "What is your name? Answer with the exact agent name only."
+    ],
+    "responsePreview": "scenario-loop-a8",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "scenario-loop-a8"
+    ],
+    "issue": null
+  },
+  {
+    "number": 34,
+    "id": "introspection_034",
+    "category": "introspection",
+    "title": "State the current session id",
+    "mode": "wake",
+    "sessionId": "019d7dc4-00a6-7467-9932-65aae2ba54f1",
+    "startedAt": "2026-04-11T18:18:14.680Z",
+    "finishedAt": "2026-04-11T18:18:14.680Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "What is your current session id? Answer with the exact id only."
+    ],
+    "responsePreview": "019d7dc4-00a6-7467-9932-65aae2ba54f1",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "019d7dc4-00a6-7467-9932-65aae2ba54f1"
+    ],
+    "issue": null
+  },
+  {
+    "number": 35,
+    "id": "introspection_035",
+    "category": "introspection",
+    "title": "State the current environment id",
+    "mode": "wake",
+    "sessionId": "019d7dc4-1119-728e-b3b6-c42eda182b90",
+    "startedAt": "2026-04-11T18:18:19.358Z",
+    "finishedAt": "2026-04-11T18:18:19.358Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "What environment id are you attached to right now? Answer with the exact id only."
+    ],
+    "responsePreview": "local-default",
+    "toolNames": [
+      "environment_describe"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "local-default"
+    ],
+    "issue": null
+  },
+  {
+    "number": 36,
+    "id": "introspection_036",
+    "category": "introspection",
+    "title": "State the writable workspace mount",
+    "mode": "wake",
+    "sessionId": "019d7dc4-2360-719e-914c-35618e755214",
+    "startedAt": "2026-04-11T18:18:21.699Z",
+    "finishedAt": "2026-04-11T18:18:21.699Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Where is your writable session workspace mounted? Answer with the exact mount path only."
+    ],
+    "responsePreview": "/workspace",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "/workspace"
+    ],
+    "issue": null
+  },
+  {
+    "number": 37,
+    "id": "introspection_037",
+    "category": "introspection",
+    "title": "State the shared substrate mount",
+    "mode": "wake",
+    "sessionId": "019d7dc4-2c84-7206-b206-f8f9e1efe239",
+    "startedAt": "2026-04-11T18:18:26.113Z",
+    "finishedAt": "2026-04-11T18:18:26.113Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Where is your shared agent substrate mounted? Answer with the exact mount path only."
+    ],
+    "responsePreview": "/workspace/agent",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "/workspace/agent"
+    ],
+    "issue": null
+  },
+  {
+    "number": 38,
+    "id": "introspection_038",
+    "category": "introspection",
+    "title": "State the runtime artifact directory",
+    "mode": "wake",
+    "sessionId": "019d7dc4-3dc3-76f1-b560-5eab36745d01",
+    "startedAt": "2026-04-11T18:18:28.907Z",
+    "finishedAt": "2026-04-11T18:18:28.907Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Where are your runtime artifacts materialized? Answer with the exact directory name or path."
+    ],
+    "responsePreview": "/runtime",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "/runtime"
+    ],
+    "issue": null
+  },
+  {
+    "number": 39,
+    "id": "introspection_039",
+    "category": "introspection",
+    "title": "State the operating contract file",
+    "mode": "wake",
+    "sessionId": "019d7dc4-48ac-705e-bf1c-417bc1700db2",
+    "startedAt": "2026-04-11T18:18:31.185Z",
+    "finishedAt": "2026-04-11T18:18:31.185Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Which bootstrap file defines your operating contract? Answer with the exact file name only."
+    ],
+    "responsePreview": "AGENTS.md",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "AGENTS.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 40,
+    "id": "introspection_040",
+    "category": "introspection",
+    "title": "State the durable memory file",
+    "mode": "wake",
+    "sessionId": "019d7dc4-5192-71ce-9b15-c50181b762ee",
+    "startedAt": "2026-04-11T18:18:33.753Z",
+    "finishedAt": "2026-04-11T18:18:33.753Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Which bootstrap file holds durable shared memory? Answer with the exact file name only."
+    ],
+    "responsePreview": "MEMORY.md",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "MEMORY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 41,
+    "id": "introspection_041",
+    "category": "introspection",
+    "title": "Distinguish writable and shared workspaces",
+    "mode": "wake",
+    "sessionId": "019d7dc4-5b9a-75af-91c0-c661071f5fc3",
+    "startedAt": "2026-04-11T18:18:37.375Z",
+    "finishedAt": "2026-04-11T18:18:37.375Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Explain the difference between /workspace and /workspace/agent in one sentence, using both exact mount paths."
+    ],
+    "responsePreview": "`/workspace` is the writable session execution hand for this session, while `/workspace/agent` is the shared durable agent substrate mounted read-only and meant for inspect/stage/compare/promote workflows rather than direct edits.",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "/workspace",
+      "/workspace/agent"
+    ],
+    "issue": null
+  },
+  {
+    "number": 42,
+    "id": "introspection_042",
+    "category": "introspection",
+    "title": "State pending confirmation posture",
+    "mode": "wake",
+    "sessionId": "019d7dc4-69c0-7636-b2c1-2a4a698f3cb4",
+    "startedAt": "2026-04-11T18:18:39.524Z",
+    "finishedAt": "2026-04-11T18:18:39.524Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Do you currently have a pending tool confirmation request? Answer with 'none' if not."
+    ],
+    "responsePreview": "none",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "none"
+    ],
+    "issue": null
+  },
+  {
+    "number": 43,
+    "id": "tool_043",
+    "category": "tool",
+    "title": "Use environment_describe",
+    "mode": "wake",
+    "sessionId": "019d7dc4-7225-77c9-9e43-c832808ed336",
+    "startedAt": "2026-04-11T18:18:39.526Z",
+    "finishedAt": "2026-04-11T18:18:45.528Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call environment_describe directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use environment_describe to report your environment id and sandbox mode."
+    ],
+    "responsePreview": "Environment id: `local-default` Sandbox mode: `workspace` with workspace access `rw`",
+    "toolNames": [
+      "environment_describe"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used environment_describe"
+    ],
+    "issue": null
+  },
+  {
+    "number": 44,
+    "id": "tool_044",
+    "category": "tool",
+    "title": "Use agent_describe_setup",
+    "mode": "wake",
+    "sessionId": "019d7dc4-8999-7600-908e-dc31762994af",
+    "startedAt": "2026-04-11T18:18:45.530Z",
+    "finishedAt": "2026-04-11T18:18:56.100Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call agent_describe_setup directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use agent_describe_setup to summarize your provider, model, and runner."
+    ],
+    "responsePreview": "Provider: openai-codex Model: gpt-5.4 Runner/environment: local-default (`Default local environment`), local runner with workspace sandbox (`workspace` mode, workspace access `rw`).",
+    "toolNames": [
+      "agent_describe_setup"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used agent_describe_setup"
+    ],
+    "issue": null
+  },
+  {
+    "number": 45,
+    "id": "tool_045",
+    "category": "tool",
+    "title": "Use agent_compare_setup",
+    "mode": "wake",
+    "sessionId": "019d7dc4-b2e5-77c8-92ab-04e405e0fc00",
+    "startedAt": "2026-04-11T18:18:56.101Z",
+    "finishedAt": "2026-04-11T18:19:01.909Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call agent_compare_setup directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use agent_compare_setup to compare your current setup with the current session and summarize whether it matches."
+    ],
+    "responsePreview": "agent_compare_setup reports an exact match: the current setup and the target session setup are the same. - sameSetup: true - changedSections: none - fingerprint: `0ca95dc5ab37491594b419708ecb9d64ce63e658e46de25a39008f78d813ffb1`",
+    "toolNames": [
+      "agent_compare_setup"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used agent_compare_setup"
+    ],
+    "issue": null
+  },
+  {
+    "number": 46,
+    "id": "tool_046",
+    "category": "tool",
+    "title": "Use vault_list",
+    "mode": "wake",
+    "sessionId": "019d7dc4-c997-730a-a3b5-f7ad17b7f7ed",
+    "startedAt": "2026-04-11T18:19:01.912Z",
+    "finishedAt": "2026-04-11T18:19:07.714Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call vault_list directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use vault_list to report whether any vault mounts are attached."
+    ],
+    "responsePreview": "No vault mounts are attached for this session.",
+    "toolNames": [
+      "vault_list"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used vault_list"
+    ],
+    "issue": null
+  },
+  {
+    "number": 47,
+    "id": "tool_047",
+    "category": "tool",
+    "title": "Use session_get_snapshot",
+    "mode": "wake",
+    "sessionId": "019d7dc4-e043-71f5-979a-0ad594a5c995",
+    "startedAt": "2026-04-11T18:19:07.716Z",
+    "finishedAt": "2026-04-11T18:19:14.619Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_get_snapshot directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_get_snapshot to report your current session id and stop reason."
+    ],
+    "responsePreview": "Current session id: `019d7dc4-e043-71f5-979a-0ad594a5c995` Stop reason: `rescheduling`",
+    "toolNames": [
+      "session_get_snapshot"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_get_snapshot"
+    ],
+    "issue": null
+  },
+  {
+    "number": 48,
+    "id": "tool_048",
+    "category": "tool",
+    "title": "Use session_describe_context",
+    "mode": "wake",
+    "sessionId": "019d7dc4-fb3c-7307-b314-be0bd4423fa4",
+    "startedAt": "2026-04-11T18:19:14.621Z",
+    "finishedAt": "2026-04-11T18:19:23.573Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_describe_context directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_describe_context to report the current context pressure."
+    ],
+    "responsePreview": "Current context pressure is high. Key figures: - Total estimated runtime tokens: 22,797 - Selected text tokens: 3,423 - Tool schema tokens: 19,374 - Selection headroom: 0 Main pressure drivers: - `low_headroom:0` - `dropped_runtime_notes:8…",
+    "toolNames": [
+      "session_describe_context"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_describe_context"
+    ],
+    "issue": null
+  },
+  {
+    "number": 49,
+    "id": "tool_049",
+    "category": "tool",
+    "title": "Use session_list",
+    "mode": "wake",
+    "sessionId": "019d7dc5-1e36-7533-833f-5debd0cd0472",
+    "startedAt": "2026-04-11T18:19:23.575Z",
+    "finishedAt": "2026-04-11T18:19:30.651Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_list directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_list to report how many sessions this agent currently has."
+    ],
+    "responsePreview": "This agent currently has 0 sessions.",
+    "toolNames": [
+      "session_list"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_list"
+    ],
+    "issue": null
+  },
+  {
+    "number": 50,
+    "id": "tool_050",
+    "category": "tool",
+    "title": "Use session_list_traces",
+    "mode": "wake",
+    "sessionId": "019d7dc5-39dc-7228-8b69-4f6879a2d9ff",
+    "startedAt": "2026-04-11T18:19:30.653Z",
+    "finishedAt": "2026-04-11T18:19:41.661Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_list_traces directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_list_traces to report whether any wake traces exist for this session."
+    ],
+    "responsePreview": "Yes — there is 1 wake trace for this session. - wakeId: `019d7dc5-39eb-76a8-9968-81457221436a` - startedAt: `2026-04-11T18:19:30.667Z` - updatedAt: `2026-04-11T18:19:32.701Z` - eventCount: `3`",
+    "toolNames": [
+      "session_list_traces"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_list_traces"
+    ],
+    "issue": null
+  },
+  {
+    "number": 51,
+    "id": "tool_051",
+    "category": "tool",
+    "title": "Use session_search_context",
+    "mode": "wake",
+    "sessionId": "019d7dc5-64df-71cd-bf3d-dd7eeee50ca7",
+    "startedAt": "2026-04-11T18:19:41.663Z",
+    "finishedAt": "2026-04-11T18:19:48.770Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_search_context directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_search_context to search for the phrase 'openboa agent' in this session context and report the match."
+    ],
+    "responsePreview": "I used `session_search_context` to search for the phrase `openboa agent` in session context. Result: no matches found.",
+    "toolNames": [
+      "session_search_context"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_search_context"
+    ],
+    "issue": null
+  },
+  {
+    "number": 52,
+    "id": "tool_052",
+    "category": "tool",
+    "title": "Use session_search_traces",
+    "mode": "wake",
+    "sessionId": "019d7dc5-80a3-76be-8885-3754a91812e3",
+    "startedAt": "2026-04-11T18:19:48.772Z",
+    "finishedAt": "2026-04-11T18:19:53.883Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_search_traces directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_search_traces to search for a recent wake about the current session and report the best match."
+    ],
+    "responsePreview": "I called `session_search_traces` directly as requested. It returned no matches for a recent wake about the current session. Best match: none found. Search result summary: `count: 0`, `hits: []`",
+    "toolNames": [
+      "session_search_traces"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_search_traces"
+    ],
+    "issue": null
+  },
+  {
+    "number": 53,
+    "id": "tool_053",
+    "category": "tool",
+    "title": "Use resources_list",
+    "mode": "wake",
+    "sessionId": "019d7dc5-949c-71cb-af20-b8aff60c1c17",
+    "startedAt": "2026-04-11T18:19:53.885Z",
+    "finishedAt": "2026-04-11T18:19:59.149Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call resources_list directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use resources_list to list the mounted resource paths available in this session."
+    ],
+    "responsePreview": "Mounted resource paths in this session: - /workspace - /workspace/agent - /memory/learnings - /runtime",
+    "toolNames": [
+      "resources_list"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used resources_list"
+    ],
+    "issue": null
+  },
+  {
+    "number": 54,
+    "id": "tool_054",
+    "category": "tool",
+    "title": "Use shell_describe",
+    "mode": "wake",
+    "sessionId": "019d7dc5-a92e-77ee-b23a-f0701987bb55",
+    "startedAt": "2026-04-11T18:19:59.151Z",
+    "finishedAt": "2026-04-11T18:20:08.277Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call shell_describe directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use shell_describe to report the current shell posture."
+    ],
+    "responsePreview": "Current shell posture: - cwd: `/workspace` - persistent shell: none active - shell state: none - session shell env: 0 persisted vars - last command preview: none - command policy: - shell allowed: true - allowlisted commands: `pwd`, `env`,…",
+    "toolNames": [
+      "shell_describe"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used shell_describe"
+    ],
+    "issue": null
+  },
+  {
+    "number": 55,
+    "id": "tool_055",
+    "category": "tool",
+    "title": "Use permissions_describe",
+    "mode": "wake",
+    "sessionId": "019d7dc5-ccd7-758c-93ba-cdbb403e8efb",
+    "startedAt": "2026-04-11T18:20:08.280Z",
+    "finishedAt": "2026-04-11T18:20:17.284Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call permissions_describe directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use permissions_describe to explain the current permission posture for shell writes."
+    ],
+    "responsePreview": "Current permission posture for shell writes: - There is no pending tool confirmation request right now. - Shell write tools are in the always-ask set: - `shell_run` - `shell_exec` - For this session, no persistent shell is active yet. - Th…",
+    "toolNames": [
+      "permissions_describe"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used permissions_describe"
+    ],
+    "issue": null
+  },
+  {
+    "number": 56,
+    "id": "tool_056",
+    "category": "tool",
+    "title": "Use sandbox_describe",
+    "mode": "wake",
+    "sessionId": "019d7dc5-f006-77f0-afa8-8bc292022959",
+    "startedAt": "2026-04-11T18:20:17.286Z",
+    "finishedAt": "2026-04-11T18:20:45.128Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call sandbox_describe directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use sandbox_describe to summarize the current sandbox constraints."
+    ],
+    "responsePreview": "Current sandbox: local workspace-backed filesystem sandbox. Constraints: - Only provisioned mounts are visible. - Read-only mounts can be inspected but not mutated. - Writes are serialized per mounted root with an advisory lease. - `run_co…",
+    "toolNames": [
+      "sandbox_describe"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used sandbox_describe"
+    ],
+    "issue": null
+  },
+  {
+    "number": 57,
+    "id": "tool_057",
+    "category": "tool",
+    "title": "Use skills_list",
+    "mode": "wake",
+    "sessionId": "019d7dc6-5cc9-7439-9741-041104ffcb49",
+    "startedAt": "2026-04-11T18:20:45.131Z",
+    "finishedAt": "2026-04-11T18:20:49.969Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call skills_list directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use skills_list to list up to three available skills."
+    ],
+    "responsePreview": "Up to three available skills: 1. \"ci-recovery\" — Harness-aligned CI recovery utility. 2. auto-coding — Project harness implementation worker. 3. auto-coding-ci-loop — CI follow-through specialist for project harness coding work.",
+    "toolNames": [
+      "skills_list"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used skills_list"
+    ],
+    "issue": null
+  },
+  {
+    "number": 58,
+    "id": "tool_058",
+    "category": "tool",
+    "title": "Use skills_search",
+    "mode": "wake",
+    "sessionId": "019d7dc6-6fb2-74a0-bf5d-81d6d9ee212c",
+    "startedAt": "2026-04-11T18:20:49.971Z",
+    "finishedAt": "2026-04-11T18:20:56.474Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call skills_search directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use skills_search to search for wiki-related skills and report the best match."
+    ],
+    "responsePreview": "Best match from `skills_search` for wiki-related skills: `harness-skill-audit` Why it matched: - Description mentions auditing the repo’s skill surface. - Preview explicitly includes “wiki state,” which is the strongest wiki-related signal…",
+    "toolNames": [
+      "skills_search"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used skills_search"
+    ],
+    "issue": null
+  },
+  {
+    "number": 59,
+    "id": "tool_059",
+    "category": "tool",
+    "title": "Use learning_list",
+    "mode": "wake",
+    "sessionId": "019d7dc6-891b-72f2-b8fd-ee5a36452ad8",
+    "startedAt": "2026-04-11T18:20:56.476Z",
+    "finishedAt": "2026-04-11T18:21:00.854Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call learning_list directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use learning_list to report whether any learnings are recorded for this agent."
+    ],
+    "responsePreview": "No learnings are currently recorded for this agent.",
+    "toolNames": [
+      "learning_list"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used learning_list"
+    ],
+    "issue": null
+  },
+  {
+    "number": 60,
+    "id": "tool_060",
+    "category": "tool",
+    "title": "Use memory_list",
+    "mode": "wake",
+    "sessionId": "019d7dc6-9a37-700b-ae97-3af0f50cb3df",
+    "startedAt": "2026-04-11T18:21:00.856Z",
+    "finishedAt": "2026-04-11T18:21:05.898Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call memory_list directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use memory_list to report whether any durable memory notes exist."
+    ],
+    "responsePreview": "I called `memory_list` directly. Result: durable memory notes do exist as an available managed store: `workspace_memory_notes` (“Managed writable notes section inside shared MEMORY.md for durable agent-level notes”). Also available are the…",
+    "toolNames": [
+      "memory_list"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used memory_list"
+    ],
+    "issue": null
+  },
+  {
+    "number": 61,
+    "id": "tool_061",
+    "category": "tool",
+    "title": "Use memory_search",
+    "mode": "wake",
+    "sessionId": "019d7dc6-adeb-7129-860e-213858f9eedc",
+    "startedAt": "2026-04-11T18:21:05.900Z",
+    "finishedAt": "2026-04-11T18:21:11.541Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call memory_search directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use memory_search to search for notes about 'openboa' and report the result."
+    ],
+    "responsePreview": "memory_search for `openboa` returned 1 hit: - source: `workspace_memory` - title: `workspace MEMORY.md` - snippet: `...## Promoted Runtime Learnings <!-- OPENBOA_RUNTIME_LEARNINGS:START --> _No promoted runtime learnings yet._ <!-- OPENBOA…",
+    "toolNames": [
+      "memory_search"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used memory_search"
+    ],
+    "issue": null
+  },
+  {
+    "number": 62,
+    "id": "tool_062",
+    "category": "tool",
+    "title": "Use retrieval_search",
+    "mode": "wake",
+    "sessionId": "019d7dc6-c3f7-71ac-b171-0eadb9beb074",
+    "startedAt": "2026-04-11T18:21:11.543Z",
+    "finishedAt": "2026-04-11T18:21:17.589Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call retrieval_search directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use retrieval_search to look for evidence about AGENTS.md and report the top hit."
+    ],
+    "responsePreview": "Top retrieval_search hit: - backend: `session_context` - source: `user.message` - title: `user.message @ 019d7dc6-c3f7-71ac-b171-0eadb9beb074` - snippet: `...Use retrieval_search to look for evidence about AGENTS.md and report the top hit.…",
+    "toolNames": [
+      "retrieval_search"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used retrieval_search"
+    ],
+    "issue": null
+  },
+  {
+    "number": 63,
+    "id": "tool_063",
+    "category": "tool",
+    "title": "Use outcome_define",
+    "mode": "wake",
+    "sessionId": "019d7dc6-db96-71d9-a0f4-00e043dd53aa",
+    "startedAt": "2026-04-11T18:21:17.591Z",
+    "finishedAt": "2026-04-11T18:21:23.666Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call outcome_define directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use outcome_define to create a bounded outcome titled 'Scenario Tool Outcome'."
+    ],
+    "responsePreview": "Defined the active outcome as **Scenario Tool Outcome**.",
+    "toolNames": [
+      "outcome_define"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used outcome_define"
+    ],
+    "issue": null
+  },
+  {
+    "number": 64,
+    "id": "tool_064",
+    "category": "tool",
+    "title": "Use outcome_read",
+    "mode": "wake",
+    "sessionId": "019d7dc6-f353-757d-ad35-a116bd52db4b",
+    "startedAt": "2026-04-11T18:21:23.668Z",
+    "finishedAt": "2026-04-11T18:21:28.706Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call outcome_read directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use outcome_read to summarize the current active outcome."
+    ],
+    "responsePreview": "Current active outcome: - Title: Outcome read scenario - Detail: Read back the currently active outcome. - Success criteria: - Use outcome_read to summarize the active outcome.",
+    "toolNames": [
+      "outcome_read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used outcome_read"
+    ],
+    "issue": null
+  },
+  {
+    "number": 65,
+    "id": "tool_065",
+    "category": "tool",
+    "title": "Use outcome_grade",
+    "mode": "wake",
+    "sessionId": "019d7dc7-0704-77a5-b7a8-c7f942fdda8f",
+    "startedAt": "2026-04-11T18:21:28.709Z",
+    "finishedAt": "2026-04-11T18:21:37.564Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call outcome_grade directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use outcome_grade to summarize the current outcome grade."
+    ],
+    "responsePreview": "Current outcome grade: **in_progress** with **low confidence**. Summary: The session has an active durable outcome and some recent activity, but it is **not yet proven complete**. Evidence: - Matched criteria: **0/1** - Stop reason: **resc…",
+    "toolNames": [
+      "outcome_grade"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used outcome_grade"
+    ],
+    "issue": null
+  },
+  {
+    "number": 66,
+    "id": "tool_066",
+    "category": "tool",
+    "title": "Use outcome_evaluate",
+    "mode": "wake",
+    "sessionId": "019d7dc7-299d-763a-8270-5d31528801fc",
+    "startedAt": "2026-04-11T18:21:37.566Z",
+    "finishedAt": "2026-04-11T18:21:43.409Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call outcome_evaluate directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use outcome_evaluate to say whether promotion is ready right now."
+    ],
+    "responsePreview": "outcome_evaluate says promotion is not ready right now. - promotionReady: false - status: not_ready - confidence: low - summary: The session still has active work or deferred follow-up, so shared promotion is premature. Evidence: - Matched…",
+    "toolNames": [
+      "outcome_evaluate"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used outcome_evaluate"
+    ],
+    "issue": null
+  },
+  {
+    "number": 67,
+    "id": "tool_067",
+    "category": "tool",
+    "title": "Use outcome_history",
+    "mode": "wake",
+    "sessionId": "019d7dc7-4073-739e-b992-fb8f8138f44a",
+    "startedAt": "2026-04-11T18:21:43.411Z",
+    "finishedAt": "2026-04-11T18:21:49.016Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call outcome_history directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use outcome_history to report how many evaluator iterations exist so far."
+    ],
+    "responsePreview": "There are 0 evaluator iterations so far for this session.",
+    "toolNames": [
+      "outcome_history"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used outcome_history"
+    ],
+    "issue": null
+  },
+  {
+    "number": 68,
+    "id": "tool_068",
+    "category": "tool",
+    "title": "Use session_get_events",
+    "mode": "wake",
+    "sessionId": "019d7dc7-565a-7315-820b-1aec8185389a",
+    "startedAt": "2026-04-11T18:21:49.019Z",
+    "finishedAt": "2026-04-11T18:21:59.641Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Call session_get_events directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_get_events to report the latest user message in this session."
+    ],
+    "responsePreview": "Latest user message in this session: “Call session_get_events directly for this turn. Do not substitute a different managed tool and do not answer only from cached context unless the named tool is impossible or safety-blocked. Use session_…",
+    "toolNames": [
+      "session_get_events"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "used session_get_events"
+    ],
+    "issue": null
+  },
+  {
+    "number": 69,
+    "id": "continuity_069",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-01",
+    "mode": "wake",
+    "sessionId": "019d7dc7-7fda-7519-aa1c-89b6a0ca8523",
+    "startedAt": "2026-04-11T18:21:59.643Z",
+    "finishedAt": "2026-04-11T18:22:08.358Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-01. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-01",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-01"
+    ],
+    "issue": null
+  },
+  {
+    "number": 70,
+    "id": "continuity_070",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-02",
+    "mode": "wake",
+    "sessionId": "019d7dc7-a1e7-7229-b52c-6e27d85061bf",
+    "startedAt": "2026-04-11T18:22:08.360Z",
+    "finishedAt": "2026-04-11T18:22:18.840Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-02. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-02",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-02"
+    ],
+    "issue": null
+  },
+  {
+    "number": 71,
+    "id": "continuity_071",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-03",
+    "mode": "wake",
+    "sessionId": "019d7dc7-cad9-7633-bb5e-40a46834a500",
+    "startedAt": "2026-04-11T18:22:18.842Z",
+    "finishedAt": "2026-04-11T18:22:25.945Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-03. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-03",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-03"
+    ],
+    "issue": null
+  },
+  {
+    "number": 72,
+    "id": "continuity_072",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-04",
+    "mode": "wake",
+    "sessionId": "019d7dc7-e69b-76ee-9014-97f1969501ca",
+    "startedAt": "2026-04-11T18:22:25.948Z",
+    "finishedAt": "2026-04-11T18:22:33.596Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-04. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-04",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-04"
+    ],
+    "issue": null
+  },
+  {
+    "number": 73,
+    "id": "continuity_073",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-05",
+    "mode": "wake",
+    "sessionId": "019d7dc8-047d-756e-a4aa-cdc15b36d4a1",
+    "startedAt": "2026-04-11T18:22:33.598Z",
+    "finishedAt": "2026-04-11T18:22:44.279Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-05. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-05",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-05"
+    ],
+    "issue": null
+  },
+  {
+    "number": 74,
+    "id": "continuity_074",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-06",
+    "mode": "wake",
+    "sessionId": "019d7dc8-2e38-71d9-9c97-733c3640347c",
+    "startedAt": "2026-04-11T18:22:44.281Z",
+    "finishedAt": "2026-04-11T18:22:51.294Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-06. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-06",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-06"
+    ],
+    "issue": null
+  },
+  {
+    "number": 75,
+    "id": "continuity_075",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-07",
+    "mode": "wake",
+    "sessionId": "019d7dc8-499f-768a-bb00-f97d06eaddd1",
+    "startedAt": "2026-04-11T18:22:51.296Z",
+    "finishedAt": "2026-04-11T18:23:01.934Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-07. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-07",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-07"
+    ],
+    "issue": null
+  },
+  {
+    "number": 76,
+    "id": "continuity_076",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-08",
+    "mode": "wake",
+    "sessionId": "019d7dc8-7330-7791-8745-0a87927eaa61",
+    "startedAt": "2026-04-11T18:23:01.937Z",
+    "finishedAt": "2026-04-11T18:23:08.975Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-08. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-08",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-08"
+    ],
+    "issue": null
+  },
+  {
+    "number": 77,
+    "id": "continuity_077",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-09",
+    "mode": "wake",
+    "sessionId": "019d7dc8-8eb1-7518-b63e-da7ee9979d0a",
+    "startedAt": "2026-04-11T18:23:08.978Z",
+    "finishedAt": "2026-04-11T18:23:20.085Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-09. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-09",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-09"
+    ],
+    "issue": null
+  },
+  {
+    "number": 78,
+    "id": "continuity_078",
+    "category": "continuity",
+    "title": "Recall session token continuity-token-10",
+    "mode": "wake",
+    "sessionId": "019d7dc8-ba17-730c-8fbc-5c2f883f1804",
+    "startedAt": "2026-04-11T18:23:20.088Z",
+    "finishedAt": "2026-04-11T18:23:27.772Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Remember this session token exactly: continuity-token-10. Reply briefly when stored.",
+      "What session token did I just ask you to remember? Answer with the exact token only."
+    ],
+    "responsePreview": "continuity-token-10",
+    "toolNames": [
+      "memory_write"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "recalled token continuity-token-10"
+    ],
+    "issue": null
+  },
+  {
+    "number": 79,
+    "id": "watch_079",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-01",
+    "mode": "watch",
+    "sessionId": "019d7dc8-d81d-76cc-b7fd-fdfdfbd4abcf",
+    "startedAt": "2026-04-11T18:23:27.774Z",
+    "finishedAt": "2026-04-11T18:23:34.205Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-01."
+    ],
+    "responsePreview": "watch-token-01",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-01"
+    ],
+    "issue": null
+  },
+  {
+    "number": 80,
+    "id": "watch_080",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-02",
+    "mode": "watch",
+    "sessionId": "019d7dc8-f13e-74be-a1c3-428232ebe66d",
+    "startedAt": "2026-04-11T18:23:34.207Z",
+    "finishedAt": "2026-04-11T18:23:38.261Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-02."
+    ],
+    "responsePreview": "watch-token-02",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-02"
+    ],
+    "issue": null
+  },
+  {
+    "number": 81,
+    "id": "watch_081",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-03",
+    "mode": "watch",
+    "sessionId": "019d7dc9-0116-709d-8354-7d661b9dd95e",
+    "startedAt": "2026-04-11T18:23:38.262Z",
+    "finishedAt": "2026-04-11T18:23:42.609Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-03."
+    ],
+    "responsePreview": "watch-token-03",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-03"
+    ],
+    "issue": null
+  },
+  {
+    "number": 82,
+    "id": "watch_082",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-04",
+    "mode": "watch",
+    "sessionId": "019d7dc9-1212-71fe-a730-b4614e88a19a",
+    "startedAt": "2026-04-11T18:23:42.611Z",
+    "finishedAt": "2026-04-11T18:23:48.524Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-04."
+    ],
+    "responsePreview": "watch-token-04",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-04"
+    ],
+    "issue": null
+  },
+  {
+    "number": 83,
+    "id": "watch_083",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-05",
+    "mode": "watch",
+    "sessionId": "019d7dc9-292d-75a9-928f-42832e6dd1a4",
+    "startedAt": "2026-04-11T18:23:48.526Z",
+    "finishedAt": "2026-04-11T18:23:55.019Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-05."
+    ],
+    "responsePreview": "watch-token-05",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-05"
+    ],
+    "issue": null
+  },
+  {
+    "number": 84,
+    "id": "watch_084",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-06",
+    "mode": "watch",
+    "sessionId": "019d7dc9-428c-71cc-a639-32c71efc8e89",
+    "startedAt": "2026-04-11T18:23:55.021Z",
+    "finishedAt": "2026-04-11T18:24:00.537Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-06."
+    ],
+    "responsePreview": "watch-token-06",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-06"
+    ],
+    "issue": null
+  },
+  {
+    "number": 85,
+    "id": "watch_085",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-07",
+    "mode": "watch",
+    "sessionId": "019d7dc9-581a-75fa-adb3-913d21c52753",
+    "startedAt": "2026-04-11T18:24:00.539Z",
+    "finishedAt": "2026-04-11T18:24:06.289Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-07."
+    ],
+    "responsePreview": "watch-token-07",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-07"
+    ],
+    "issue": null
+  },
+  {
+    "number": 86,
+    "id": "watch_086",
+    "category": "watch",
+    "title": "Watch mode consumes immediate message watch-token-08",
+    "mode": "watch",
+    "sessionId": "019d7dc9-6e92-756b-86ab-ee41811ab004",
+    "startedAt": "2026-04-11T18:24:06.291Z",
+    "finishedAt": "2026-04-11T18:24:10.576Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Reply with the exact token watch-token-08."
+    ],
+    "responsePreview": "watch-token-08",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "watch consumed watch-token-08"
+    ],
+    "issue": null
+  },
+  {
+    "number": 87,
+    "id": "scratch_write_087",
+    "category": "scratch_write",
+    "title": "Approve scratch write scenario-write-01.txt",
+    "mode": "wake",
+    "sessionId": "019d7dc9-7f51-7294-a1de-8acaf521f8a6",
+    "startedAt": "2026-04-11T18:24:10.578Z",
+    "finishedAt": "2026-04-11T18:24:23.706Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-01.txt with exactly one line: scratch-marker-01. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "Created `/workspace/notes/scenario-write-01.txt` with the requested single line.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check",
+      "session_get_events"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dc9-934d-74c8-9bd2-2f3c569a35b9"
+    ],
+    "notes": [
+      "created notes/scenario-write-01.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 88,
+    "id": "scratch_write_088",
+    "category": "scratch_write",
+    "title": "Approve scratch write scenario-write-02.txt",
+    "mode": "wake",
+    "sessionId": "019d7dc9-b29c-72f8-b3e3-55d72b9a25c6",
+    "startedAt": "2026-04-11T18:24:23.709Z",
+    "finishedAt": "2026-04-11T18:24:36.365Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-02.txt with exactly one line: scratch-marker-02. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "Done.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dc9-d04a-77cc-a74c-e74b248e0bf4"
+    ],
+    "notes": [
+      "created notes/scenario-write-02.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 89,
+    "id": "scratch_write_089",
+    "category": "scratch_write",
+    "title": "Approve scratch write scenario-write-03.txt",
+    "mode": "wake",
+    "sessionId": "019d7dc9-e410-73bc-b8fe-d1768ec448e5",
+    "startedAt": "2026-04-11T18:24:36.369Z",
+    "finishedAt": "2026-04-11T18:24:51.944Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-03.txt with exactly one line: scratch-marker-03. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "Done. Created `/workspace/notes/scenario-write-03.txt` with the approved shell command.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dca-06eb-7098-a178-00c7847cd43b"
+    ],
+    "notes": [
+      "created notes/scenario-write-03.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 90,
+    "id": "scratch_write_090",
+    "category": "scratch_write",
+    "title": "Approve scratch write scenario-write-04.txt",
+    "mode": "wake",
+    "sessionId": "019d7dca-20ea-70cc-95a3-1419cff40045",
+    "startedAt": "2026-04-11T18:24:51.947Z",
+    "finishedAt": "2026-04-11T18:25:11.669Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-04.txt with exactly one line: scratch-marker-04. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "Done: created `/workspace/notes/scenario-write-04.txt` with `scratch-marker-04`.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check",
+      "permissions_describe"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dca-33fd-771f-a507-0579b9ddc187"
+    ],
+    "notes": [
+      "created notes/scenario-write-04.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 91,
+    "id": "scratch_write_091",
+    "category": "scratch_write",
+    "title": "Deny scratch write scenario-write-05.txt",
+    "mode": "wake",
+    "sessionId": "019d7dca-6df7-708b-bb67-fc28a0b6d363",
+    "startedAt": "2026-04-11T18:25:11.672Z",
+    "finishedAt": "2026-04-11T18:25:22.156Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-05.txt with exactly one line: scratch-marker-05. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "The requested `shell_run` was denied, so no action was taken. Waiting for a new instruction or an alternative approach that does not require that tool.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dca-89f9-7391-a87f-bb4398fd00b8"
+    ],
+    "notes": [
+      "denied notes/scenario-write-05.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 92,
+    "id": "scratch_write_092",
+    "category": "scratch_write",
+    "title": "Deny scratch write scenario-write-06.txt",
+    "mode": "wake",
+    "sessionId": "019d7dca-96ee-7138-9ae5-3232d6db4af4",
+    "startedAt": "2026-04-11T18:25:22.159Z",
+    "finishedAt": "2026-04-11T18:25:29.754Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-06.txt with exactly one line: scratch-marker-06. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "User denied the pending `shell_run` request, so no further action is justified without a new instruction.",
+    "toolNames": [
+      "shell_run"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dca-a806-723e-84fd-5661047b7766"
+    ],
+    "notes": [
+      "denied notes/scenario-write-06.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 93,
+    "id": "scratch_write_093",
+    "category": "scratch_write",
+    "title": "Deny scratch write scenario-write-07.txt",
+    "mode": "wake",
+    "sessionId": "019d7dca-b49c-750f-8cd1-105811c4bec9",
+    "startedAt": "2026-04-11T18:25:29.757Z",
+    "finishedAt": "2026-04-11T18:25:38.155Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-07.txt with exactly one line: scratch-marker-07. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "Understood. The requested `shell_run` was denied, so I won’t retry it. No other actionable request is present, so I’m going idle until a new instruction arrives.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dca-c8fd-77ce-abf1-a51ff60f56ab"
+    ],
+    "notes": [
+      "denied notes/scenario-write-07.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 94,
+    "id": "scratch_write_094",
+    "category": "scratch_write",
+    "title": "Deny scratch write scenario-write-08.txt",
+    "mode": "wake",
+    "sessionId": "019d7dca-d56d-739f-af17-864e8092fb37",
+    "startedAt": "2026-04-11T18:25:38.158Z",
+    "finishedAt": "2026-04-11T18:25:55.696Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use shell_run in /workspace to create notes/scenario-write-08.txt with exactly one line: scratch-marker-08. Do not ask for plain-text confirmation; rely on the runtime confirmation flow if it is required."
+    ],
+    "responsePreview": "Understood. The requested `shell_run` was denied, so I will not retry it. No further bounded action is justified without a new user instruction or a different approved approach.",
+    "toolNames": [
+      "shell_run",
+      "permissions_check",
+      "shell_describe"
+    ],
+    "approvalRequests": [
+      "shell_run:019d7dca-f4d9-733d-81dd-8dc12694b5e3"
+    ],
+    "notes": [
+      "denied notes/scenario-write-08.txt"
+    ],
+    "issue": null
+  },
+  {
+    "number": 95,
+    "id": "bootstrap_promote_095",
+    "category": "bootstrap_promotion",
+    "title": "Promote - Scenario-PROMOTE-SOUL into SOUL.md",
+    "mode": "wake",
+    "sessionId": "019d7dcb-19f2-701b-880b-36edbf7fbfc3",
+    "startedAt": "2026-04-11T18:25:55.699Z",
+    "finishedAt": "2026-04-11T18:26:17.433Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use resources_stage_from_substrate to copy /workspace/agent/SOUL.md into /workspace/drafts/SOUL.md. Append exactly \"- Scenario-PROMOTE-SOUL\" to the staged file. Use resources_compare_with_substrate to inspect the diff, then use resources_promote_to_substrate to replace SOUL.md if the requested line is the only intentional change. Do not ask for plain-text confirmation; rely on runtime approval if needed."
+    ],
+    "responsePreview": "Promotion completed: `SOUL.md` was updated in shared substrate from `/workspace/drafts/SOUL.md`. Version: `019d7dcb-5d6f-76ef-870f-81801d0c036e`",
+    "toolNames": [
+      "resources_promote_to_substrate",
+      "environment_describe",
+      "permissions_describe",
+      "resources_stage_from_substrate",
+      "read",
+      "write",
+      "resources_compare_with_substrate"
+    ],
+    "approvalRequests": [
+      "resources_promote_to_substrate:019d7dcb-5392-70ee-a868-56f609b6fce2"
+    ],
+    "notes": [
+      "promoted - Scenario-PROMOTE-SOUL into SOUL.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 96,
+    "id": "bootstrap_promote_096",
+    "category": "bootstrap_promotion",
+    "title": "Promote - Scenario-PROMOTE-IDENTITY into IDENTITY.md",
+    "mode": "wake",
+    "sessionId": "019d7dcb-6edc-771a-91ac-e2f7df5a2803",
+    "startedAt": "2026-04-11T18:26:17.437Z",
+    "finishedAt": "2026-04-11T18:26:38.322Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Use resources_stage_from_substrate to copy /workspace/agent/IDENTITY.md into /workspace/drafts/IDENTITY.md. Append exactly \"- Scenario-PROMOTE-IDENTITY\" to the staged file. Use resources_compare_with_substrate to inspect the diff, then use resources_promote_to_substrate to replace IDENTITY.md if the requested line is the only intentional change. Do not ask for plain-text confirmation; rely on runtime approval if needed."
+    ],
+    "responsePreview": "Promoted the staged IDENTITY.md edit into shared substrate.",
+    "toolNames": [
+      "resources_promote_to_substrate",
+      "environment_describe",
+      "permissions_describe",
+      "resources_stage_from_substrate",
+      "read",
+      "edit",
+      "resources_compare_with_substrate"
+    ],
+    "approvalRequests": [
+      "resources_promote_to_substrate:019d7dcb-acbf-7138-b765-07ef8f7b9f03"
+    ],
+    "notes": [
+      "promoted - Scenario-PROMOTE-IDENTITY into IDENTITY.md"
+    ],
+    "issue": null
+  },
+  {
+    "number": 97,
+    "id": "readback_097",
+    "category": "readback",
+    "title": "Read back - Scenario-PROMOTE-SOUL from SOUL.md",
+    "mode": "wake",
+    "sessionId": "019d7dcb-c074-77ce-b51f-872fd9b47698",
+    "startedAt": "2026-04-11T18:26:38.325Z",
+    "finishedAt": "2026-04-11T18:26:42.969Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read your current SOUL.md and quote the exact full line - Scenario-PROMOTE-SOUL, preserving the leading punctuation exactly as it appears in the file."
+    ],
+    "responsePreview": "- Scenario-PROMOTE-SOUL",
+    "toolNames": [],
+    "approvalRequests": [],
+    "notes": [
+      "read back - Scenario-PROMOTE-SOUL"
+    ],
+    "issue": null
+  },
+  {
+    "number": 98,
+    "id": "readback_098",
+    "category": "readback",
+    "title": "Read back - Scenario-PROMOTE-SOUL from SOUL.md",
+    "mode": "wake",
+    "sessionId": "019d7dcb-d29b-71d9-9ee7-1f0809b3085c",
+    "startedAt": "2026-04-11T18:26:42.972Z",
+    "finishedAt": "2026-04-11T18:26:47.406Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read your current SOUL.md and quote the exact full line - Scenario-PROMOTE-SOUL, preserving the leading punctuation exactly as it appears in the file."
+    ],
+    "responsePreview": "- Scenario-PROMOTE-SOUL",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "read back - Scenario-PROMOTE-SOUL"
+    ],
+    "issue": null
+  },
+  {
+    "number": 99,
+    "id": "readback_099",
+    "category": "readback",
+    "title": "Read back - Scenario-PROMOTE-IDENTITY from IDENTITY.md",
+    "mode": "wake",
+    "sessionId": "019d7dcb-e3f1-74cf-8975-ca44cf02055e",
+    "startedAt": "2026-04-11T18:26:47.409Z",
+    "finishedAt": "2026-04-11T18:26:54.276Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read your current IDENTITY.md and quote the exact full line - Scenario-PROMOTE-IDENTITY, preserving the leading punctuation exactly as it appears in the file."
+    ],
+    "responsePreview": "- Scenario-PROMOTE-IDENTITY",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "read back - Scenario-PROMOTE-IDENTITY"
+    ],
+    "issue": null
+  },
+  {
+    "number": 100,
+    "id": "readback_100",
+    "category": "readback",
+    "title": "Read back - Scenario-PROMOTE-IDENTITY from IDENTITY.md",
+    "mode": "wake",
+    "sessionId": "019d7dcb-fec6-7289-9672-f7489457933f",
+    "startedAt": "2026-04-11T18:26:54.279Z",
+    "finishedAt": "2026-04-11T18:27:00.639Z",
+    "status": "pass",
+    "stopReason": "idle",
+    "prompts": [
+      "Read your current IDENTITY.md and quote the exact full line - Scenario-PROMOTE-IDENTITY, preserving the leading punctuation exactly as it appears in the file."
+    ],
+    "responsePreview": "- Scenario-PROMOTE-IDENTITY",
+    "toolNames": [
+      "read"
+    ],
+    "approvalRequests": [],
+    "notes": [
+      "read back - Scenario-PROMOTE-IDENTITY"
+    ],
+    "issue": null
+  }
+]

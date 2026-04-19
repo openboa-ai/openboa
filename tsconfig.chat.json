@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.d.ts",
+    "src/chat/**/*.ts",
+    "src/chat/**/*.tsx",
+    "src/shell/chat/**/*.ts",
+    "src/shell/chat/**/*.tsx",
+    "src/shell/web/ChatApp.tsx",
+    "src/shell/web/ChatStandaloneApp.tsx",
+    "src/shell/web/chat/main.tsx",
+    "src/shell/web/chat-app-state.ts",
+    "src/shell/web/chat-seed.ts",
+    "src/shell/web/frame-state.ts",
+    "src/shell/web/components/chat/**/*.ts",
+    "src/shell/web/components/chat/**/*.tsx",
+    "src/shell/web/components/chrome/global-bar.tsx",
+    "src/shell/web/components/shared/**/*.ts",
+    "src/shell/web/components/shared/**/*.tsx",
+    "src/shell/web/components/system/**/*.ts",
+    "src/shell/web/components/system/**/*.tsx"
+  ]
+}

@@ -1,0 +1,44 @@
+# PR-chat-live-hydration
+
+- `Title`: Chat live hydration
+- `Branch`: `PR-017`
+- `Goal`: Move the chat shell from direct global demo imports to a shell-controller architecture where UI renders projections only and web bootstrap is limited to persistence plus provider wiring.
+- `Metric`: Active chat conversation, transcript view, composer state, and thread pane behavior should come from a shared shell runtime in `src/shell/chat` and respond to one selected sidebar item without any chat component importing fixed demo state directly.
+- `Quality target`: The chat surface should behave like a real application shell that owns and routes its active state below the web entrypoint, even if the underlying data is still seeded from demo fixtures for this frontier.
+- `Owned boundary`:
+  - `src/shell/web/App.tsx`
+  - `src/shell/chat/*`
+  - `src/shell/web/chat-runtime.ts`
+  - `src/shell/web/demo-shell.ts`
+  - `src/shell/web/components/chat/*`
+  - `src/shell/web/components/chrome/sidebar-section-list.tsx`
+  - `src/shell/web/components/chrome/surface-rail.tsx`
+  - `test/company-chat-runtime.test.ts`
+  - `wiki/frontiers.md`
+  - `wiki/harness.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-chat-live-hydration.md`
+  - `wiki/runs/RUN-*.md`
+- `Acceptance criteria`:
+  - `App` owns the active chat sidebar selection and persists it.
+  - `ChatWorkspace`, `TranscriptPane`, and `ThreadPane` receive chat state through props rather than importing static demo chat state directly.
+  - Changing the selected sidebar item changes the active conversation and transcript view.
+  - Conversations without an active thread collapse the thread pane and adjust the main layout.
+  - Focused inbox opens preserve the selected inbox row while opening the correct conversation state.
+- `Current status`: `looping`
+- `Current owner`: `auto-project`
+- `Current quality gap`: The shell controller and thread close/open behavior now sit below `App`, but the surface still hydrates from demo seed projections and does not yet route real post/open commands or production ledger data.
+- `Latest winning run`: `RUN-20260408-1505-chat-live-hydration-shell-controller-pass`
+- `Latest failed run`: `none`
+- `Final signoff checklist`:
+  - app-owned selection state is persisted and restored
+  - sidebar-driven conversation changes update transcript and composer state
+  - thread pane only appears when the selected transcript view has an active thread
+  - runtime-focused tests cover the new selection semantics
+  - next hydration gaps are clearly recorded in wiki memory
+- `Why this PR is not ready yet`: This is the first live hydration slice. It closes the state-ownership gap, but the shell still depends on demo projections and placeholder composer behavior rather than real chat truth and command flow.
+- `Open risks`:
+  - Work and Observe surfaces still rely on the static demo shell.
+  - Thread open state now supports close and reopen within the selected item, but it is still seeded from fixture transcript views rather than real thread commands.
+  - Composer and message actions still do not dispatch real commands.
+- `Next action`: Choose the next bounded hydration slice between real thread command flow and real composer/message dispatch.
