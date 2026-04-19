@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto"
-import { copyFile, mkdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises"
+import type { FileHandle } from "node:fs/promises"
+import { mkdir, open, readFile, unlink } from "node:fs/promises"
 import { dirname, join, posix as pathPosix, relative, resolve } from "node:path"
 import { sandboxLockPathForRoot } from "../sandbox/sandbox.js"
 import type { ResourceAttachment, ResourceAttachmentKind, Session } from "../schema/runtime.js"
@@ -47,6 +48,110 @@ function computeContentHash(content: string): string {
 
 function computeBufferHash(content: Uint8Array): string {
   return createHash("sha256").update(content).digest("hex")
+}
+
+function hasErrorCode(error: unknown, code: string): boolean {
+  return error instanceof Error && "code" in error && error.code === code
+}
+
+async function readBinaryFileIfPresent(actualPath: string): Promise<Uint8Array | null> {
+  let handle: FileHandle | null = null
+  try {
+    handle = await open(actualPath, "r")
+  } catch (error) {
+    if (hasErrorCode(error, "ENOENT")) {
+      return null
+    }
+    throw error
+  }
+
+  try {
+    return await handle.readFile()
+  } finally {
+    await handle.close()
+  }
+}
+
+async function readRequiredBinaryFile(input: {
+  actualPath: string
+  missingMessage: string
+  notFileMessage: string
+}): Promise<{
+  content: Uint8Array
+  bytes: number
+}> {
+  let handle: FileHandle | null = null
+  try {
+    handle = await open(input.actualPath, "r")
+  } catch (error) {
+    if (hasErrorCode(error, "ENOENT")) {
+      throw new Error(input.missingMessage)
+    }
+    throw error
+  }
+
+  try {
+    const fileStat = await handle.stat()
+    if (!fileStat.isFile()) {
+      throw new Error(input.notFileMessage)
+    }
+    const content = await handle.readFile()
+    return {
+      content,
+      bytes: fileStat.size,
+    }
+  } finally {
+    await handle.close()
+  }
+}
+
+async function writeFileWithSecureCreate(input: {
+  actualPath: string
+  content: string | Uint8Array
+  overwrite: boolean
+  existsMessage?: string
+}): Promise<void> {
+  let handle: FileHandle | null = null
+  try {
+    handle = input.overwrite
+      ? await open(input.actualPath, "r+").catch(async (error) => {
+          if (!hasErrorCode(error, "ENOENT")) {
+            throw error
+          }
+          return open(input.actualPath, "wx", 0o600)
+        })
+      : await open(input.actualPath, "wx", 0o600)
+  } catch (error) {
+    if (
+      !input.overwrite &&
+      (hasErrorCode(error, "EEXIST") || hasErrorCode(error, "EISDIR")) &&
+      input.existsMessage
+    ) {
+      throw new Error(input.existsMessage)
+    }
+    throw error
+  }
+
+  try {
+    if (input.overwrite) {
+      await handle.truncate(0)
+    }
+    if (typeof input.content === "string") {
+      await handle.writeFile(input.content, "utf8")
+    } else {
+      await handle.writeFile(input.content)
+    }
+  } finally {
+    await handle.close()
+  }
+}
+
+async function writeUtf8FileWithSecureCreate(actualPath: string, content: string): Promise<void> {
+  await writeFileWithSecureCreate({
+    actualPath,
+    content,
+    overwrite: true,
+  })
 }
 
 const STAGED_SUBSTRATE_MANIFEST_RELATIVE_PATH = ".openboa-runtime/staged-substrate.json"
@@ -130,18 +235,11 @@ export async function promoteSessionWorkspaceArtifact(input: {
     agentSubstrate,
     input.targetPath?.trim() || source.relativePath,
   )
-  const sourceStat = await stat(source.actualPath)
-  if (!sourceStat.isFile()) {
-    throw new Error(`Source path ${input.sourcePath} is not a file`)
-  }
-  if (!input.overwrite) {
-    const existing = await stat(target.actualPath).catch(() => null)
-    if (existing) {
-      throw new Error(
-        `Target ${target.relativePath} already exists in the shared substrate; pass overwrite=true to replace it`,
-      )
-    }
-  }
+  const { content: sourceContent, bytes: sourceBytes } = await readRequiredBinaryFile({
+    actualPath: source.actualPath,
+    missingMessage: `Source path ${input.sourcePath} was not found`,
+    notFileMessage: `Source path ${input.sourcePath} is not a file`,
+  })
   await withResourceWriteLease(
     {
       sessionId: input.session.id,
@@ -149,7 +247,12 @@ export async function promoteSessionWorkspaceArtifact(input: {
     },
     async () => {
       await mkdir(dirname(target.actualPath), { recursive: true })
-      await copyFile(source.actualPath, target.actualPath)
+      await writeFileWithSecureCreate({
+        actualPath: target.actualPath,
+        content: sourceContent,
+        overwrite: input.overwrite === true,
+        existsMessage: `Target ${target.relativePath} already exists in the shared substrate; pass overwrite=true to replace it`,
+      })
     },
   )
   await reconcileStagedSubstrateManifestAfterPromotion({
@@ -160,7 +263,7 @@ export async function promoteSessionWorkspaceArtifact(input: {
   return {
     sourcePath: source.relativePath,
     targetPath: target.relativePath,
-    bytes: sourceStat.size,
+    bytes: sourceBytes,
   }
 }
 
@@ -189,11 +292,11 @@ export async function stageSubstrateArtifactToSessionWorkspace(input: {
     sessionWorkspace,
     input.targetPath?.trim() || source.relativePath,
   )
-  const sourceStat = await stat(source.actualPath)
-  if (!sourceStat.isFile()) {
-    throw new Error(`Source path ${input.sourcePath} is not a file`)
-  }
-  const sourceContent = await readFile(source.actualPath)
+  const { content: sourceContent, bytes: sourceBytes } = await readRequiredBinaryFile({
+    actualPath: source.actualPath,
+    missingMessage: `Source path ${input.sourcePath} was not found`,
+    notFileMessage: `Source path ${input.sourcePath} is not a file`,
+  })
   const sourceContentHash = computeBufferHash(sourceContent)
   let reusedExisting = false
   let divergedFromSource = false
@@ -205,20 +308,24 @@ export async function stageSubstrateArtifactToSessionWorkspace(input: {
     },
     async () => {
       await mkdir(dirname(target.actualPath), { recursive: true })
-      const existing = await stat(target.actualPath).catch(() => null)
       const manifest = await readStagedSubstrateManifest(sessionWorkspace)
       const manifestEntry = manifest.entries[target.relativePath] ?? null
-      if (existing && !input.overwrite) {
+      const existingContent = await readBinaryFileIfPresent(target.actualPath)
+      if (existingContent && !input.overwrite) {
         if (manifestEntry?.sourcePath !== source.relativePath) {
           throw new Error(
             `Target ${target.relativePath} already exists in the session workspace; pass overwrite=true to replace it`,
           )
         }
         reusedExisting = true
-        targetContentHash = computeBufferHash(await readFile(target.actualPath))
+        targetContentHash = computeBufferHash(existingContent)
         divergedFromSource = targetContentHash !== sourceContentHash
       } else {
-        await copyFile(source.actualPath, target.actualPath)
+        await writeFileWithSecureCreate({
+          actualPath: target.actualPath,
+          content: sourceContent,
+          overwrite: true,
+        })
       }
       if (!reusedExisting) {
         targetContentHash = sourceContentHash
@@ -235,7 +342,7 @@ export async function stageSubstrateArtifactToSessionWorkspace(input: {
   return {
     sourcePath: source.relativePath,
     targetPath: target.relativePath,
-    bytes: sourceStat.size,
+    bytes: sourceBytes,
     reusedExisting,
     divergedFromSource,
     sourceContentHash,
@@ -357,14 +464,6 @@ export async function restoreSessionWorkspaceArtifactVersion(input: {
     "agent_workspace_substrate",
   )
   const target = resolveAttachedResourcePath(agentSubstrate, input.targetPath)
-  if (!input.overwrite) {
-    const existing = await stat(target.actualPath).catch(() => null)
-    if (existing) {
-      throw new Error(
-        `Target ${target.relativePath} already exists in the shared substrate; pass overwrite=true to replace it`,
-      )
-    }
-  }
   await withResourceWriteLease(
     {
       sessionId: input.session.id,
@@ -372,7 +471,12 @@ export async function restoreSessionWorkspaceArtifactVersion(input: {
     },
     async () => {
       await mkdir(dirname(target.actualPath), { recursive: true })
-      await writeFile(target.actualPath, input.content, "utf8")
+      await writeFileWithSecureCreate({
+        actualPath: target.actualPath,
+        content: input.content,
+        overwrite: input.overwrite === true,
+        existsMessage: `Target ${target.relativePath} already exists in the shared substrate; pass overwrite=true to replace it`,
+      })
     },
   )
   return {
@@ -390,10 +494,11 @@ async function withResourceWriteLease<T>(
 ): Promise<T> {
   const lockPath = sandboxLockPathForRoot(resolve(input.resource.sourceRef))
   await mkdir(dirname(lockPath), { recursive: true })
+  let handle: FileHandle | null = null
   try {
-    await writeFile(
-      lockPath,
-      JSON.stringify(
+    handle = await open(lockPath, "wx", 0o600)
+    await handle.writeFile(
+      `${JSON.stringify(
         {
           sessionId: input.sessionId,
           resourceId: input.resource.id,
@@ -402,11 +507,14 @@ async function withResourceWriteLease<T>(
         },
         null,
         2,
-      ),
-      { encoding: "utf8", flag: "wx" },
+      )}\n`,
+      "utf8",
     )
   } catch {
+    await handle?.close().catch(() => {})
     throw new Error(`Shared substrate ${input.resource.mountPath} is currently busy`)
+  } finally {
+    await handle?.close().catch(() => {})
   }
   try {
     return await operation()
@@ -459,9 +567,7 @@ async function writeStagedSubstrateManifest(
     STAGED_SUBSTRATE_MANIFEST_RELATIVE_PATH,
   )
   await mkdir(dirname(manifestPath), { recursive: true })
-  const tempPath = join(dirname(manifestPath), `staged-substrate.${Date.now()}.tmp`)
-  await writeFile(tempPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8")
-  await rename(tempPath, manifestPath)
+  await writeUtf8FileWithSecureCreate(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
 }
 
 async function reconcileStagedSubstrateManifestAfterPromotion(input: {

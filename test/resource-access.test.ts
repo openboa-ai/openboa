@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises"
+import { mkdir, open, readFile, writeFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { describe, expect, it } from "vitest"
 import {
@@ -324,8 +324,13 @@ describe("resource access", () => {
 
     const substrateRoot = join(companyDir, ".openboa", "agents", "alpha", "workspace")
     const lockPath = sandboxLockPathForRoot(substrateRoot)
-    await mkdir(join(substrateRoot), { recursive: true })
-    await writeFile(lockPath, "busy\n", "utf8")
+    await mkdir(dirname(lockPath), { recursive: true })
+    const lockHandle = await open(lockPath, "wx", 0o600)
+    try {
+      await lockHandle.writeFile("busy\n", "utf8")
+    } finally {
+      await lockHandle.close()
+    }
 
     await expect(
       promoteSessionWorkspaceArtifact({

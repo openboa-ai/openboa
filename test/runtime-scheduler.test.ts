@@ -1020,7 +1020,7 @@ describe("session orchestration", () => {
     const result = await orchestration.runAgentLoop("alpha", {
       watch: true,
       pollIntervalMs: 10,
-      idleTimeoutMs: 20,
+      idleTimeoutMs: 1000,
       maxCycles: 3,
       onSkip: (skip) => {
         skips.push({

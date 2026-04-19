@@ -1,0 +1,60 @@
+# PR-agent-runtime-code-scanning-hardening
+
+- `Title`: Close current GitHub code-scanning alerts in agent runtime surfaces
+- `Branch`: `feat/agent-runtime-code-scanning-hardening`
+- `Goal`: Remove the currently open GitHub CodeQL findings surfaced from the repository security code-scanning page, keeping the fix boundary inside the current agent runtime, resource, sandbox, session, and directly affected tests.
+- `Metric`: The April 19, 2026 open alert set for this owned boundary drops from `12` open alerts to `0` open alerts on the next GitHub CodeQL analysis, with no behavior regression in the affected runtime flows.
+- `Quality target`: Security hardening should be structural, not suppressive. Fixes must remove the underlying TOCTOU, insecure temp-file, and incomplete sanitization patterns instead of hiding alerts or weakening current runtime invariants.
+- `Owned boundary`:
+  - `.markdownlint-cli2.jsonc`
+  - `package.json`
+  - `scripts/check-doc-structure.mjs`
+  - `docs/README.md`
+  - `docs/acknowledgements.md`
+  - `docs/network.md`
+  - `docs/help/troubleshooting-docs.md`
+  - `docs/ko/README.md`
+  - `docs/ko/acknowledgements.md`
+  - `docs/ko/network.md`
+  - `docs/ko/help/troubleshooting-docs.md`
+  - `docs/ko/quickstart.md`
+  - `src/agents/resources/resource-access.ts`
+  - `src/agents/sessions/session-store.ts`
+  - `src/agents/sandbox/sandbox.ts`
+  - `src/agents/runtime/scenario-loop.ts`
+  - `test/helpers.ts`
+  - `test/resource-access.test.ts`
+  - `test/runtime-scheduler.test.ts`
+  - `test/sandbox.test.ts`
+  - `wiki/frontiers.md`
+  - `wiki/prs/PR-agent-runtime-code-scanning-hardening.md`
+- `GitHub alert set`:
+  - `#12` `js/file-system-race` in `src/agents/resources/resource-access.ts`
+  - `#11` `js/file-system-race` in `src/agents/resources/resource-access.ts`
+  - `#10` `js/insecure-temporary-file` in `test/sandbox.test.ts`
+  - `#9` `js/insecure-temporary-file` in `test/sandbox.test.ts`
+  - `#8` `js/insecure-temporary-file` in `test/resource-access.test.ts`
+  - `#7` `js/insecure-temporary-file` in `src/agents/sandbox/sandbox.ts`
+  - `#6` `js/insecure-temporary-file` in `src/agents/resources/resource-access.ts`
+  - `#5` `js/incomplete-sanitization` in `src/agents/runtime/scenario-loop.ts`
+  - `#4` `js/incomplete-sanitization` in `src/agents/runtime/scenario-loop.ts`
+  - `#3` `js/file-system-race` in `src/agents/sessions/session-store.ts`
+  - `#2` `js/insecure-temporary-file` in `src/agents/sandbox/sandbox.ts`
+  - `#1` `js/insecure-temporary-file` in `src/agents/sandbox/sandbox.ts`
+- `Acceptance criteria`:
+  - Atomic or descriptor-based file creation replaces the currently flagged file-system race patterns in the owned production files.
+  - Temporary file creation in the owned production files and directly affected tests uses secure, non-predictable, non-racy creation semantics.
+  - The currently flagged sanitization logic in `src/agents/runtime/scenario-loop.ts` no longer relies on incomplete manual escaping.
+  - No alert in the listed GitHub alert set remains open after the next CodeQL run on the PR branch.
+  - The docs CI path for this PR is green again through `pnpm check:docs`, `pnpm docs:linkcheck`, and `pnpm docs:validate`.
+  - The fixes stay inside the owned boundary and do not widen into unrelated agent/chat frontiers.
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: No blocking gap remains locally inside the widened PR boundary. PR `#11` still shows zero open PR-diff CodeQL alerts, local `pnpm check` is green, and the docs validation path is now green after replacing the broken `mintlify validate` dependency seam with repo-owned static structure validation plus a small docs heading cleanup. The remaining external gap is only GitHub rerunning the docs job on the updated branch state.
+- `Latest winning run`: `RUN-20260419-1957-agent-runtime-code-scanning-hardening-docs-validation-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: The branch state is locally ready for final signoff, but the updated docs validation path still needs one fresh GitHub CI pass on PR `#11` before the hosted checks reflect the new truth.
+- `Open risks`:
+  - File-lock semantics are correctness-sensitive, so the retained session-store lease changes should continue to rely on the now-green session-store and wake-session coverage.
+  - The repo-owned docs structure validator now guards navigation/file/title integrity, but it is intentionally narrower than the third-party Mintlify CLI preview runtime and should stay paired with `docs:routecheck` for real render debugging.
+- `Next action`: Push the docs-validation follow-up, confirm GitHub docs CI is green on PR `#11`, and request final signoff on the bounded frontier.

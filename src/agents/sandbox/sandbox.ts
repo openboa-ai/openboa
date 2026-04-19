@@ -1,9 +1,9 @@
 import { spawn } from "node:child_process"
 import { createHash } from "node:crypto"
 import { realpathSync } from "node:fs"
-import { appendFile, mkdir, readdir, readFile, stat, unlink, writeFile } from "node:fs/promises"
+import { mkdir, open, readdir, readFile, stat, unlink } from "node:fs/promises"
 import { tmpdir } from "node:os"
-import { dirname, posix as pathPosix, relative, resolve } from "node:path"
+import { dirname, join, posix as pathPosix, relative, resolve } from "node:path"
 import type {
   ResourceAttachment,
   Sandbox,
@@ -91,6 +91,36 @@ function normalizePositiveInteger(value: unknown): number | undefined {
   }
   const normalized = Math.floor(value)
   return normalized > 0 ? normalized : undefined
+}
+
+async function openWritableFile(actualPath: string): Promise<Awaited<ReturnType<typeof open>>> {
+  return open(actualPath, "a+", 0o600)
+}
+
+async function writeUtf8FileWithSecureCreate(actualPath: string, content: string): Promise<void> {
+  const handle = await openWritableFile(actualPath)
+  try {
+    await overwriteUtf8Handle(handle, content)
+  } finally {
+    await handle.close()
+  }
+}
+
+async function overwriteUtf8Handle(
+  handle: Awaited<ReturnType<typeof open>>,
+  content: string,
+): Promise<void> {
+  await handle.truncate(0)
+  await handle.write(content, 0, "utf8")
+}
+
+async function appendUtf8FileWithSecureCreate(actualPath: string, content: string): Promise<void> {
+  const handle = await openWritableFile(actualPath)
+  try {
+    await handle.appendFile(content, "utf8")
+  } finally {
+    await handle.close()
+  }
 }
 
 function sliceTextByLines(input: {
@@ -970,7 +1000,7 @@ export class LocalSandbox implements Sandbox {
     const content = typeof record.content === "string" ? record.content : ""
     await this.withWriteLease(resolution, async () => {
       await mkdir(dirname(resolution.actualPath), { recursive: true })
-      await writeFile(resolution.actualPath, content, "utf8")
+      await writeUtf8FileWithSecureCreate(resolution.actualPath, content)
     })
     return {
       text: `Wrote ${String(content.length)} chars to ${resolution.virtualPath}`,
@@ -992,7 +1022,7 @@ export class LocalSandbox implements Sandbox {
     const content = typeof record.content === "string" ? record.content : ""
     await this.withWriteLease(resolution, async () => {
       await mkdir(dirname(resolution.actualPath), { recursive: true })
-      await appendFile(resolution.actualPath, content, "utf8")
+      await appendUtf8FileWithSecureCreate(resolution.actualPath, content)
     })
     return {
       text: `Appended ${String(content.length)} chars to ${resolution.virtualPath}`,
@@ -1029,7 +1059,7 @@ export class LocalSandbox implements Sandbox {
       const nextContent = replaceAll
         ? current.split(oldText).join(newText)
         : current.replace(oldText, newText)
-      await writeFile(resolution.actualPath, nextContent, "utf8")
+      await writeUtf8FileWithSecureCreate(resolution.actualPath, nextContent)
       return {
         occurrences,
         replacements: replaceAll ? occurrences : 1,
@@ -2164,8 +2194,10 @@ export class LocalSandbox implements Sandbox {
       null,
       2,
     )
+    let handle: Awaited<ReturnType<typeof open>> | null = null
     try {
-      await writeFile(lockPath, `${owner}\n`, { encoding: "utf8", flag: "wx" })
+      handle = await open(lockPath, "wx", 0o600)
+      await handle.writeFile(`${owner}\n`, "utf8")
     } catch (error) {
       if (error instanceof Error && "code" in error && error.code === "EEXIST") {
         throw new Error(
@@ -2173,6 +2205,8 @@ export class LocalSandbox implements Sandbox {
         )
       }
       throw error
+    } finally {
+      await handle?.close().catch(() => {})
     }
 
     try {
@@ -2196,12 +2230,7 @@ function asListText(input: {
 }
 
 export function sandboxLockPathForRoot(rootPath: string): string {
-  const digest = createHash("sha256").update(resolve(rootPath)).digest("hex")
-  return joinLockDir(`${digest}.lock`)
-}
-
-function joinLockDir(fileName: string): string {
-  return resolve(tmpdir(), "openboa-sandbox-locks", fileName)
+  return join(resolve(rootPath), ".openboa-locks", "write.lock")
 }
 
 async function executeBoundedCommand(input: {

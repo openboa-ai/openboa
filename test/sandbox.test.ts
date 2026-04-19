@@ -1,4 +1,4 @@
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises"
+import { mkdir, open, readFile, unlink, writeFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { describe, expect, it } from "vitest"
 import { LocalSandbox, sandboxLockPathForRoot } from "../src/agents/sandbox/sandbox.js"
@@ -500,7 +500,12 @@ describe("local sandbox", () => {
     )
     const lockPath = sandboxLockPathForRoot(workspaceRoot)
     await mkdir(dirname(lockPath), { recursive: true })
-    await writeFile(lockPath, "locked\n", "utf8")
+    const firstLockHandle = await open(lockPath, "wx", 0o600)
+    try {
+      await firstLockHandle.writeFile("locked\n", "utf8")
+    } finally {
+      await firstLockHandle.close()
+    }
 
     try {
       const result = await sandboxExecute("exec_persistent_shell", {
@@ -630,8 +635,13 @@ describe("local sandbox", () => {
       "workspace",
     )
     const lockPath = sandboxLockPathForRoot(workspaceRoot)
-    await mkdir(workspaceRoot, { recursive: true })
-    await writeFile(lockPath, "busy\n", "utf8")
+    await mkdir(dirname(lockPath), { recursive: true })
+    const secondLockHandle = await open(lockPath, "wx", 0o600)
+    try {
+      await secondLockHandle.writeFile("busy\n", "utf8")
+    } finally {
+      await secondLockHandle.close()
+    }
 
     const blocked = await sandboxExecute("write_text", {
       path: "/workspace/notes/blocked.md",

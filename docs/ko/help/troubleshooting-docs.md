@@ -31,17 +31,17 @@ pnpm docs:validate
   <Accordion title="네비게이션에 페이지 미노출">
 증상: 파일은 있는데 사이드바/탭에 표시되지 않음.
 
-해결: `docs/docs.json`에 페이지 라우트를 추가하고 `mintlify validate`로 구조 무결성을 확인합니다.
+해결: `docs/docs.json`에 페이지 라우트를 추가하고 `pnpm docs:validate`로 구조 무결성을 확인합니다.
   </Accordion>
   <Accordion title="Markdown lint 실패">
 증상: `pnpm check:docs`가 포맷/헤딩 규칙으로 실패함.
 
 해결: linter 출력 라인 기준으로 수정하고, 헤딩 계층/리스트 형식을 일관되게 유지하며, 가능한 Mintlify 기본 컴포넌트를 사용합니다.
   </Accordion>
-  <Accordion title="Mintlify 검증 실패">
-증상: markdownlint는 통과했는데 `mintlify validate` 실패.
+  <Accordion title="문서 구조 검증 실패">
+증상: markdownlint는 통과했는데 `pnpm docs:validate` 실패.
 
-해결: 지원되지 않는 컴포넌트 문법, `docs/docs.json`의 탭/그룹/페이지 매핑, 존재하지 않는 라우트 링크를 점검합니다.
+해결: `docs/docs.json`의 탭/그룹/페이지 매핑, 라우트 대상 문서 존재 여부, 각 페이지의 `title` frontmatter 또는 최상위 제목 존재 여부를 점검합니다.
   </Accordion>
   <Accordion title="페이지는 있는데 Mintlify 500 에러가 뜸">
 증상: 라우트는 존재하는데 `Page not found!` 와 unexpected error 페이지가 렌더링됨.

@@ -35,6 +35,14 @@ For each frontier include:
 - active quality gap: the capability-ingress boundary is now isolated and narrow verification is green; the remaining gap is fresh live Codex soak evidence for this bounded set
 - next action: rerun live Codex soak coverage on the bounded capability-ingress frontier, then decide whether it can move toward final-signoff
 
+## PR-agent-runtime-code-scanning-hardening
+
+- current status: `final-signoff`
+- current owner: `human-final-signoff`
+- primary metric: all currently open GitHub code-scanning alerts in the owned boundary close on the next CodeQL pass, without weakening runtime/session/sandbox behavior
+- active quality gap: the owned boundary is locally closed end-to-end; PR `#11` has zero open PR-diff CodeQL alerts, local `pnpm check` is green, and the docs gate now passes locally after replacing the broken Mintlify validate seam with repo-owned docs structure validation. The remaining gap is only the fresh GitHub rerun of the docs job on the updated branch state.
+- next action: push the docs-validation follow-up, confirm GitHub docs CI is green on PR `#11`, then request final signoff on the bounded frontier
+
 ## PR-chat-live-hydration
 
 - current status: `looping`
