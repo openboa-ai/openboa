@@ -31,17 +31,17 @@ Fix: Ensure links target valid Mintlify routes (`/path`), keep routes aligned wi
   <Accordion title="Missing page in navigation">
 Symptom: page exists but does not appear in docs sidebar/tab structure.
 
-Fix: Add the page route to `docs/docs.json` and re-run `mintlify validate` to confirm structure integrity.
+ Fix: Add the page route to `docs/docs.json` and re-run `pnpm docs:validate` to confirm structure integrity.
   </Accordion>
   <Accordion title="Markdown lint failures">
 Symptom: `pnpm check:docs` fails on format or heading rules.
 
 Fix: Follow linter output line-by-line, keep heading hierarchy and list formatting consistent, and prefer native Mintlify components over custom HTML blocks.
   </Accordion>
-  <Accordion title="Mintlify build validation failure">
-Symptom: `mintlify validate` fails despite passing markdown lint.
+  <Accordion title="Docs structure validation failure">
+Symptom: `pnpm docs:validate` fails despite passing markdown lint.
 
-Fix: Check unsupported component syntax, verify tab/group/page mapping in `docs/docs.json`, and confirm all route links point to existing docs pages.
+Fix: Check `docs/docs.json` tab/group/page mapping, confirm every routed page exists under `docs/`, and ensure each page exposes a `title` frontmatter field or top-level heading.
   </Accordion>
   <Accordion title="Page loads with a Mintlify 500 error">
 Symptom: the route exists, but Mintlify shows `Page not found!` and an unexpected error page.

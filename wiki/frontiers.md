@@ -40,8 +40,8 @@ For each frontier include:
 - current status: `final-signoff`
 - current owner: `human-final-signoff`
 - primary metric: all currently open GitHub code-scanning alerts in the owned boundary close on the next CodeQL pass, without weakening runtime/session/sandbox behavior
-- active quality gap: no blocking gap remains inside the owned code-scanning boundary; PR `#11` now has zero open PR-diff CodeQL alerts and local `pnpm check` is green after widening the scheduler skip-dedupe test's idle-timeout slack, while the remaining docs markdownlint failure is a repo-wide baseline outside this frontier
-- next action: request final signoff on the bounded security hardening frontier, or open a separate docs-baseline frontier if merge-readiness is required
+- active quality gap: the owned boundary is locally closed end-to-end; PR `#11` has zero open PR-diff CodeQL alerts, local `pnpm check` is green, and the docs gate now passes locally after replacing the broken Mintlify validate seam with repo-owned docs structure validation. The remaining gap is only the fresh GitHub rerun of the docs job on the updated branch state.
+- next action: push the docs-validation follow-up, confirm GitHub docs CI is green on PR `#11`, then request final signoff on the bounded frontier
 
 ## PR-chat-live-hydration
 

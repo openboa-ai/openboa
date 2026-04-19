@@ -3,8 +3,6 @@ title: "Docs"
 summary: "Doc landing pages and documentation navigation for openboa."
 ---
 
-# Docs
-
 Minimal stable docs set for openboa.
 Mintlify navigation is configured in `docs/docs.json`, and theme styling is defined in `docs/style.css`.
 

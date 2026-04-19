@@ -3,8 +3,6 @@ title: "Acknowledgements"
 summary: "Projects and communities that shaped openboa."
 ---
 
-# Acknowledgements
-
 We want to explicitly acknowledge a few projects and communities that shaped openboa.
 
 - **Claude**, for the reminder that agent systems become more useful when they are shaped as coherent runtimes rather than as a pile of isolated features.

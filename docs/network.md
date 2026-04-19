@@ -6,8 +6,6 @@ read_when:
   - You are validating how governance constraints affect connectivity decisions
 ---
 
-# Network
-
 This page is the network documentation hub for openboa.
 Use it to navigate what exists now and what should be specified next.
 

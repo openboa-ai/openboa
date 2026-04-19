@@ -25,10 +25,10 @@ pnpm check:docs
 pnpm docs:linkcheck
 ```
 
-## 문서 검증(Mintlify)
+## 문서 구조 검증
 
 ```bash
-cd docs && pnpm dlx mintlify validate
+pnpm docs:validate
 ```
 
 ## 참고
