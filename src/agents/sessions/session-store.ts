@@ -714,29 +714,38 @@ export class SessionStore {
       await handle?.close().catch(() => undefined)
     }
 
+    const current = await this.readWakeLease(lockPath)
+    if (!isWakeLeaseStale(current, staleAfterMs, options.treatInvalidAsStale)) {
+      return null
+    }
+
+    const retiredPath = `${lockPath}.${owner}.stale`
     try {
-      handle = await open(lockPath, "r+")
+      await rename(lockPath, retiredPath)
     } catch (error) {
       if (hasErrorCode(error, "ENOENT")) {
+        return null
+      }
+      if (hasErrorCode(error, "EEXIST")) {
+        await rm(retiredPath, { force: true }).catch(() => undefined)
         return null
       }
       throw error
     }
 
     try {
-      const current = await readWakeLeaseRecordFromHandle(handle)
-      if (!isWakeLeaseStale(current, staleAfterMs, options.treatInvalidAsStale)) {
-        return null
-      }
+      handle = await open(lockPath, "wx", 0o600)
       const record = buildWakeLeaseRecord(scopeId, owner)
       await writeWakeLeaseRecordToHandle(handle, record)
-      const confirmed = await this.readWakeLease(lockPath)
-      if (confirmed?.owner !== owner || confirmed.acquiredAt !== record.acquiredAt) {
+      return record
+    } catch (error) {
+      if (hasErrorCode(error, "EEXIST") || hasErrorCode(error, "ENOENT")) {
         return null
       }
-      return record
+      throw error
     } finally {
-      await handle.close()
+      await handle?.close().catch(() => undefined)
+      await rm(retiredPath, { force: true }).catch(() => undefined)
     }
   }
 

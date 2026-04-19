@@ -40,8 +40,8 @@ For each frontier include:
 - current status: `looping`
 - current owner: `auto-project`
 - primary metric: all currently open GitHub code-scanning alerts in the owned boundary close on the next CodeQL pass, without weakening runtime/session/sandbox behavior
-- active quality gap: the first hardening pass is in branch state and the directly affected `resource-access` / `sandbox` tests now pass locally, but the frontier still lacks a fresh CodeQL result proving the `12`-alert set is actually closed and still needs narrow session-store coverage for the stale-lease rewrite
-- next action: run narrow session-store coverage, then run GitHub CodeQL on the bounded hardening branch and compare the new alert set against the April 19, 2026 baseline
+- active quality gap: the second hardening pass is in branch state and the narrow local bar is green, but the frontier still lacks a fresh PR-diff CodeQL result proving alerts `#19-#22` are closed; the PR also carries a repo-wide docs markdownlint failure outside this frontier
+- next action: push the second hardening pass, rerun GitHub CodeQL on PR `#11`, and compare the resulting PR-diff alert set against alerts `#19-#22`
 
 ## PR-chat-live-hydration
 

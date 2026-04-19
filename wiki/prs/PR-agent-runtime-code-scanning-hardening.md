@@ -10,6 +10,7 @@
   - `src/agents/sessions/session-store.ts`
   - `src/agents/sandbox/sandbox.ts`
   - `src/agents/runtime/scenario-loop.ts`
+  - `test/helpers.ts`
   - `test/resource-access.test.ts`
   - `test/sandbox.test.ts`
   - `wiki/frontiers.md`
@@ -35,12 +36,12 @@
   - The fixes stay inside the owned boundary and do not widen into unrelated agent/chat frontiers.
 - `Current status`: `looping`
 - `Current owner`: `auto-project`
-- `Current quality gap`: One bounded hardening pass is now kept in branch state and the directly affected `resource-access` / `sandbox` tests pass locally, but the frontier still needs a fresh GitHub CodeQL result proving that the April 19, 2026 `12`-alert set actually closed plus narrow session-store coverage for the stale-lease rewrite.
-- `Latest winning run`: `RUN-20260419-1702-agent-runtime-code-scanning-hardening-pass`
+- `Current quality gap`: The second hardening pass is now kept in branch state and the narrow local bar is green, but the frontier still needs a fresh GitHub CodeQL result on PR `#11` proving that the four PR-diff alerts discovered after the first push are actually closed. The PR also still carries a repo-wide docs markdownlint failure that is reproducible locally and sits outside this frontier.
+- `Latest winning run`: `RUN-20260419-1833-agent-runtime-code-scanning-hardening-pass-2`
 - `Latest failed run`: `none`
-- `Why this PR is not ready yet`: The first structural fix pass is implemented and the directly affected tests now run locally, but the PR has not yet met its external acceptance bar because GitHub still needs to analyze the new branch state and the lease rewrite still deserves one more narrow local pass in `session-store`.
+- `Why this PR is not ready yet`: The second structural fix pass is implemented and the narrow local checks are green, but the PR has not yet met its external acceptance bar because GitHub still needs to analyze the updated branch state after alert set `#19-#22`, and the PR still shows an unrelated docs markdownlint failure outside the owned boundary.
 - `Open risks`:
-  - File-lock and lease semantics are correctness-sensitive; the stale-takeover rewrite still needs targeted runtime coverage even though local Vitest execution is now available.
-  - CodeQL can still surface follow-on alerts if adjacent path-based write flows outside the current alert set remain structurally similar.
-  - GitHub CodeQL remains the real acceptance surface for this frontier, so local green tests alone do not prove alert closure.
-- `Next action`: Run narrow session-store coverage for the stale-lease rewrite, then trigger GitHub CodeQL on the bounded hardening branch and compare the result against the April 19, 2026 `12`-alert set.
+  - CodeQL can still surface follow-on alerts on the PR merge ref even when the head commit has zero branch alerts, so the PR-diff gate remains the deciding surface.
+  - File-lock semantics are correctness-sensitive; the rename-based stale takeover should remain covered by the local session-store tests that are now green.
+  - The repo-wide docs markdownlint baseline is still failing and will keep `required-ci` red even if this frontier closes all code-scanning alerts.
+- `Next action`: Push the second hardening pass, rerun GitHub CodeQL on PR `#11`, and compare the PR-diff alert set against alerts `#19-#22`.

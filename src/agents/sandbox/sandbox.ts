@@ -97,28 +97,12 @@ function hasErrorCode(error: unknown, code: string): boolean {
   return error instanceof Error && "code" in error && error.code === code
 }
 
-async function openWritableFile(actualPath: string): Promise<{
-  handle: Awaited<ReturnType<typeof open>>
-  created: boolean
-}> {
-  try {
-    return {
-      handle: await open(actualPath, "r+"),
-      created: false,
-    }
-  } catch (error) {
-    if (!hasErrorCode(error, "ENOENT")) {
-      throw error
-    }
-    return {
-      handle: await open(actualPath, "wx", 0o600),
-      created: true,
-    }
-  }
+async function openWritableFile(actualPath: string): Promise<Awaited<ReturnType<typeof open>>> {
+  return open(actualPath, "a+", 0o600)
 }
 
 async function writeUtf8FileWithSecureCreate(actualPath: string, content: string): Promise<void> {
-  const { handle } = await openWritableFile(actualPath)
+  const handle = await openWritableFile(actualPath)
   try {
     await overwriteUtf8Handle(handle, content)
   } finally {
@@ -135,14 +119,9 @@ async function overwriteUtf8Handle(
 }
 
 async function appendUtf8FileWithSecureCreate(actualPath: string, content: string): Promise<void> {
-  const { handle, created } = await openWritableFile(actualPath)
+  const handle = await openWritableFile(actualPath)
   try {
-    if (created) {
-      await handle.write(content, 0, "utf8")
-      return
-    }
-    const current = await handle.readFile("utf8")
-    await overwriteUtf8Handle(handle, `${current}${content}`)
+    await handle.appendFile(content, "utf8")
   } finally {
     await handle.close()
   }

@@ -1,10 +1,12 @@
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises"
-import { tmpdir } from "node:os"
+import { homedir } from "node:os"
 import { join } from "node:path"
 import { ensureAgentConfig, ensureOpenboaSetupWithOptions } from "../src/agents/setup.js"
 
 export async function createCompanyFixture(): Promise<string> {
-  const companyDir = await mkdtemp(join(tmpdir(), "openboa-company-"))
+  const fixtureRoot = join(homedir(), ".openboa-test-fixtures")
+  await mkdir(fixtureRoot, { recursive: true, mode: 0o700 })
+  const companyDir = await mkdtemp(join(fixtureRoot, "openboa-company-"))
   await ensureOpenboaSetupWithOptions(companyDir, {
     defaultProvider: "openai-codex",
     authProviders: ["codex"],
