@@ -701,8 +701,9 @@ export class SessionStore {
     },
   ): Promise<SessionWakeLeaseRecord | null> {
     const record = buildWakeLeaseRecord(scopeId, owner)
-    const candidatePath = `${lockPath}.${owner}.candidate`
-    const retiredPath = `${lockPath}.${owner}.stale`
+    const lockSuffix = sanitizeLockSuffix(owner)
+    const candidatePath = `${lockPath}.${lockSuffix}.candidate`
+    const retiredPath = `${lockPath}.${lockSuffix}.stale`
     let handle: FileHandle | null = null
     try {
       handle = await open(candidatePath, "wx", 0o600)
@@ -1458,6 +1459,10 @@ function parseWakeLeaseRecord(raw: string): SessionWakeLeaseRecord | null {
 
 function formatWakeLeaseRecord(record: SessionWakeLeaseRecord): string {
   return `${JSON.stringify(record, null, 2)}\n`
+}
+
+function sanitizeLockSuffix(value: string): string {
+  return value.replace(/[^A-Za-z0-9._-]/g, "_")
 }
 
 function wakeLeaseAgeMs(record: SessionWakeLeaseRecord | null): number {
