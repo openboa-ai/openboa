@@ -12,6 +12,7 @@
   - `src/agents/runtime/scenario-loop.ts`
   - `test/helpers.ts`
   - `test/resource-access.test.ts`
+  - `test/runtime-scheduler.test.ts`
   - `test/sandbox.test.ts`
   - `wiki/frontiers.md`
   - `wiki/prs/PR-agent-runtime-code-scanning-hardening.md`
@@ -34,14 +35,13 @@
   - The currently flagged sanitization logic in `src/agents/runtime/scenario-loop.ts` no longer relies on incomplete manual escaping.
   - No alert in the listed GitHub alert set remains open after the next CodeQL run on the PR branch.
   - The fixes stay inside the owned boundary and do not widen into unrelated agent/chat frontiers.
-- `Current status`: `looping`
-- `Current owner`: `auto-project`
-- `Current quality gap`: The second hardening pass is now kept in branch state and the narrow local bar is green, but the frontier still needs a fresh GitHub CodeQL result on PR `#11` proving that the four PR-diff alerts discovered after the first push are actually closed. The PR also still carries a repo-wide docs markdownlint failure that is reproducible locally and sits outside this frontier.
-- `Latest winning run`: `RUN-20260419-1833-agent-runtime-code-scanning-hardening-pass-2`
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: No blocking gap remains inside the owned security hardening boundary. PR `#11` now shows zero open PR-diff CodeQL alerts, and local `pnpm check` is green after widening the scheduler skip-dedupe test's idle-timeout slack so slower CI runners no longer trip an unrelated wall-clock edge. The remaining docs markdownlint failure is still reproducible locally and remains outside this frontier.
+- `Latest winning run`: `RUN-20260419-1849-agent-runtime-code-scanning-hardening-check-stability`
 - `Latest failed run`: `none`
-- `Why this PR is not ready yet`: The second structural fix pass is implemented and the narrow local checks are green, but the PR has not yet met its external acceptance bar because GitHub still needs to analyze the updated branch state after alert set `#19-#22`, and the PR still shows an unrelated docs markdownlint failure outside the owned boundary.
+- `Why this PR is not ready yet`: The bounded security frontier is ready for final signoff, but landing still depends on a separate decision about the repo-wide docs markdownlint baseline because `required-ci` will remain red while that unrelated job fails.
 - `Open risks`:
-  - CodeQL can still surface follow-on alerts on the PR merge ref even when the head commit has zero branch alerts, so the PR-diff gate remains the deciding surface.
-  - File-lock semantics are correctness-sensitive; the rename-based stale takeover should remain covered by the local session-store tests that are now green.
-  - The repo-wide docs markdownlint baseline is still failing and will keep `required-ci` red even if this frontier closes all code-scanning alerts.
-- `Next action`: Push the second hardening pass, rerun GitHub CodeQL on PR `#11`, and compare the PR-diff alert set against alerts `#19-#22`.
+  - File-lock semantics are correctness-sensitive, so the retained session-store lease changes should continue to rely on the now-green session-store and wake-session coverage.
+  - The repo-wide docs markdownlint baseline is still failing and will keep `required-ci` red until it is handled in a separate frontier.
+- `Next action`: Push the scheduler stability follow-up, confirm GitHub `check` is green on PR `#11`, and request final signoff on the bounded security hardening frontier.

@@ -37,11 +37,11 @@ For each frontier include:
 
 ## PR-agent-runtime-code-scanning-hardening
 
-- current status: `looping`
-- current owner: `auto-project`
+- current status: `final-signoff`
+- current owner: `human-final-signoff`
 - primary metric: all currently open GitHub code-scanning alerts in the owned boundary close on the next CodeQL pass, without weakening runtime/session/sandbox behavior
-- active quality gap: the second hardening pass is in branch state and the narrow local bar is green, but the frontier still lacks a fresh PR-diff CodeQL result proving alerts `#19-#22` are closed; the PR also carries a repo-wide docs markdownlint failure outside this frontier
-- next action: push the second hardening pass, rerun GitHub CodeQL on PR `#11`, and compare the resulting PR-diff alert set against alerts `#19-#22`
+- active quality gap: no blocking gap remains inside the owned code-scanning boundary; PR `#11` now has zero open PR-diff CodeQL alerts and local `pnpm check` is green after widening the scheduler skip-dedupe test's idle-timeout slack, while the remaining docs markdownlint failure is a repo-wide baseline outside this frontier
+- next action: request final signoff on the bounded security hardening frontier, or open a separate docs-baseline frontier if merge-readiness is required
 
 ## PR-chat-live-hydration
 
