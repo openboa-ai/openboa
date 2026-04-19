@@ -1,0 +1,160 @@
+@import "@fontsource/geist-sans/400.css";
+@import "@fontsource/geist-sans/500.css";
+@import "@fontsource/geist-sans/600.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
+@import "tailwindcss";
+
+@source "../../**/*.{ts,tsx}";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.5rem;
+  --radius-micro: 0.125rem;
+  --radius-small: 0.25rem;
+  --radius-control: 0.375rem;
+  --radius-card: 0.5rem;
+  --radius-panel: 0.75rem;
+  --radius-pill: 9999px;
+  --control-2xs: 1rem;
+  --control-xs: 1.25rem;
+  --control-sm: 1.5rem;
+  --control-md: 1.75rem;
+  --control-lg: 2rem;
+  --control-xl: 2.25rem;
+  --background: #0a0a0b;
+  --foreground: #fafafa;
+  --card: #101012;
+  --card-foreground: #fafafa;
+  --popover: #101012;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #141416;
+  --secondary-foreground: #ededed;
+  --muted: rgba(255, 255, 255, 0.028);
+  --muted-foreground: #9f9fa5;
+  --accent: #171719;
+  --accent-foreground: #fafafa;
+  --destructive: #c86e7c;
+  --destructive-foreground: #fafafa;
+  --border: rgba(255, 255, 255, 0.075);
+  --input: #121214;
+  --ring: rgba(255, 255, 255, 0.16);
+  --panel-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006));
+  --panel-gradient-strong: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.032),
+    rgba(255, 255, 255, 0.012)
+  );
+  --shell-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.016), rgba(255, 255, 255, 0));
+  --shell-ambient:
+    radial-gradient(circle at top center, rgba(255, 255, 255, 0.02), transparent 20%),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.012), transparent 22%);
+  --surface-0: #0a0a0b;
+  --surface-1: #101012;
+  --surface-2: #141416;
+  --surface-3: #18181b;
+  --brand-green: #8cc92a;
+  --brand-green-foreground: #081005;
+  --workflow-green: #67b88e;
+  --workflow-green-soft: rgba(103, 184, 142, 0.13);
+  --workflow-green-line: rgba(103, 184, 142, 0.32);
+  --workflow-amber: #c99a58;
+  --workflow-amber-soft: rgba(201, 154, 88, 0.13);
+  --workflow-amber-line: rgba(201, 154, 88, 0.32);
+  --workflow-red: #c86e7c;
+  --workflow-red-soft: rgba(200, 110, 124, 0.13);
+  --workflow-red-line: rgba(200, 110, 124, 0.32);
+  --signal-strong: #f3f3f4;
+  --signal-soft: rgba(255, 255, 255, 0.055);
+  --signal-line: rgba(255, 255, 255, 0.2);
+  --shadow-ring: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-ring-soft: 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 8px 30px rgba(0, 0, 0, 0.32);
+  --shadow-card-strong: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 14px 40px rgba(0, 0, 0, 0.42);
+  --shadow-button-solid: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --font-display: "Geist", "Geist Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-ui: "Geist", "Geist Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Geist", "Geist Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+  --sidebar: #0b0b0c;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #141416;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(255, 255, 255, 0.2);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-feature-settings:
+      "cv05" 1,
+      "cv11" 1,
+      "ss03" 1,
+      "ss07" 1;
+    background: var(--shell-ambient), #000;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  ::selection {
+    background: rgba(255, 255, 255, 0.14);
+    color: #f3f3f4;
+  }
+}

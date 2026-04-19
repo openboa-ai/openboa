@@ -1,0 +1,23 @@
+# RUN-20260408-2038-agent-learnings-memory-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Status`: `kept`
+- `Hypothesis`: The proactive runtime is still below production MVP if reusable lessons disappear into transient summaries. Adding a validated learnings contract plus durable `learn/` capture and `MEMORY.md` promotion should strengthen runtime continuity without teaching the Agent core any Chat or Work semantics.
+- `Changes`:
+  - Extended the runtime loop contract in `src/agents/runtime/heartbeat.ts` so a bounded turn can emit validated reusable `learnings` alongside follow-ups and queued activations.
+  - Added `src/agents/memory/learnings-store.ts` to persist durable runtime learnings under:
+    - `.openboa/agents/<id>/learn/lessons.jsonl`
+    - `.openboa/agents/<id>/learn/corrections.jsonl`
+    - `.openboa/agents/<id>/learn/errors.jsonl`
+  - Updated `src/agents/runtime/scheduler.ts` so learnings are captured on successful runtime execution and promoted into the managed runtime section of workspace `MEMORY.md`.
+  - Updated `src/agents/workspace/bootstrap-files.ts` so seeded `MEMORY.md` includes a managed runtime learnings section that can be rewritten safely without clobbering the rest of the workspace file.
+  - Updated `src/agents/memory/runtime-memory-store.ts` so `session-state.md` and `working-buffer.md` reflect learnings captured during the latest turn.
+- `Verification`:
+  - `pnpm test -- test/agent-runtime.test.ts test/runtime-scheduler.test.ts`
+  - `pnpm test -- test/agent-runtime.test.ts test/runtime-scheduler.test.ts test/index.test.ts test/chat-command-service.test.ts test/codex-model-client.test.ts`
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm check:docs`
+  - `git diff --check -- src test docs wiki`
+- `Result`: The Agent runtime now compounds bounded lessons instead of dropping them after one turn. Reusable learnings are validated, stored durably under `learn/`, visible in runtime continuity files, and promotable into workspace `MEMORY.md`, which tightens runtime continuity while keeping the core agent boundary domain-agnostic.
+- `Next gap`: The remaining production-MVP gaps are daemon-grade scheduler ownership outside the CLI loop and the final thin capability/runtime seam needed before Chat or Work can hydrate richer context without leaking domain knowledge into Agent core.

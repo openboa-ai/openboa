@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Skill Audit"
+  short_description: "Audit local skills against the harness"
+  default_prompt: "Use $harness-skill-audit to analyze this repository and recommend which local skills should be kept, removed, or rewritten for the current harness."

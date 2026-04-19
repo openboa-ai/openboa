@@ -1,0 +1,27 @@
+# PR-agent-internal-syntheses
+
+- `Title`: Add remaining internal agent synthesis notes
+- `Branch`: `feat/agent-internal-syntheses`
+- `Goal`: Preserve the remaining internal agent synthesis notes as bounded wiki memory instead of leaving them as untracked local files in one developer worktree.
+- `Metric`: the missing synthesis notes for primitive discipline and Claude gap analysis exist under `wiki/syntheses/` on a standalone branch, and no code or public docs boundary is widened by this capture.
+- `Quality target`: internal memory should stay resumable and reviewable without depending on local untracked files or ad hoc filesystem state.
+- `Owned boundary`:
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-agent-internal-syntheses.md`
+  - `wiki/runs/RUN-20260419-1352-agent-internal-syntheses-pass.md`
+  - `wiki/syntheses/agent-runtime-primitive-discipline.md`
+  - `wiki/syntheses/claude-managed-agents-gap-analysis.md`
+- `Acceptance criteria`:
+  - both synthesis notes are present under `wiki/syntheses/`
+  - the bounded branch adds no runtime or public docs surface
+  - `git diff --check` passes
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: no blocking quality gap is visible inside the owned synthesis boundary; the remaining step is review rather than another writeback loop
+- `Latest winning run`: `RUN-20260419-1352-agent-internal-syntheses-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: none inside the owned boundary; this frontier is waiting on review rather than more implementation work.
+- `Open risks`:
+  - these synthesis notes are internal memory and should not be promoted into public docs without a separate boundary
+- `Next action`: request review on the bounded internal-syntheses PR, and only reopen if the notes need factual correction or a clearer internal boundary

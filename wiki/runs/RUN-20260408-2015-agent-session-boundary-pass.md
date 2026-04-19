@@ -1,0 +1,21 @@
+# RUN-20260408-2015-agent-session-boundary-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Status`: `kept`
+- `Hypothesis`: `sender_id` leaking into `agent chat` means the CLI is still mixing Chat routing with the pure Agent session runtime. If `agent chat` becomes a session-bound command and the shared chat path stays under `openboa chat`, the runtime boundary will better match the intended Agent/Chat split.
+- `Change`:
+  - Added `src/agents/command/session-chat.ts` as a pure agent session command path inside `src/agents/`.
+  - Added `src/agents/sessions/context-builder.ts` so prior session turns become agent context without going through Chat.
+  - Changed `openboa agent chat` to use `--session` instead of `--sender-id`.
+  - Kept shared sender/conversation routing under `openboa chat`.
+  - Updated CLI tests and quickstart examples to reflect the new split.
+- `Verification`:
+  - `pnpm test -- test/index.test.ts test/agent-runtime.test.ts test/runtime-scheduler.test.ts test/codex-model-client.test.ts`
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm check:docs`
+  - `git diff --check -- src test docs wiki`
+  - `pnpm openboa agent chat --name alpha --session main --message "hello there"`
+  - `pnpm openboa chat --agent alpha --sender-id founder --message "hello via shared chat"`
+- `Result`: `agent chat` is now a session-bound Agent command and no longer requires Chat identity inputs, while `openboa chat` remains the shared-chat ingress that owns sender identity and ledger routing.
+- `Next gap`: Chat still directly instantiates concrete agent runtime details in `src/chat/policy/command-service.ts`; the next clean boundary step is a thinner runtime port for Chat-facing delivery.

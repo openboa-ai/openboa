@@ -1,0 +1,346 @@
+#content > h1:first-of-type {
+  display: none !important;
+}
+
+:root {
+  /* Green (brand) */
+  --boa-green-50: #eef7df;
+  --boa-green-100: #dff1c4;
+  --boa-green-200: #c9e69a;
+  --boa-green-300: #acd968;
+  --boa-green-400: #97cf45;
+  --boa-green-500: #8cc92a;
+  --boa-green-600: #67a525;
+  --boa-green-700: #478d24;
+  --boa-green-800: #163525;
+  --boa-green-900: #050d0a;
+
+  /* Gray (text + border) */
+  --boa-gray-50: #fef6e2;
+  --boa-gray-100: #ede5d4;
+  --boa-gray-200: #d7d1c8;
+  --boa-gray-300: #b8b3aa;
+  --boa-gray-400: #9aa09a;
+  --boa-gray-500: #768688;
+  --boa-gray-600: #5e6c67;
+  --boa-gray-700: #44504b;
+  --boa-gray-800: #2e3c38;
+  --boa-gray-900: #162d24;
+
+  /* Sand (surfaces) */
+  --boa-sand-50: #fef6e2;
+  --boa-sand-100: #f7eccf;
+  --boa-sand-200: #eedcb6;
+  --boa-sand-300: #eddbb7;
+  --boa-sand-400: #e3cb9e;
+  --boa-sand-500: #d8be89;
+  --boa-sand-600: #cdae7b;
+  --boa-sand-700: #bdaa75;
+  --boa-sand-800: #9d8e61;
+  --boa-sand-900: #7a6e4d;
+
+  /* RGB aliases for Mintlify CSS vars that expect RGB triplets */
+  --boa-green-50-rgb: 238 247 223;
+  --boa-green-100-rgb: 223 241 196;
+  --boa-green-200-rgb: 201 230 154;
+  --boa-green-300-rgb: 172 217 104;
+  --boa-green-400-rgb: 151 207 69;
+  --boa-green-500-rgb: 140 201 42;
+  --boa-green-600-rgb: 103 165 37;
+  --boa-green-700-rgb: 71 141 36;
+  --boa-green-800-rgb: 22 53 37;
+  --boa-green-900-rgb: 5 13 10;
+
+  --boa-gray-50-rgb: 254 246 226;
+  --boa-gray-100-rgb: 237 229 212;
+  --boa-gray-200-rgb: 215 209 200;
+  --boa-gray-300-rgb: 184 179 170;
+  --boa-gray-400-rgb: 154 160 154;
+  --boa-gray-500-rgb: 118 134 136;
+  --boa-gray-600-rgb: 94 108 103;
+  --boa-gray-700-rgb: 68 80 75;
+  --boa-gray-800-rgb: 46 60 56;
+  --boa-gray-900-rgb: 22 45 36;
+
+  --boa-sand-50-rgb: 254 246 226;
+  --boa-sand-100-rgb: 247 236 207;
+  --boa-sand-200-rgb: 238 220 182;
+  --boa-sand-300-rgb: 237 219 183;
+  --boa-sand-400-rgb: 227 203 158;
+  --boa-sand-500-rgb: 216 190 137;
+  --boa-sand-600-rgb: 205 174 123;
+  --boa-sand-700-rgb: 189 170 117;
+  --boa-sand-800-rgb: 157 142 97;
+  --boa-sand-900-rgb: 122 110 77;
+
+  /*
+   * Keep Mintlify layout/background defaults intact.
+   * Lock bg to near-current palette tones and remap accent tokens.
+   */
+  --background-light: var(--boa-sand-50-rgb);
+  --background-dark: var(--boa-green-900-rgb);
+  --primary: var(--boa-green-500-rgb);
+  --primary-light: var(--boa-green-400-rgb);
+  --primary-dark: var(--boa-green-700-rgb);
+  --tooltip-foreground: var(--boa-gray-900-rgb);
+}
+
+html.dark {
+  --background-dark: var(--boa-green-900-rgb);
+  --primary-light: var(--boa-green-500-rgb);
+  --tooltip-foreground: var(--boa-sand-50-rgb);
+}
+
+/* Text tone alignment */
+.prose p,
+.prose li,
+.prose span,
+.prose td,
+.prose th {
+  color: rgb(var(--boa-gray-700-rgb));
+}
+
+.prose strong,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: rgb(var(--boa-gray-900-rgb));
+}
+
+html.dark .prose p,
+html.dark .prose li,
+html.dark .prose span,
+html.dark .prose td,
+html.dark .prose th {
+  color: rgb(var(--boa-gray-300-rgb));
+}
+
+html.dark .prose strong,
+html.dark .prose h1,
+html.dark .prose h2,
+html.dark .prose h3,
+html.dark .prose h4 {
+  color: rgb(var(--boa-sand-50-rgb));
+}
+
+/* Sidebar hover/active palette */
+#sidebar-content a.group {
+  color: rgb(var(--boa-gray-700-rgb)) !important;
+}
+
+#sidebar-content a.group:hover {
+  color: rgb(var(--primary-dark)) !important;
+  border-color: rgb(var(--boa-green-400-rgb) / 0.9) !important;
+  background: rgb(var(--boa-green-100-rgb) / 0.28) !important;
+}
+
+html.dark #sidebar-content a.group {
+  color: rgb(var(--boa-gray-300-rgb)) !important;
+}
+
+html.dark #sidebar-content a.group:hover {
+  color: rgb(var(--primary)) !important;
+  border-color: rgb(var(--boa-green-600-rgb) / 0.95) !important;
+  background: rgb(var(--boa-green-800-rgb) / 0.56) !important;
+}
+
+#sidebar-content a.group.text-primary,
+#sidebar-content a.group.dark\:text-primary-light {
+  color: rgb(var(--primary-dark)) !important;
+  border-color: rgb(var(--primary-dark)) !important;
+  background: rgb(var(--boa-green-100-rgb) / 0.35) !important;
+}
+
+html.dark #sidebar-content a.group.text-primary,
+html.dark #sidebar-content a.group.dark\:text-primary-light {
+  color: rgb(var(--primary)) !important;
+  border-color: rgb(var(--primary)) !important;
+  background: rgb(var(--boa-green-800-rgb) / 0.7) !important;
+}
+
+/* Callouts use palette colors, including the requested intro sentence treatment. */
+.callout[data-callout-type="note"] {
+  border-color: var(--boa-green-200) !important;
+  background: var(--boa-sand-100) !important;
+  color: var(--boa-gray-900) !important;
+}
+
+.callout[data-callout-type="tip"] {
+  border-color: var(--boa-green-400) !important;
+  background: var(--boa-green-50) !important;
+  color: var(--boa-gray-900) !important;
+}
+
+.callout[data-callout-type="warning"] {
+  border-color: var(--boa-sand-600) !important;
+  background: var(--boa-sand-200) !important;
+  color: var(--boa-gray-900) !important;
+}
+
+html.dark .callout[data-callout-type="note"] {
+  border-color: var(--boa-green-700) !important;
+  background: rgb(var(--boa-green-800-rgb) / 0.75) !important;
+  color: var(--boa-sand-50) !important;
+}
+
+html.dark .callout[data-callout-type="tip"] {
+  border-color: var(--boa-green-600) !important;
+  background: rgb(var(--boa-green-800-rgb) / 0.72) !important;
+  color: var(--boa-sand-50) !important;
+}
+
+html.dark .callout[data-callout-type="warning"] {
+  border-color: var(--boa-sand-700) !important;
+  background: rgb(var(--boa-sand-900-rgb) / 0.36) !important;
+  color: var(--boa-sand-50) !important;
+}
+
+.callout [data-component-part="callout-content"] {
+  color: inherit !important;
+}
+
+.callout [data-component-part="callout-icon"] svg {
+  color: currentcolor !important;
+  fill: currentcolor !important;
+}
+
+/* Keep custom styling lightweight and content-scoped. */
+.boa-token {
+  white-space: nowrap;
+}
+
+.boa-token-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.boa-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.2rem;
+  border: 1px solid var(--boa-gray-200);
+  vertical-align: middle;
+}
+
+.boa-swatch--green-50 {
+  background: var(--boa-green-50);
+}
+
+.boa-swatch--green-100 {
+  background: var(--boa-green-100);
+}
+
+.boa-swatch--green-200 {
+  background: var(--boa-green-200);
+}
+
+.boa-swatch--green-300 {
+  background: var(--boa-green-300);
+}
+
+.boa-swatch--green-400 {
+  background: var(--boa-green-400);
+}
+
+.boa-swatch--green-500 {
+  background: var(--boa-green-500);
+}
+
+.boa-swatch--green-600 {
+  background: var(--boa-green-600);
+}
+
+.boa-swatch--green-700 {
+  background: var(--boa-green-700);
+}
+
+.boa-swatch--green-800 {
+  background: var(--boa-green-800);
+}
+
+.boa-swatch--green-900 {
+  background: var(--boa-green-900);
+}
+
+.boa-swatch--gray-50 {
+  background: var(--boa-gray-50);
+}
+
+.boa-swatch--gray-100 {
+  background: var(--boa-gray-100);
+}
+
+.boa-swatch--gray-200 {
+  background: var(--boa-gray-200);
+}
+
+.boa-swatch--gray-300 {
+  background: var(--boa-gray-300);
+}
+
+.boa-swatch--gray-400 {
+  background: var(--boa-gray-400);
+}
+
+.boa-swatch--gray-500 {
+  background: var(--boa-gray-500);
+}
+
+.boa-swatch--gray-600 {
+  background: var(--boa-gray-600);
+}
+
+.boa-swatch--gray-700 {
+  background: var(--boa-gray-700);
+}
+
+.boa-swatch--gray-800 {
+  background: var(--boa-gray-800);
+}
+
+.boa-swatch--gray-900 {
+  background: var(--boa-gray-900);
+}
+
+.boa-swatch--sand-50 {
+  background: var(--boa-sand-50);
+}
+
+.boa-swatch--sand-100 {
+  background: var(--boa-sand-100);
+}
+
+.boa-swatch--sand-200 {
+  background: var(--boa-sand-200);
+}
+
+.boa-swatch--sand-300 {
+  background: var(--boa-sand-300);
+}
+
+.boa-swatch--sand-400 {
+  background: var(--boa-sand-400);
+}
+
+.boa-swatch--sand-500 {
+  background: var(--boa-sand-500);
+}
+
+.boa-swatch--sand-600 {
+  background: var(--boa-sand-600);
+}
+
+.boa-swatch--sand-700 {
+  background: var(--boa-sand-700);
+}
+
+.boa-swatch--sand-800 {
+  background: var(--boa-sand-800);
+}
+
+.boa-swatch--sand-900 {
+  background: var(--boa-sand-900);
+}

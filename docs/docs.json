@@ -1,0 +1,249 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "openboa",
+  "description": "BOA documentation for a chat-first shipping wedge and CLI-first current runtime",
+  "theme": "mint",
+  "colors": {
+    "primary": "#8CC92A",
+    "dark": "#162D24",
+    "light": "#FEF6E2"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "label": "GitHub",
+      "href": "https://github.com/openboa-ai/openboa"
+    }
+  },
+  "search": {
+    "prompt": "Search BOA docs..."
+  },
+  "navigation": {
+    "languages": [
+      {
+        "language": "en",
+        "tabs": [
+          {
+            "tab": "Overview",
+            "groups": [
+              {
+                "group": "Start Here",
+                "pages": [
+                  "index",
+                  "introduction",
+                  "acknowledgements",
+                  "architecture",
+                  "help/faq"
+                ]
+              },
+              {
+                "group": "BOA Model",
+                "pages": [
+                  "concepts/business-as-agent",
+                  "concepts/core-doctrine",
+                  "concepts/system-contracts",
+                  "help/non-goals",
+                  "network"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Agents",
+            "groups": [
+              {
+                "group": "Start Here",
+                "pages": [
+                  "agent",
+                  "agents/capabilities",
+                  "agent-runtime",
+                  "agents/workspace",
+                  "agents/memory",
+                  "agents/context",
+                  "agents/resilience",
+                  "agents/bootstrap",
+                  "agents/architecture"
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "agents/sessions",
+                  "agents/environments",
+                  "agents/resources",
+                  "agents/harness",
+                  "agents/sandbox",
+                  "agents/tools"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Chat",
+            "groups": [
+              {
+                "group": "Chat Surface",
+                "pages": ["chat", "chat-kernel"]
+              }
+            ]
+          },
+          {
+            "tab": "Work",
+            "groups": [
+              {
+                "group": "Work Surface",
+                "pages": ["work"]
+              }
+            ]
+          },
+          {
+            "tab": "Observe",
+            "groups": [
+              {
+                "group": "Observe Surface",
+                "pages": ["observe"]
+              }
+            ]
+          },
+          {
+            "tab": "Build",
+            "groups": [
+              {
+                "group": "Workflow",
+                "pages": [
+                  "quickstart",
+                  "development",
+                  "contribution-guide",
+                  "help/troubleshooting-docs"
+                ]
+              },
+              {
+                "group": "Canon",
+                "pages": ["harness", "PRODUCT", "DESIGN", "QUALITY", "foundation/colors"]
+              }
+            ]
+          },
+          {
+            "tab": "Help",
+            "groups": [
+              {
+                "group": "Help",
+                "pages": ["help/faq", "help/troubleshooting-docs"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "ko",
+        "tabs": [
+          {
+            "tab": "개요",
+            "groups": [
+              {
+                "group": "시작하기",
+                "pages": [
+                  "ko/index",
+                  "ko/introduction",
+                  "ko/acknowledgements",
+                  "ko/architecture",
+                  "ko/help/faq"
+                ]
+              },
+              {
+                "group": "BOA 모델",
+                "pages": [
+                  "ko/concepts/business-as-agent",
+                  "ko/concepts/core-doctrine",
+                  "ko/concepts/system-contracts",
+                  "ko/help/non-goals",
+                  "ko/network"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "에이전트",
+            "groups": [
+              {
+                "group": "시작하기",
+                "pages": [
+                  "ko/agent",
+                  "ko/agents/capabilities",
+                  "ko/agent-runtime",
+                  "ko/agents/workspace",
+                  "ko/agents/memory",
+                  "ko/agents/context",
+                  "ko/agents/resilience",
+                  "ko/agents/bootstrap",
+                  "ko/agents/architecture"
+                ]
+              },
+              {
+                "group": "레퍼런스",
+                "pages": [
+                  "ko/agents/sessions",
+                  "ko/agents/environments",
+                  "ko/agents/resources",
+                  "ko/agents/harness",
+                  "ko/agents/sandbox",
+                  "ko/agents/tools"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "채팅",
+            "groups": [
+              {
+                "group": "채팅 표면",
+                "pages": ["ko/chat"]
+              }
+            ]
+          },
+          {
+            "tab": "워크",
+            "groups": [
+              {
+                "group": "워크 표면",
+                "pages": ["ko/work"]
+              }
+            ]
+          },
+          {
+            "tab": "옵저브",
+            "groups": [
+              {
+                "group": "옵저브 표면",
+                "pages": ["ko/observe"]
+              }
+            ]
+          },
+          {
+            "tab": "빌드",
+            "groups": [
+              {
+                "group": "기여와 현재 구조",
+                "pages": [
+                  "ko/quickstart",
+                  "ko/development",
+                  "ko/contribution-guide",
+                  "ko/foundation/colors"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "도움말",
+            "groups": [
+              {
+                "group": "도움말",
+                "pages": ["ko/help/faq", "ko/help/troubleshooting-docs"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

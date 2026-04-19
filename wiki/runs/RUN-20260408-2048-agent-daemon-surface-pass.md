@@ -1,0 +1,28 @@
+# RUN-20260408-2048-agent-daemon-surface-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Status`: `kept`
+- `Hypothesis`: The Agent MVP is still not signoff-ready if the only long-lived loop is the generic scheduler command and legacy runtime session ids can still break real daemon execution. Adding a dedicated daemon surface plus migration-safe runtime session handling should close the remaining agent-bound production blockers.
+- `Changes`:
+  - Added `src/agents/runtime/daemon.ts` as a dedicated long-lived daemon surface above the owner-aware scheduler.
+  - Extended `src/agents/runtime/scheduler.ts` with explicit stop reasons and daemon-friendly stop signaling.
+  - Updated `src/index.ts` with:
+    - `openboa agent daemon --name <agent-id> ...`
+    - richer scheduler output including owner id and stop reason
+  - Added migration-safe runtime session normalization through `tryNormalizeAgentSessionId(...)` so legacy heartbeat records no longer crash daemon execution.
+  - Added tests for:
+    - daemon CLI execution
+    - legacy runtime session id migration
+    - owner-aware scheduler status
+- `Verification`:
+  - `pnpm test -- test/index.test.ts test/runtime-scheduler.test.ts`
+  - `pnpm test -- test/agent-runtime.test.ts test/index.test.ts`
+  - `pnpm test -- test/runtime-scheduler.test.ts test/index.test.ts test/agent-runtime.test.ts test/chat-command-service.test.ts test/codex-model-client.test.ts`
+  - `pnpm openboa agent activate --name alpha --origin manual --reason runtime.manual-review --message "Review your current runtime state and decide one bounded next move."`
+  - `pnpm openboa agent daemon --name alpha --stop-when-idle --max-cycles 3`
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm check:docs`
+  - `git diff --check -- src test docs wiki`
+- `Result`: The Agent layer now has a dedicated daemon surface that can own the scheduler lease for a longer-lived loop, stop cleanly when idle, and survive old runtime data without crashing. That closes the last concrete agent-bound blocker found by real CLI smoke.
+- `Next gap`: The remaining gaps now sit outside this frontier: richer capability-aware context hydration for Chat/Work and broader external activation sources beyond the current CLI/self-driven triggers.

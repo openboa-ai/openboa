@@ -1,0 +1,38 @@
+# PR-docs-public-boundary-ia
+
+- `Title`: Tighten public docs IA and enforce the docs/public boundary
+- `Branch`: `feat/docs-public-boundary-ia`
+- `Goal`: Land the remaining public docs sweep as a standalone frontier: promote a clearer top-level docs IA around `Agent`, `Chat`, `Work`, and `Observe`; add the missing Agent hub and deeper explanatory pages; and enforce that `docs/` stays a published surface rather than an internal authoring layer.
+- `Metric`: readers can navigate the public docs through a coherent top-level IA and a forward Agent reading order, while docs checks fail if internal `AGENTS.md` files or `wiki/`/`raw/` links leak into `docs/`.
+- `Quality target`: the public docs should read like a stable published surface, not a second copy of repo-internal memory. The Agent docs should teach meaning -> capabilities -> runtime -> concrete surfaces -> architecture -> reference without forcing readers to reverse-engineer the codebase.
+- `Owned boundary`:
+  - `README.md`
+  - `docs/**`
+  - `package.json`
+  - `scripts/check-doc-public-boundary.mjs`
+  - `wiki/AGENTS.md`
+  - `wiki/index.md`
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-docs-public-boundary-ia.md`
+  - `wiki/runs/RUN-20260419-1318-docs-public-boundary-ia-pass.md`
+  - `wiki/syntheses/README.md`
+  - `wiki/syntheses/docs-authoring-boundary.md`
+  - `wiki/syntheses/agent-docs-information-architecture.md`
+- `Acceptance criteria`:
+  - public docs navigation is organized around stable top-level tabs and a readable Agent hub flow
+  - the missing public Agent pages (`hub`, `capabilities`, `workspace`, `memory`, `context`, `bootstrap`, `architecture`) exist in both English and Korean where intended by the IA
+  - `docs/**/AGENTS.md` no longer exists
+  - public docs do not route readers into `wiki/` or `raw/`
+  - `check:docs`, `docs:linkcheck`, and `docs:validate` all pass on this bounded branch
+  - public/internal docs separation is enforced by `scripts/check-doc-public-boundary.mjs`
+- `Current status`: `looping`
+- `Current owner`: `auto-project`
+- `Current quality gap`: The isolated docs branch now passes its docs-only verification bar. The remaining gap is PR publication and review, not another docs-architecture slice.
+- `Latest winning run`: `RUN-20260419-1318-docs-public-boundary-ia-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: Verification is green on the isolated branch, but the standalone docs PR still needs to be published and reviewed before promotion.
+- `Open risks`:
+  - Top-level docs IA can drift from Mintlify navigation if docs pages are added without updating `docs/docs.json`
+  - Public docs can silently regress into internal authoring notes unless the new boundary check stays wired into `check:docs`
+- `Next action`: open the standalone docs PR from this isolated branch, then move the frontier based on review rather than more scope slicing

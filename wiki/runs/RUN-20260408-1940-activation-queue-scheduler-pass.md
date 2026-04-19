@@ -1,0 +1,21 @@
+# RUN-20260408-1940-activation-queue-scheduler-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Goal`: Turn the runtime-ingress design into a runnable proactive slice by adding a durable activation queue, a scheduler path, and agent-private runtime continuity files.
+- `Baseline`: The agent runtime could execute one bounded activation through a stable ingress, but every activation was immediate and manual. There was no queue, no lease-based scheduler flow, and no long-lived checkpoint/session-state/working-buffer files.
+- `Change`: Added `src/agents/runtime/activation-queue.ts`, `src/agents/runtime/scheduler.ts`, and `src/agents/memory/runtime-memory-store.ts`; taught `SelfDirectedAgentRuntime` to read runtime continuity into each bounded turn; extended the CLI with `agent activate` and `agent scheduler`; and documented the runnable flow in `docs/quickstart.md`.
+- `Quality axis targeted`: proactive runtime continuity and runnable self-direction
+- `Evidence`:
+  - [activation-queue.ts](/src/agents/runtime/activation-queue.ts)
+  - [scheduler.ts](/src/agents/runtime/scheduler.ts)
+  - [runtime-memory-store.ts](/src/agents/memory/runtime-memory-store.ts)
+  - [self-directed-runtime.ts](/src/agents/runtime/self-directed-runtime.ts)
+  - [quickstart.md](/docs/quickstart.md)
+  - [activation-queue.test.ts](/test/activation-queue.test.ts)
+  - [runtime-scheduler.test.ts](/test/runtime-scheduler.test.ts)
+- `Measurement`: A local user can now enqueue activations, run a scheduler loop against the same bounded runtime ingress, persist durable activation history, and observe checkpoint/session-state/working-buffer files update under `.openboa/agents/<id>/runtime/`.
+- `Decision`: `keep`
+- `Net quality delta`: The runtime is no longer just heartbeat-shaped. It now behaves like a minimal proactive worker engine with a durable activation queue and a single runnable scheduler path.
+- `Why this is not done yet`: The runtime still lacks richer learning/promotion memory, broader external event producers, and a thinner runtime port between Chat policy and the concrete agent runtime.
+- `What quality gap remains`: The next slice should strengthen runtime-native memory and upstream activation producers rather than inventing a second execution path.
+- `Next recommended owner`: `auto-coding`

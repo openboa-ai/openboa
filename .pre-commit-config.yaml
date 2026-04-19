@@ -1,0 +1,63 @@
+minimum_pre_commit_version: "3.7.0"
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: detect-private-key
+        exclude: "(^|/)(\\.secrets\\.baseline$|\\.detect-secrets\\.cfg$)"
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        stages: [manual]
+        args:
+          - --baseline
+          - .secrets.baseline
+          - --exclude-files
+          - "(^|/)(dist/|coverage/|node_modules/|pnpm-lock\\.yaml$)"
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+        stages: [manual]
+
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.22.0
+    hooks:
+      - id: zizmor
+        stages: [manual]
+        args:
+          - --persona=regular
+          - --min-severity=medium
+          - --min-confidence=medium
+
+  - repo: local
+    hooks:
+      - id: commit-msg-convention
+        name: commit-msg-convention
+        entry: bash scripts/validate-commit-msg.sh
+        language: system
+        pass_filenames: true
+        stages: [commit-msg]
+
+      - id: mandatory-pre-commit-profile
+        name: mandatory-pre-commit-profile
+        entry: pnpm precommit:check
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: advisory-test-profile
+        name: advisory-test-profile
+        entry: pnpm test
+        language: system
+        pass_filenames: false
+        stages: [manual]

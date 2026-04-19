@@ -1,0 +1,53 @@
+# PR-agent-runtime-resilience
+
+- `Title`: Make Agent runtime resilience a first-class contract
+- `Branch`: `codex/agent-runtime-resilience`
+- `Goal`: Promote resilience from an implied runtime property into an explicit Agent contract that is visible in config, setup artifacts, scheduler behavior, operator status, and the live acceptance harness, while shrinking default live verification to a curated `30/30` suite.
+- `Metric`: openboa Agent runtime exposes a named resilience profile with explicit retry and replay policy, wake/orchestration paths consume that policy instead of hardcoded timing, legacy agents self-heal into the current bootstrap contract, and the default live scenario loop closes at curated `30/30` with catalog-owned suite and coverage metadata.
+- `Quality target`: Agent runtime resilience should read like a durable, inspectable execution contract rather than scattered defensive behavior. Verification should be small enough to run often, yet explicit enough that curated coverage cannot silently drift when scenario titles or categories are refactored.
+- `Owned boundary`:
+  - `src/agents/agent-config.ts`
+  - `src/agents/auth/provider-auth-plan.ts`
+  - `src/agents/setup.ts`
+  - `src/agents/runtime/harness.ts`
+  - `src/agents/runtime/orchestration.ts`
+  - `src/agents/runtime/wake-session.ts`
+  - `src/agents/runtime/session-activation-queue.ts`
+  - `src/agents/workspace/bootstrap-files.ts`
+  - `src/agents/memory/learnings-store.ts`
+  - `src/agents/runtime/scenario-loop.ts`
+  - `src/index.ts`
+  - `docs/docs.json`
+  - `docs/quickstart.md`
+  - `docs/agents/resilience.md`
+  - `docs/ko/agents/resilience.md`
+  - `test/agent-config.test.ts`
+  - `test/provider-auth-plan.test.ts`
+  - `test/setup.test.ts`
+  - `test/agent-runtime.test.ts`
+  - `test/activation-queue.test.ts`
+  - `test/runtime-scheduler.test.ts`
+  - `test/index.test.ts`
+  - `test/workspace-memory-bootstrap.test.ts`
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-agent-runtime-resilience.md`
+  - `wiki/runs/RUN-20260419-1127-agent-runtime-resilience-pass.md`
+- `Acceptance criteria`:
+  - Agent config includes an explicit resilience profile and retry policy defaults.
+  - Spawn/setup seeds resilience policy into durable setup artifacts that can be read through runtime tools.
+  - Wake and orchestration paths use resilience policy for recoverable wake retry delay, wake-failure replay delay, and pending-event backoff rather than hardcoded constants.
+  - Legacy agents missing shared bootstrap files self-heal before setup or memory reads fail.
+  - Auth entry surfaces accept the OpenAI provider's canonical runtime id and auth-target alias without CLI/help drift.
+  - The default `scenario-loop` command runs the curated suite instead of the full suite.
+  - Curated scenario membership and required coverage live in the scenario catalog itself rather than in title-matching filters.
+  - A fresh live Codex-backed curated scenario loop passes `30/30`.
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: No blocking runtime or operational gap is currently visible inside the owned resilience boundary. The remaining gap is human review of the bounded committed frontier rather than another agent-found issue.
+- `Latest winning run`: `RUN-20260419-1204-agent-runtime-resilience-final-signoff`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: The frontier is ready for human final signoff. Remaining branch dirt exists outside this PR's owned boundary and should be handled by follow-on frontiers rather than by reopening this one.
+- `Open risks`:
+  - Second-provider conformance remains outside this frontier until credentials exist for another live backend.
+- `Next action`: Request final signoff on the bounded resilience frontier. If review finds a concrete defect inside the committed boundary, reopen this PR with that narrower gap.

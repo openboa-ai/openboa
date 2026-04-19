@@ -1,0 +1,17 @@
+appId: "ai.openboa.shell"
+productName: "openboa"
+artifactName: "openboa-${version}-${os}-${arch}.${ext}"
+asar: true
+npmRebuild: false
+
+directories:
+  output: "artifacts/desktop"
+
+files:
+  - "dist/**/*"
+  - "package.json"
+
+mac:
+  category: "public.app-category.productivity"
+  target:
+    - "zip"

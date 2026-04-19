@@ -1,0 +1,24 @@
+# RUN-20260408-1825-agent-runtime-heartbeat-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Triggered by`: `user redirected the next frontier from Chat hydration to Agent self-direction`
+- `Owner skill`: `auto-coding`
+- `Baseline`: Agent runtime was provider-aware and session-aware, but it still behaved like a one-turn runner. There was no explicit heartbeat config, no runtime-owned checkpoint file, no CLI heartbeat entrypoint, and agent-side context types still depended on a chat-owned type definition.
+- `Hypothesis`: Adding a bounded self-directed heartbeat runtime with explicit wake reasons, loop directives, and runtime persistence will strengthen the Agent core without making it Chat-aware.
+- `Single bounded change`: Add heartbeat config defaults, shared generic LLM context types, a runtime heartbeat store and self-directed runtime service, a CLI heartbeat command, and narrow tests for persistence plus follow-up enforcement.
+- `Quality axis targeted`: `agent runtime self-direction`
+- `Measurement`:
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm test -- test/agent-runtime.test.ts test/index.test.ts test/setup.test.ts`
+- `Evidence`:
+  - heartbeat config is now part of `AgentConfig`
+  - spawn/setup creates `.openboa/agents/<id>/runtime`
+  - heartbeat records persist under `.openboa/agents/<id>/runtime/heartbeat.jsonl`
+  - CLI supports `openboa agent heartbeat --name <agent-id>`
+  - runtime enforces maximum consecutive follow-ups
+  - agent runtime imports a shared LLM context type instead of a chat-owned one
+- `Net quality delta`: `Agent core now has a real self-directed loop primitive instead of only chat-triggered one-turn execution.`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-pm`
+- `Remaining quality gap`: This slice still lacks a scheduler, wake queue, external wake sources, and a chat-facing runtime port that hides concrete agent runner internals from `command-service`.

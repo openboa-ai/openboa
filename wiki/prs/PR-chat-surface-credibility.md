@@ -1,0 +1,42 @@
+# PR-chat-surface-credibility
+
+- `Title`: Chat surface credibility
+- `Branch`: `PR-017` (legacy branch label; active frontier uses this page as the canonical work definition)
+- `Goal`: Make the chat surface read like a believable team chat client by tightening the shared design system and then applying it consistently across navigation, transcript, composer, and thread.
+- `Metric`: Component-level captures of the sidebar header, sidebar list, transcript header, message row, composer, and thread should show no obvious alignment, spacing, hierarchy, or affordance defects that require human cleanup.
+- `Quality target`: Shared primitives and repeated layout patterns must become stable enough that the surface no longer depends on one-off visual exceptions to look coherent.
+- `Owned boundary`:
+  - `src/shell/web/components/chat/*`
+  - `src/shell/web/components/chrome/*`
+  - `src/components/ui/button.tsx`
+  - `src/components/ui/badge.tsx`
+  - `src/components/ui/sidebar.tsx`
+  - `src/components/ui/input.tsx`
+  - `src/components/ui/textarea.tsx`
+  - `src/components/ui/avatar.tsx`
+  - `src/shell/web/styles.css`
+  - `docs/DESIGN.md`
+  - `wiki/frontiers.md`
+  - `wiki/prs/PR-chat-surface-credibility.md`
+  - `wiki/runs/RUN-*.md`
+- `Acceptance criteria`:
+  - The chat surface reads as a continuous coordination tool, not a dashboard assembled from unrelated boxes.
+  - Repeated patterns such as list rows, badges, counts, trailing actions, and header controls are aligned consistently across the surface.
+  - The composer, transcript, and thread all feel like one system and no longer require obvious human taste cleanup.
+  - Component-level screenshots are sufficient to justify final signoff readiness.
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: No blocking UI or exercised functional defect is currently open. The remaining gap is human taste confirmation on the overall shell feel rather than another agent-discovered inconsistency.
+- `Latest winning run`: `RUN-20260408-1325-chat-surface-qa-pass`
+- `Latest failed run`: `none`
+- `Final signoff checklist`:
+  - component-level captures look coherent without annotation
+  - latest UI run records the quality gap as closed
+  - latest QA judgment is acceptable for the current chat interactions
+  - docs and wiki reflect the actual state of the surface
+  - no obvious alignment, spacing, or action hierarchy defects remain in the active chat surface
+- `Why this PR is not ready yet`: The agent loop has closed the visible gaps it could find and the exercised shell flow passed. The remaining question is whether the current surface meets the human taste bar for final signoff.
+- `Open risks`:
+  - The branch label is still legacy and does not reflect the new harness naming convention.
+  - The current surface is still driven by demo data, so some production-state interaction gaps may remain hidden.
+- `Next action`: Hold for human final signoff. If new taste feedback appears, reopen `auto-ui` with the newly identified quality gap; otherwise prepare the branch for landing.

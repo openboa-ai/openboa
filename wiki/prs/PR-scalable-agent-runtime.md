@@ -1,0 +1,31 @@
+# PR-scalable-agent-runtime
+
+- `Title`: Tighten the Agent layer around a scalable session/resource runtime
+- `Branch`: `codex/scalable-agent-runtime`
+- `Goal`: Move openboa's Agent layer from a strong single-agent MVP toward a scalable runtime model by tightening it around Claude-informed session/resource/event contracts while preserving the OpenClaw-aligned `src/agents/` subsystem shape and keeping provider backends such as Claude and Codex as swappable brains.
+- `Metric`: openboa agent architecture stops reading like `activation + prompt loop + files` and instead reads like `agent definition + environment + session + attached resources + event stream + tool ownership`, with a clear mapping from current code to the future scalable runtime.
+- `Quality target`: The next agent frontier should preserve domain-agnosticism while making the runtime architecture durable enough for multi-session scale, richer resources, and later `Work`/`Observe` layering without another ground-up rewrite.
+- `Owned boundary`:
+  - `src/agents/*`
+  - `src/index.ts`
+  - `test/agent-*.test.ts`
+  - `test/runtime-*.test.ts`
+  - `docs/architecture.md`
+  - `docs/quickstart.md`
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-scalable-agent-runtime.md`
+  - `wiki/runs/RUN-20260409-*.md`
+  - `wiki/syntheses/claude-managed-agents-synthesis.md`
+- `Acceptance criteria`:
+  - Claude Managed Agents concepts are translated into explicit openboa runtime contracts before broad refactors begin.
+  - The next implementation plan clearly distinguishes `agent definition`, `environment`, `session`, and session-attached resources.
+  - The scalable-agent frontier stays inside `src/agents/` and does not smear agent concerns across unrelated top-level directories.
+  - Provider backends remain implementation details of the brain layer, not the public runtime architecture.
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: no blocking quality gap is currently visible inside the owned Agent boundary; the remaining work belongs to follow-on frontiers such as richer session-attached resources, broader session event sources, and thinner capability-aware seams above the session runtime.
+- `Latest winning run`: `RUN-20260409-1920-docs-agent-chat-work-ia-pass`
+- `Latest failed run`: `none`
+- `Next action`: request final signoff on the new session-first Agent runtime, then open the next frontier for capability-aware session ingress and richer resource attachment beyond the local-only environment skeleton.
+- `Internal design rule`: use existing managed-agent seams before proposing a new Agent primitive; see `wiki/syntheses/agent-runtime-primitive-discipline.md`

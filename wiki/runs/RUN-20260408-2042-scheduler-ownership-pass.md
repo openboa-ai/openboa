@@ -1,0 +1,25 @@
+# RUN-20260408-2042-scheduler-ownership-pass
+
+- `PR`: `PR-agent-runtime-heartbeat`
+- `Status`: `kept`
+- `Hypothesis`: The proactive runtime is still below production MVP if any CLI loop can act like a scheduler without durable ownership. Adding explicit scheduler lease state, owner-aware execution, and CLI inspection should make the scheduler behave more like a real runtime service without widening the Agent boundary.
+- `Changes`:
+  - Added `src/agents/runtime/scheduler-state.ts` to persist scheduler ownership and lease state under `.openboa/agents/<id>/runtime/scheduler.json`.
+  - Extended `src/agents/runtime/scheduler.ts` with owner-aware methods:
+    - `runNextDueOwned`
+    - `runLoopOwned`
+    - `readSchedulerState`
+  - Updated `src/index.ts` so `openboa agent scheduler` now executes with a generated owner id and `openboa agent scheduler-status --name <agent-id>` exposes the durable scheduler state from the CLI.
+  - Added tests that verify:
+    - overlapping owners are rejected
+    - final scheduler state returns to `idle`
+    - CLI can print scheduler ownership status
+- `Verification`:
+  - `pnpm test -- test/runtime-scheduler.test.ts test/index.test.ts`
+  - `pnpm test -- test/runtime-scheduler.test.ts test/index.test.ts test/agent-runtime.test.ts test/chat-command-service.test.ts test/codex-model-client.test.ts`
+  - `pnpm typecheck`
+  - `pnpm lint`
+  - `pnpm check:docs`
+  - `git diff --check -- src test docs wiki`
+- `Result`: The scheduler is no longer just a blind CLI loop. It now acquires a durable owner lease, records readable runtime service state, rejects overlapping owners, and exposes that state through the CLI, which materially raises the Agent runtime toward a production MVP.
+- `Next gap`: The strongest remaining gap is a separately managed long-lived daemon surface above the current CLI scheduler, followed by the final thin capability/runtime seam needed before richer Chat or Work context can hydrate the Agent without leaking domain semantics into the core.

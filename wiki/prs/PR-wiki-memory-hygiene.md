@@ -1,0 +1,41 @@
+# PR-wiki-memory-hygiene
+
+- `Title`: Normalize internal wiki references and external-reference language
+- `Branch`: `feat/wiki-memory-hygiene`
+- `Goal`: Clean up internal wiki memory so repo-local references use repo-root paths, and external reference language stays neutral and factual instead of implying direct borrowing or user-local machine state.
+- `Metric`: targeted wiki pages no longer contain user-local absolute paths, and the edited synthesis/PR/run pages use wording such as `aligned` or `informed` instead of language that overstates external borrowing.
+- `Quality target`: internal memory should stay resumable and precise without depending on one developer's local filesystem layout or vague provenance language.
+- `Owned boundary`:
+  - `wiki/frontiers.md`
+  - `wiki/index.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-agent-runtime-heartbeat.md`
+  - `wiki/prs/PR-scalable-agent-runtime.md`
+  - `wiki/prs/PR-wiki-memory-hygiene.md`
+  - `wiki/runs/RUN-20260408-1940-activation-queue-scheduler-pass.md`
+  - `wiki/runs/RUN-20260408-1948-agent-self-enqueue-pass.md`
+  - `wiki/runs/RUN-20260408-1950-workspace-bootstrap-substrate-pass.md`
+  - `wiki/runs/RUN-20260408-2018-openclaw-agent-runtime-design-pass.md`
+  - `wiki/runs/RUN-20260408-2028-runtime-ingress-pass.md`
+  - `wiki/runs/RUN-20260409-1743-claude-managed-agents-source-reading.md`
+  - `wiki/runs/RUN-20260419-1336-wiki-memory-hygiene-pass.md`
+  - `wiki/syntheses/agent-runtime-capability-pack-contract.md`
+  - `wiki/syntheses/chat-purpose-contract.md`
+  - `wiki/syntheses/openboa-agent-architecture-contract.md`
+  - `wiki/syntheses/openboa-agent-runtime-integration-design.md`
+  - `wiki/syntheses/openboa-layer-model.md`
+  - `wiki/syntheses/work-layer-contract.md`
+  - `wiki/syntheses/claude-managed-agents-synthesis.md`
+- `Acceptance criteria`:
+  - edited wiki files no longer contain user-local absolute paths
+  - edited wiki files avoid wording that claims or implies direct borrowing from external systems
+  - `git diff --check` passes on the isolated branch
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: no blocking quality gap is currently visible inside the owned wiki-memory boundary; the remaining step is human review rather than another cleanup pass
+- `Latest winning run`: `RUN-20260419-1336-wiki-memory-hygiene-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: none inside the owned boundary; this frontier is waiting on review rather than another implementation loop.
+- `Open risks`:
+  - some untouched wiki pages may still carry older wording outside this bounded cleanup frontier
+- `Next action`: request review on the bounded wiki-memory cleanup PR, and only reopen if review finds another path or wording issue inside the owned boundary

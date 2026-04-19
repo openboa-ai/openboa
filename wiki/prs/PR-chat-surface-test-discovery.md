@@ -1,0 +1,28 @@
+# PR-chat-surface-test-discovery
+
+- `Title`: Restore chat `.tsx` test discovery and fix sidebar section icons
+- `Branch`: `feat/chat-surface-test-discovery`
+- `Goal`: Close a small but meaningful chat quality gap by making Vitest discover the existing `.test.tsx` chat suite and by fixing the sidebar presentation icon mapping for followed threads and viewer-recents sections.
+- `Metric`: `pnpm exec vitest run` executes both `.test.ts` and `.test.tsx` suites, and the shared presentation layer returns specific icons for `followed` and `viewer-recents` instead of defaulting to the generic users icon.
+- `Quality target`: chat regressions should be covered by the tests already present in the repo, and the sidebar should not visually flatten distinct sections into the same generic icon.
+- `Owned boundary`:
+  - `src/shell/web/components/shared/presentation.ts`
+  - `vitest.config.ts`
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-chat-surface-test-discovery.md`
+  - `wiki/runs/RUN-20260419-1329-chat-surface-test-discovery-pass.md`
+- `Acceptance criteria`:
+  - Vitest includes `test/**/*.test.tsx`
+  - the existing chat `.tsx` tests run and pass on the branch
+  - `sectionIcon("followed")` returns `MessageSquareText`
+  - `sectionIcon("viewer-recents")` returns `Eye`
+- `Current status`: `looping`
+- `Current owner`: `auto-project`
+- `Current quality gap`: The isolated branch passes its test bar. The remaining gap is PR publication and review, not another implementation slice.
+- `Latest winning run`: `RUN-20260419-1329-chat-surface-test-discovery-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: Verification is green on the isolated branch, but the standalone PR still needs to be published and reviewed.
+- `Open risks`:
+  - widening Vitest discovery could surface unrelated pre-existing `.tsx` failures
+- `Next action`: open the standalone PR, then decide in review whether this should merge as a small chat-surface hygiene slice or be folded into a larger chat frontier

@@ -1,0 +1,26 @@
+# RUN-20260408-1505-chat-live-hydration-shell-controller-pass
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260408-1346-chat-live-hydration-app-owned-state`
+- `Owner skill`: `auto-coding`
+- `Baseline`: The previous slice moved selected conversation state into the web `App`, but the shell controller logic still lived in a web-local runtime file and thread close/open behavior was not part of the surface.
+- `Hypothesis`: If the selection and thread-drawer controller moves into `src/shell/chat` and the web layer shrinks to a persistence hook, then the architecture will match the intended split of truth, controller, projection, and UI while keeping the shell interactive.
+- `Single bounded change`:
+  - add `src/shell/chat/shell-runtime.ts` as the generic chat shell controller
+  - reduce `src/shell/web/chat-runtime.ts` to demo seed plus web persistence hook
+  - make `App` consume the hook instead of owning chat state directly
+  - add thread close and transcript reply-chip reopen callbacks
+  - extend runtime tests to cover thread drawer overrides
+- `Measurement`:
+  - `pnpm exec biome check src/shell/chat/index.ts src/shell/chat/shell-runtime.ts src/shell/web/App.tsx src/shell/web/chat-runtime.ts src/shell/web/components/chat/chat-workspace.tsx src/shell/web/components/chat/transcript-pane.tsx src/shell/web/components/chat/thread-pane.tsx src/shell/web/components/chat/message-row.tsx test/company-chat-runtime.test.ts`
+  - `pnpm test -- test/company-chat-runtime.test.ts test/company-shell-web.test.ts test/company-app.test.ts test/company-shell-desktop.test.ts test/company-shell-vite-config.test.ts`
+  - `pnpm build:web`
+- `Evidence`:
+  - focused runtime and UI-boundary checks passed
+  - `70` tests passed after adding the thread drawer override case
+  - production build succeeded after controller extraction
+  - chat UI components remain projection renderers that receive state and callbacks through props
+- `Quality axis targeted`: controller architecture clarity, UI projection purity, and interaction completeness
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-project`

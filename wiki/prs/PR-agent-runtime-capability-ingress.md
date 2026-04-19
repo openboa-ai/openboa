@@ -1,0 +1,96 @@
+# PR-agent-runtime-capability-ingress
+
+- `Title`: Add capability-aware session ingress and richer managed resources
+- `Branch`: `codex/agent-runtime-capability-ingress`
+- `Goal`: Move the session-first Agent runtime past a thin wake loop by exposing capability-aware managed surfaces for resources, retrieval, outcomes, runtime memory, and session traces, while keeping those capabilities inside `src/agents/` rather than smearing them across chat-only seams.
+- `Metric`: openboa Agent sessions read like `session truth + attached managed capabilities` instead of `prompt + ad hoc files`; operators can inspect and use managed resources, retrieval, traces, and runtime memory through stable runtime tools; live soak coverage exercises those surfaces under real Codex-backed runs.
+- `Quality target`: The runtime should feel like a durable capability-bearing substrate, not a brittle prompt assembly. Capability surfaces must be inspectable, recoverable, and provider-neutral enough that tool loops, retrieval, outcomes, and managed resource mutation can evolve without another architecture reset.
+- `Owned boundary`:
+  - `src/agents/context/*`
+  - `src/agents/command/chat-delivery.ts`
+  - `src/agents/environment/bootstrap.ts`
+  - `src/agents/environment/environment-store.ts`
+  - `src/agents/environment/runtime-environment.ts`
+  - `src/agents/memory/runtime-memory-store.ts`
+  - `src/agents/memory/memory-search.ts`
+  - `src/agents/memory/store-registry.ts`
+  - `src/agents/memory/version-store.ts`
+  - `src/agents/outcomes/*`
+  - `src/agents/providers/codex-model-client.ts`
+  - `src/agents/providers/model-client.ts`
+  - `src/agents/providers/provider-runtime-contract.ts`
+  - `src/agents/runners/agent-runner.ts`
+  - `src/agents/runners/pi-adapter.ts`
+  - `src/agents/runtime/activation-journal.ts`
+  - `src/agents/runtime/loop-directive.ts`
+  - `src/agents/runtime/scenario-soak.ts`
+  - `src/agents/runtime/scenario-mixed-soak.ts`
+  - `src/agents/runtime/session-wake-queue.ts`
+  - `src/agents/sandbox/sandbox.ts`
+  - `src/agents/schema/runtime.ts`
+  - `src/agents/sessions/context-builder.ts`
+  - `src/agents/sessions/context-query-policy.ts`
+  - `src/agents/sessions/session-context-search.ts`
+  - `src/agents/sessions/session-id.ts`
+  - `src/agents/sessions/session-store.ts`
+  - `src/agents/sessions/session-trace-search.ts`
+  - `src/agents/sessions/session-traces.ts`
+  - `src/agents/skills/agent-skills.ts`
+  - `src/agents/tools/runtime-tool.ts`
+  - `src/agents/tools/managed-runtime-tools.ts`
+  - `src/agents/resources/*`
+  - `src/agents/retrieval/*`
+  - `src/foundation/*`
+  - `test/codex-model-client.test.ts`
+  - `test/helpers.ts`
+  - `test/helpers/provider-model-client-conformance.ts`
+  - `test/runtime-tool-definition.test.ts`
+  - `test/session-id.test.ts`
+  - `test/agent-import-boundary.test.ts`
+  - `test/loop-directive.test.ts`
+  - `test/memory-version-store.test.ts`
+  - `test/resource-access.test.ts`
+  - `test/resource-version-store.test.ts`
+  - `test/retrieval-query.test.ts`
+  - `test/retrieval-search.test.ts`
+  - `test/sandbox.test.ts`
+  - `test/scenario-soak.test.ts`
+  - `test/session-context-builder.test.ts`
+  - `test/session-store.test.ts`
+  - `test/session-traces.test.ts`
+  - `test/system-prompt-structure.test.ts`
+  - `test/wake-session.test.ts`
+  - `scripts/check-agent-boundary.mjs`
+  - `docs/agent-runtime.md`
+  - `docs/agents/environments.md`
+  - `docs/agents/harness.md`
+  - `docs/agents/resources.md`
+  - `docs/agents/sandbox.md`
+  - `docs/agents/sessions.md`
+  - `docs/agents/tools.md`
+  - `docs/ko/agent-runtime.md`
+  - `docs/ko/agents/environments.md`
+  - `docs/ko/agents/harness.md`
+  - `docs/ko/agents/resources.md`
+  - `docs/ko/agents/sandbox.md`
+  - `docs/ko/agents/sessions.md`
+  - `docs/ko/agents/tools.md`
+  - `wiki/frontiers.md`
+  - `wiki/log.md`
+  - `wiki/prs/PR-agent-runtime-capability-ingress.md`
+- `Acceptance criteria`:
+  - Managed runtime tools expose session-attached resources, retrieval, outcome grading/evaluation, runtime memory, and session traces through stable tool contracts rather than prompt-only conventions.
+  - Provider tool-loop behavior is normalized behind a shared provider contract so interrupts and invalid responses are handled coherently.
+  - Session and sandbox/resource boundaries support staged substrate edits, runtime artifact inspection, and managed writable execution without path drift.
+  - Activation journal and live soak runners exist and cover multi-worker, delayed-wake, approval, custom-tool, and mixed-load runtime paths.
+  - Public Agent runtime reference docs explain these managed capability surfaces concretely enough that operators can understand sessions/resources/tools/sandbox without reading source.
+- `Current status`: `looping`
+- `Current owner`: `auto-project`
+- `Current quality gap`: The boundary is now isolated and passes its narrow verification bar. The remaining gap is live Codex soak evidence plus review of the managed capability surfaces, not another broad slicing pass.
+- `Latest winning run`: `RUN-20260419-1219-agent-runtime-capability-ingress-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: The staged boundary is now isolated and narrow checks are green, but live Codex soak evidence for this frontier still needs to be rerun before promotion can move toward final signoff.
+- `Open risks`:
+  - Some runtime files already depend on newly added untracked modules, so isolation must prove the staged set is self-contained.
+  - The broader docs IA sweep and chat hydration changes remain outside this frontier and can easily contaminate review scope if staged accidentally.
+- `Next action`: Rerun the live Codex soak coverage against the bounded capability-ingress frontier, then decide whether the remaining gap is promotion-ready or needs one more bounded fix.
