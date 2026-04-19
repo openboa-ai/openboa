@@ -1,0 +1,46 @@
+# PR-agent-runtime-code-scanning-hardening
+
+- `Title`: Close current GitHub code-scanning alerts in agent runtime surfaces
+- `Branch`: `feat/agent-runtime-code-scanning-hardening`
+- `Goal`: Remove the currently open GitHub CodeQL findings surfaced from the repository security code-scanning page, keeping the fix boundary inside the current agent runtime, resource, sandbox, session, and directly affected tests.
+- `Metric`: The April 19, 2026 open alert set for this owned boundary drops from `12` open alerts to `0` open alerts on the next GitHub CodeQL analysis, with no behavior regression in the affected runtime flows.
+- `Quality target`: Security hardening should be structural, not suppressive. Fixes must remove the underlying TOCTOU, insecure temp-file, and incomplete sanitization patterns instead of hiding alerts or weakening current runtime invariants.
+- `Owned boundary`:
+  - `src/agents/resources/resource-access.ts`
+  - `src/agents/sessions/session-store.ts`
+  - `src/agents/sandbox/sandbox.ts`
+  - `src/agents/runtime/scenario-loop.ts`
+  - `test/resource-access.test.ts`
+  - `test/sandbox.test.ts`
+  - `wiki/frontiers.md`
+  - `wiki/prs/PR-agent-runtime-code-scanning-hardening.md`
+- `GitHub alert set`:
+  - `#12` `js/file-system-race` in `src/agents/resources/resource-access.ts`
+  - `#11` `js/file-system-race` in `src/agents/resources/resource-access.ts`
+  - `#10` `js/insecure-temporary-file` in `test/sandbox.test.ts`
+  - `#9` `js/insecure-temporary-file` in `test/sandbox.test.ts`
+  - `#8` `js/insecure-temporary-file` in `test/resource-access.test.ts`
+  - `#7` `js/insecure-temporary-file` in `src/agents/sandbox/sandbox.ts`
+  - `#6` `js/insecure-temporary-file` in `src/agents/resources/resource-access.ts`
+  - `#5` `js/incomplete-sanitization` in `src/agents/runtime/scenario-loop.ts`
+  - `#4` `js/incomplete-sanitization` in `src/agents/runtime/scenario-loop.ts`
+  - `#3` `js/file-system-race` in `src/agents/sessions/session-store.ts`
+  - `#2` `js/insecure-temporary-file` in `src/agents/sandbox/sandbox.ts`
+  - `#1` `js/insecure-temporary-file` in `src/agents/sandbox/sandbox.ts`
+- `Acceptance criteria`:
+  - Atomic or descriptor-based file creation replaces the currently flagged file-system race patterns in the owned production files.
+  - Temporary file creation in the owned production files and directly affected tests uses secure, non-predictable, non-racy creation semantics.
+  - The currently flagged sanitization logic in `src/agents/runtime/scenario-loop.ts` no longer relies on incomplete manual escaping.
+  - No alert in the listed GitHub alert set remains open after the next CodeQL run on the PR branch.
+  - The fixes stay inside the owned boundary and do not widen into unrelated agent/chat frontiers.
+- `Current status`: `looping`
+- `Current owner`: `auto-project`
+- `Current quality gap`: One bounded hardening pass is now kept in branch state and the directly affected `resource-access` / `sandbox` tests pass locally, but the frontier still needs a fresh GitHub CodeQL result proving that the April 19, 2026 `12`-alert set actually closed plus narrow session-store coverage for the stale-lease rewrite.
+- `Latest winning run`: `RUN-20260419-1702-agent-runtime-code-scanning-hardening-pass`
+- `Latest failed run`: `none`
+- `Why this PR is not ready yet`: The first structural fix pass is implemented and the directly affected tests now run locally, but the PR has not yet met its external acceptance bar because GitHub still needs to analyze the new branch state and the lease rewrite still deserves one more narrow local pass in `session-store`.
+- `Open risks`:
+  - File-lock and lease semantics are correctness-sensitive; the stale-takeover rewrite still needs targeted runtime coverage even though local Vitest execution is now available.
+  - CodeQL can still surface follow-on alerts if adjacent path-based write flows outside the current alert set remain structurally similar.
+  - GitHub CodeQL remains the real acceptance surface for this frontier, so local green tests alone do not prove alert closure.
+- `Next action`: Run narrow session-store coverage for the stale-lease rewrite, then trigger GitHub CodeQL on the bounded hardening branch and compare the result against the April 19, 2026 `12`-alert set.

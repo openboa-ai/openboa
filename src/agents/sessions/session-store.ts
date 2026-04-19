@@ -89,6 +89,10 @@ function normalizeOptionalText(value: string | null | undefined): string | null 
   return trimmed && trimmed.length > 0 ? trimmed : null
 }
 
+function hasErrorCode(error: unknown, code: string): boolean {
+  return error instanceof Error && "code" in error && error.code === code
+}
+
 function foldEvents(records: SessionEventJournalRecord[]): SessionEvent[] {
   const state = new Map<string, SessionEvent>()
   for (const record of records) {
@@ -550,48 +554,37 @@ export class SessionStore {
     const staleAfterMs = options.staleAfterMs ?? DEFAULT_STALE_WAKE_LEASE_MS
     const lockPath = this.wakeLeasePath(location.agentId, location.sessionId)
     await mkdir(dirname(lockPath), { recursive: true })
-    let handle: FileHandle | null = null
-    try {
-      handle = await open(lockPath, "wx")
-    } catch {
-      const staleLease = await this.readWakeLease(lockPath)
-      const staleAgeMs = staleLease?.acquiredAt
-        ? Date.now() - Date.parse(staleLease.acquiredAt)
-        : Number.NaN
-      if (!Number.isFinite(staleAgeMs) || staleAgeMs < staleAfterMs) {
-        return null
-      }
-      await rm(lockPath, { force: true }).catch(() => undefined)
-      try {
-        handle = await open(lockPath, "wx")
-      } catch {
-        return null
-      }
+    const record = await this.tryAcquireLeaseRecord(lockPath, sessionId, owner, staleAfterMs, {
+      treatInvalidAsStale: false,
+    })
+    if (!record) {
+      return null
     }
-    try {
-      const record = buildWakeLeaseRecord(sessionId, owner)
-      await handle.writeFile(`${JSON.stringify(record, null, 2)}\n`, "utf8")
-      await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, record.acquiredAt)
-    } finally {
-      await handle.close()
-    }
+    await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, record.acquiredAt)
     let released = false
     return {
       renew: async () => {
         if (released) {
           return
         }
-        const record = buildWakeLeaseRecord(sessionId, owner)
-        await writeFile(lockPath, `${JSON.stringify(record, null, 2)}\n`, "utf8")
-        await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, record.acquiredAt)
+        const renewed = buildWakeLeaseRecord(sessionId, owner)
+        const updated = await this.writeWakeLeaseIfOwned(lockPath, owner, renewed)
+        if (!updated) {
+          released = true
+          await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, null)
+          return
+        }
+        await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, renewed.acquiredAt)
       },
       release: async () => {
         if (released) {
           return
         }
         released = true
-        await rm(lockPath, { force: true }).catch(() => undefined)
-        await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, null)
+        const removed = await this.removeWakeLeaseIfOwned(lockPath, owner)
+        if (removed) {
+          await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, null)
+        }
       },
     }
   }
@@ -688,23 +681,95 @@ export class SessionStore {
 
   private async readWakeLease(lockPath: string): Promise<SessionWakeLeaseRecord | null> {
     try {
-      const raw = await readFile(lockPath, "utf8")
-      const parsed = JSON.parse(raw) as Partial<SessionWakeLeaseRecord>
-      if (
-        typeof parsed.sessionId !== "string" ||
-        typeof parsed.owner !== "string" ||
-        typeof parsed.acquiredAt !== "string"
-      ) {
-        return null
-      }
-      return {
-        sessionId: parsed.sessionId,
-        owner: parsed.owner,
-        acquiredAt: parsed.acquiredAt,
-      }
+      return parseWakeLeaseRecord(await readFile(lockPath, "utf8"))
     } catch {
       return null
     }
+  }
+
+  private async tryAcquireLeaseRecord(
+    lockPath: string,
+    scopeId: string,
+    owner: string,
+    staleAfterMs: number,
+    options: {
+      treatInvalidAsStale: boolean
+    },
+  ): Promise<SessionWakeLeaseRecord | null> {
+    let handle: FileHandle | null = null
+    try {
+      handle = await open(lockPath, "wx", 0o600)
+      const record = buildWakeLeaseRecord(scopeId, owner)
+      await writeWakeLeaseRecordToHandle(handle, record)
+      return record
+    } catch (error) {
+      if (!hasErrorCode(error, "EEXIST")) {
+        throw error
+      }
+    } finally {
+      await handle?.close().catch(() => undefined)
+    }
+
+    try {
+      handle = await open(lockPath, "r+")
+    } catch (error) {
+      if (hasErrorCode(error, "ENOENT")) {
+        return null
+      }
+      throw error
+    }
+
+    try {
+      const current = await readWakeLeaseRecordFromHandle(handle)
+      if (!isWakeLeaseStale(current, staleAfterMs, options.treatInvalidAsStale)) {
+        return null
+      }
+      const record = buildWakeLeaseRecord(scopeId, owner)
+      await writeWakeLeaseRecordToHandle(handle, record)
+      const confirmed = await this.readWakeLease(lockPath)
+      if (confirmed?.owner !== owner || confirmed.acquiredAt !== record.acquiredAt) {
+        return null
+      }
+      return record
+    } finally {
+      await handle.close()
+    }
+  }
+
+  private async writeWakeLeaseIfOwned(
+    lockPath: string,
+    owner: string,
+    record: SessionWakeLeaseRecord,
+  ): Promise<boolean> {
+    let handle: FileHandle | null = null
+    try {
+      handle = await open(lockPath, "r+")
+    } catch (error) {
+      if (hasErrorCode(error, "ENOENT")) {
+        return false
+      }
+      throw error
+    }
+
+    try {
+      const current = await readWakeLeaseRecordFromHandle(handle)
+      if (current?.owner !== owner) {
+        return false
+      }
+      await writeWakeLeaseRecordToHandle(handle, record)
+      return true
+    } finally {
+      await handle.close()
+    }
+  }
+
+  private async removeWakeLeaseIfOwned(lockPath: string, owner: string): Promise<boolean> {
+    const current = await this.readWakeLease(lockPath)
+    if (current?.owner !== owner) {
+      return false
+    }
+    await rm(lockPath, { force: true }).catch(() => undefined)
+    return true
   }
 
   private async readActiveWakeLeaseForAgentSession(
@@ -749,30 +814,18 @@ export class SessionStore {
     const startedAt = Date.now()
 
     while (true) {
-      let handle: FileHandle | null = null
-      try {
-        handle = await open(lockPath, "wx")
-        try {
-          const record = buildWakeLeaseRecord(sessionId, owner)
-          await handle.writeFile(`${JSON.stringify(record, null, 2)}\n`, "utf8")
-        } finally {
-          await handle.close()
-        }
+      const record = await this.tryAcquireLeaseRecord(lockPath, sessionId, owner, staleAfterMs, {
+        treatInvalidAsStale: true,
+      })
+      if (record) {
         break
-      } catch {
-        const current = await this.readWakeLease(lockPath)
-        const ageMs = current?.acquiredAt ? Date.now() - Date.parse(current.acquiredAt) : Number.NaN
-        if (!Number.isFinite(ageMs) || ageMs >= staleAfterMs) {
-          await rm(lockPath, { force: true }).catch(() => undefined)
-          continue
-        }
-        if (Date.now() - startedAt >= timeoutMs) {
-          throw new Error(
-            `Timed out acquiring session mutation lock for ${sessionId} after ${timeoutMs}ms`,
-          )
-        }
-        await new Promise((resolve) => setTimeout(resolve, SESSION_MUTATION_LOCK_RETRY_MS))
       }
+      if (Date.now() - startedAt >= timeoutMs) {
+        throw new Error(
+          `Timed out acquiring session mutation lock for ${sessionId} after ${timeoutMs}ms`,
+        )
+      }
+      await new Promise((resolve) => setTimeout(resolve, SESSION_MUTATION_LOCK_RETRY_MS))
     }
 
     try {
@@ -802,30 +855,18 @@ export class SessionStore {
     const startedAt = Date.now()
 
     while (true) {
-      let handle: FileHandle | null = null
-      try {
-        handle = await open(lockPath, "wx")
-        try {
-          const record = buildWakeLeaseRecord(scope, owner)
-          await handle.writeFile(`${JSON.stringify(record, null, 2)}\n`, "utf8")
-        } finally {
-          await handle.close()
-        }
+      const record = await this.tryAcquireLeaseRecord(lockPath, scope, owner, staleAfterMs, {
+        treatInvalidAsStale: true,
+      })
+      if (record) {
         break
-      } catch {
-        const current = await this.readWakeLease(lockPath)
-        const ageMs = current?.acquiredAt ? Date.now() - Date.parse(current.acquiredAt) : Number.NaN
-        if (!Number.isFinite(ageMs) || ageMs >= staleAfterMs) {
-          await rm(lockPath, { force: true }).catch(() => undefined)
-          continue
-        }
-        if (Date.now() - startedAt >= timeoutMs) {
-          throw new Error(
-            `Timed out acquiring agent runtime index lock for ${agentId}/${scope} after ${timeoutMs}ms`,
-          )
-        }
-        await new Promise((resolve) => setTimeout(resolve, AGENT_RUNTIME_INDEX_LOCK_RETRY_MS))
       }
+      if (Date.now() - startedAt >= timeoutMs) {
+        throw new Error(
+          `Timed out acquiring agent runtime index lock for ${agentId}/${scope} after ${timeoutMs}ms`,
+        )
+      }
+      await new Promise((resolve) => setTimeout(resolve, AGENT_RUNTIME_INDEX_LOCK_RETRY_MS))
     }
 
     try {
@@ -1380,6 +1421,58 @@ function buildWakeLeaseRecord(sessionId: string, owner: string): SessionWakeLeas
     owner,
     acquiredAt: nowIsoString(),
   }
+}
+
+function parseWakeLeaseRecord(raw: string): SessionWakeLeaseRecord | null {
+  try {
+    const parsed = JSON.parse(raw) as Partial<SessionWakeLeaseRecord>
+    if (
+      typeof parsed.sessionId !== "string" ||
+      typeof parsed.owner !== "string" ||
+      typeof parsed.acquiredAt !== "string"
+    ) {
+      return null
+    }
+    return {
+      sessionId: parsed.sessionId,
+      owner: parsed.owner,
+      acquiredAt: parsed.acquiredAt,
+    }
+  } catch {
+    return null
+  }
+}
+
+function formatWakeLeaseRecord(record: SessionWakeLeaseRecord): string {
+  return `${JSON.stringify(record, null, 2)}\n`
+}
+
+function wakeLeaseAgeMs(record: SessionWakeLeaseRecord | null): number {
+  return record?.acquiredAt ? Date.now() - Date.parse(record.acquiredAt) : Number.NaN
+}
+
+function isWakeLeaseStale(
+  record: SessionWakeLeaseRecord | null,
+  staleAfterMs: number,
+  treatInvalidAsStale: boolean,
+): boolean {
+  const ageMs = wakeLeaseAgeMs(record)
+  if (!Number.isFinite(ageMs)) {
+    return treatInvalidAsStale
+  }
+  return ageMs >= staleAfterMs
+}
+
+async function readWakeLeaseRecordFromHandle(handle: FileHandle): Promise<SessionWakeLeaseRecord | null> {
+  return parseWakeLeaseRecord(await handle.readFile("utf8"))
+}
+
+async function writeWakeLeaseRecordToHandle(
+  handle: FileHandle,
+  record: SessionWakeLeaseRecord,
+): Promise<void> {
+  await handle.truncate(0)
+  await handle.write(formatWakeLeaseRecord(record), 0, "utf8")
 }
 
 function shouldMarkSessionRunnable(event: SessionEvent): event is PendingEvent {

@@ -35,6 +35,14 @@ For each frontier include:
 - active quality gap: the capability-ingress boundary is now isolated and narrow verification is green; the remaining gap is fresh live Codex soak evidence for this bounded set
 - next action: rerun live Codex soak coverage on the bounded capability-ingress frontier, then decide whether it can move toward final-signoff
 
+## PR-agent-runtime-code-scanning-hardening
+
+- current status: `looping`
+- current owner: `auto-project`
+- primary metric: all currently open GitHub code-scanning alerts in the owned boundary close on the next CodeQL pass, without weakening runtime/session/sandbox behavior
+- active quality gap: the first hardening pass is in branch state and the directly affected `resource-access` / `sandbox` tests now pass locally, but the frontier still lacks a fresh CodeQL result proving the `12`-alert set is actually closed and still needs narrow session-store coverage for the stale-lease rewrite
+- next action: run narrow session-store coverage, then run GitHub CodeQL on the bounded hardening branch and compare the new alert set against the April 19, 2026 baseline
+
 ## PR-chat-live-hydration
 
 - current status: `looping`

@@ -117,6 +117,10 @@ interface WakeRunSummary {
   events: SessionEvent[]
 }
 
+function escapeMarkdownTableCell(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\r?\n/g, "<br>")
+}
+
 class ScenarioContext {
   readonly outputPath: string
   readonly store: SessionStore
@@ -580,12 +584,12 @@ function renderScenarioMarkdown(
       [
         `| ${String(result.number).padStart(3, "0")}`,
         result.category,
-        result.title.replace(/\|/g, "\\|"),
+        escapeMarkdownTableCell(result.title),
         result.status.toUpperCase(),
         `\`${result.sessionId}\``,
         `\`${result.stopReason}\``,
         result.toolNames.length > 0 ? `\`${result.toolNames.join(", ")}\`` : "`none`",
-        result.issue ? result.issue.replace(/\|/g, "\\|") : "none",
+        result.issue ? escapeMarkdownTableCell(result.issue) : "none",
         "|",
       ].join(" "),
     ),
