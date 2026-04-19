@@ -574,7 +574,11 @@ export class SessionStore {
           await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, null)
           return
         }
-        await this.syncActiveWakeLeaseIndex(location.agentId, location.sessionId, renewed.acquiredAt)
+        await this.syncActiveWakeLeaseIndex(
+          location.agentId,
+          location.sessionId,
+          renewed.acquiredAt,
+        )
       },
       release: async () => {
         if (released) {
@@ -1463,7 +1467,9 @@ function isWakeLeaseStale(
   return ageMs >= staleAfterMs
 }
 
-async function readWakeLeaseRecordFromHandle(handle: FileHandle): Promise<SessionWakeLeaseRecord | null> {
+async function readWakeLeaseRecordFromHandle(
+  handle: FileHandle,
+): Promise<SessionWakeLeaseRecord | null> {
   return parseWakeLeaseRecord(await handle.readFile("utf8"))
 }
 
