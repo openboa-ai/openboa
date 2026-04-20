@@ -1,0 +1,23 @@
+# RUN-20260420-0011-chat-live-hydration-operational-source-gap
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260420-0006-chat-live-hydration-operational-dedemo-pass`
+- `Owner skill`: `auto-coding`
+- `Baseline`: The app shell, Work workspace, and Observe workspace no longer directly import `demoCompanyShell`, but the remaining question was whether this PR should continue into live operational-state hydration or stop at the current chat-hydration boundary.
+- `Hypothesis`: If the repository already contains a live Work/Observe runtime source or projection layer, then the next bounded coding slice should connect that source; if no such source exists yet, then continuing here would widen the PR and the right outcome is to hand back a promotion recommendation plus a follow-on frontier.
+- `Single bounded change`:
+  - inspect repo sources for real `Work` / `Observe` projection or runtime state beyond `src/shared/company-model.ts` and demo shell scaffolding
+  - compare the result against `docs/work.md` and `docs/observe.md`
+  - update PR/frontier memory with the boundary conclusion
+- `Measurement`:
+  - `rg -n "WorkItemRecord|CompanyWorkSurface|CompanyObserveSurface|ObserveWorkDetail|executionRefs|queueSidebar|selectedWork|selectedItem" src test docs`
+  - `sed -n '130,220p' docs/work.md`
+  - `sed -n '90,150p' docs/observe.md`
+- `Evidence`:
+  - the only concrete operational-state implementation remains `src/shell/web/demo-shell.ts`; repo search found no live Work/Observe runtime gateway, ledger, service, or projection builder beyond shared model types
+  - `docs/work.md` explicitly says Work is documented ahead of full implementation and that current code only carries early shape in `src/shared/company-model.ts`
+  - `docs/observe.md` similarly describes Observe as early scaffolding that already influences model shape, not a live runtime-backed surface
+- `Quality axis targeted`: PR boundary discipline and promotion readiness
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-project`

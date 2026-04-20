@@ -36,8 +36,8 @@ pnpm docs:validate
   - `pnpm format:check`
   - `pnpm lint`
   - `pnpm typecheck`
-- 권고/수동:
   - `pnpm test`
+- 권고/수동:
   - `detect-secrets`
   - `actionlint`
   - `zizmor`

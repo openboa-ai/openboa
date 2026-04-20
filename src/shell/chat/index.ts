@@ -18,6 +18,28 @@ export {
 } from "./open-flow.js"
 export type { ChatConversationAccessGrant } from "./permissions.js"
 export type {
+  ChatRuntimeGateway,
+  ChatRuntimeGatewayAddParticipantInput,
+  ChatRuntimeGatewayArchiveConversationInput,
+  ChatRuntimeGatewayEditMessageInput,
+  ChatRuntimeGatewayGrantAccessInput,
+  ChatRuntimeGatewayJoinConversationInput,
+  ChatRuntimeGatewayLeaveConversationInput,
+  ChatRuntimeGatewayLoadSeedInput,
+  ChatRuntimeGatewayMarkReadInput,
+  ChatRuntimeGatewayPollEventsInput,
+  ChatRuntimeGatewayPollEventsResult,
+  ChatRuntimeGatewayPostMessageInput,
+  ChatRuntimeGatewayRedactMessageInput,
+  ChatRuntimeGatewayRemoveParticipantInput,
+  ChatRuntimeGatewayRevokeAccessInput,
+  ChatRuntimeGatewaySearchInput,
+  ChatRuntimeGatewaySearchResult,
+  ChatRuntimeGatewaySetMessageReactionInput,
+  ChatRuntimeGatewaySetThreadFollowStateInput,
+  ChatRuntimeGatewayUpdateConversationSettingsInput,
+} from "./runtime-gateway.js"
+export type {
   ChatShellControllerState,
   ChatShellRuntimeSeed,
   ChatShellRuntimeSeedItem,

@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest"
 import {
   buildDesktopRuntimeSpec,
-  resolveDesktopChatIndexPath,
+  resolveDesktopAppIndexPath,
 } from "../src/shell/desktop/runtime.js"
 
 describe("desktop runtime", () => {
-  it("resolves the desktop host to the built standalone chat artifact", () => {
-    const shellIndexPath = resolveDesktopChatIndexPath(
+  it("resolves the desktop host to the built app artifact", () => {
+    const shellIndexPath = resolveDesktopAppIndexPath(
       "file:///Users/sangjoon/openboa/dist/shell/desktop/main.js",
     )
 
-    expect(shellIndexPath).toBe("/Users/sangjoon/openboa/dist/web/chat/index.html")
+    expect(shellIndexPath).toBe("/Users/sangjoon/openboa/dist/web/index.html")
   })
 
   it("uses file-backed loading and secure BrowserWindow defaults", () => {
@@ -20,7 +20,7 @@ describe("desktop runtime", () => {
 
     expect(runtime.loadTarget).toEqual({
       kind: "file",
-      path: "/Users/sangjoon/openboa/dist/web/chat/index.html",
+      path: "/Users/sangjoon/openboa/dist/web/index.html",
     })
     expect(runtime.window).toEqual({
       title: "openboa",
@@ -35,6 +35,7 @@ describe("desktop runtime", () => {
     expect(runtime.webPreferences).toEqual({
       contextIsolation: true,
       nodeIntegration: false,
+      preload: "/Users/sangjoon/openboa/dist/shell/desktop/preload.cjs",
       sandbox: true,
       spellcheck: true,
     })

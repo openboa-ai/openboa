@@ -1,0 +1,52 @@
+# PR-operational-shell-live-hydration
+
+- `Title`: Operational shell live hydration
+- `Branch`: `PR-018`
+- `Goal`: Replace static demo-backed operational shell state with a read-only live hydration seam so Work and Observe render projections from runtime-backed company state when available, while preserving demo fallback for pure web preview and design iteration.
+- `Metric`: `App`, `company-shell-state`, `WorkWorkspace`, and `ObserveWorkspace` consume `CompanyOperationalShellState` from a shared runtime gateway rather than constructing it from `demo-shell`, and queue counts, spotlight selection, linked work summaries, and execution evidence reflect runtime-backed projections instead of fixed seed data.
+- `Quality target`: Work and Observe should read like hydrated operational surfaces over existing shared-model truth, not like a fresh product invention or a board pasted on top of Chat. The first frontier stays read-oriented and keeps fallback behavior explicit.
+- `Owned boundary`:
+  - `src/shell/web/App.tsx`
+  - `src/shell/web/company-shell-state.ts`
+  - `src/shell/web/frame-state.ts`
+  - `src/shell/web/demo-shell.ts`
+  - `src/shell/web/components/work/*`
+  - `src/shell/web/components/observe/*`
+  - `src/shared/company-model.ts`
+  - `src/shell/desktop/main.ts`
+  - `src/shell/desktop/preload.ts`
+  - `src/shell/desktop/runtime.ts`
+  - `src/shell/desktop/*operational*`
+  - `test/company-shell-web.test.ts`
+  - `test/company-operational-import-boundary.test.ts`
+  - `test/chat-app.test.tsx`
+  - `test/chat-standalone-app.test.tsx`
+  - `docs/work.md`
+  - `docs/observe.md`
+  - `wiki/frontiers.md`
+  - `wiki/prs/PR-operational-shell-live-hydration.md`
+  - `wiki/runs/RUN-20260420-0018-chat-live-hydration-promotion-and-operational-frontier-open.md`
+- `Acceptance criteria`:
+  - `company-shell-state` can load `CompanyOperationalShellState` from a shared runtime gateway and falls back to demo state only when no runtime bridge is available.
+  - `App` bootstraps Work and Observe from the hydrated operational state source without regressing the existing chat-first shell behavior.
+  - `WorkWorkspace` queue sidebar, spotlight item, active lane, and detail pane are driven by hydrated runtime-backed work projections rather than fixed demo exports.
+  - `ObserveWorkspace` focus item, execution refs, participant filters, and detail pane are driven by hydrated runtime-backed observe projections rather than fixed demo exports.
+  - The first implementation slice stays read-only and does not invent new Work lifecycle writes or Observe governance mutations beyond hydration.
+  - Tests cover gateway-backed hydration plus demo fallback behavior for the app shell and operational workspaces.
+- `Current status`: `looping`
+- `Current owner`: `auto-project`
+- `Current quality gap`: `src/shell/web/company-shell-state.ts` still returns `createDemoOperationalShellState()` from `demo-shell`, and the repo has no runtime gateway, snapshot aggregator, or refresh seam for Work and Observe yet.
+- `Latest winning run`: `none`
+- `Latest failed run`: `none`
+- `Final signoff checklist`:
+  - operational shell state hydrates from a shared runtime seam instead of direct demo exports
+  - Work and Observe surfaces remain prop-driven and no longer depend on fixed singleton data for their main truth
+  - demo fallback remains intact for web-only preview paths
+  - app/work/observe tests cover both gateway-backed hydration and fallback behavior
+  - repo docs and frontier memory clearly describe the boundary as hydration, not full Work/Observe domain implementation
+- `Why this PR is not ready yet`: The repo has product shape and UI scaffolding for Work and Observe, but no live operational-state source exists yet. Until that runtime seam exists, the operational shell cannot reflect real queue or evidence truth.
+- `Open risks`:
+  - `docs/work.md` and `docs/observe.md` are intentionally ahead of full implementation, so this frontier must stay on hydration/projection seams rather than inventing new domain semantics.
+  - A desktop-only bridge would leave pure web preview stranded unless demo fallback remains explicit and tested.
+  - The shared company model may need small additive adjustments for source metadata or selection keys; that should stay narrow and not become a broad model redesign.
+- `Next action`: Have `auto-project` open the first bounded run around read-only operational-shell hydration through a shared runtime gateway and desktop bridge, then verify gateway-backed and fallback behavior before considering any mutation work.

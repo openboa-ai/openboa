@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { demoCompanyShell } from "../src/shell/web/demo-shell.js"
+import { createDemoOperationalShellState } from "../src/shell/web/company-shell-state.js"
 import { buildCompanyShellFrame, resolveInitialSurface } from "../src/shell/web/frame-state.js"
 
 describe("company-shell web frame", () => {
@@ -10,14 +10,15 @@ describe("company-shell web frame", () => {
   })
 
   it("builds tab-specific sidebar sections", () => {
-    const workFrame = buildCompanyShellFrame(demoCompanyShell, "work")
+    const shell = createDemoOperationalShellState()
+    const workFrame = buildCompanyShellFrame(shell, "work")
     expect(workFrame.sidebarSections.map((section) => section.label)).toEqual([
       "Queues",
       "Channels",
       "Participants",
     ])
 
-    const observeFrame = buildCompanyShellFrame(demoCompanyShell, "observe")
+    const observeFrame = buildCompanyShellFrame(shell, "observe")
     expect(observeFrame.sidebarSections.map((section) => section.label)).toEqual([
       "Queues",
       "Participants",
@@ -25,10 +26,11 @@ describe("company-shell web frame", () => {
   })
 
   it("shows only one detail drawer at a time for the active surface", () => {
-    const workFrame = buildCompanyShellFrame(demoCompanyShell, "work")
+    const shell = createDemoOperationalShellState()
+    const workFrame = buildCompanyShellFrame(shell, "work")
     expect(workFrame.detailPane).toBeNull()
 
-    const observeFrame = buildCompanyShellFrame(demoCompanyShell, "observe")
+    const observeFrame = buildCompanyShellFrame(shell, "observe")
     expect(observeFrame.detailPane).toBeNull()
   })
 })

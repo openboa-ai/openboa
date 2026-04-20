@@ -1,8 +1,15 @@
 import { existsSync } from "node:fs"
-import { app, BrowserWindow, shell } from "electron"
+import { app, BrowserWindow, ipcMain, shell } from "electron"
+import { CHAT_RUNTIME_GATEWAY_METHODS } from "../chat/runtime-gateway.js"
+import {
+  desktopChatRuntimeGatewayRegistry,
+  executeDesktopChatRuntimeGatewayMethod,
+  parseDesktopChatRuntimeGatewayMethodInput,
+} from "./chat-runtime-gateway-registry.js"
 import { buildDesktopRuntimeSpec } from "./runtime.js"
 
 const runtime = buildDesktopRuntimeSpec(import.meta.url)
+const companyDir = process.cwd()
 
 function createMainWindow(): BrowserWindow {
   if (!existsSync(runtime.loadTarget.path)) {
@@ -31,6 +38,17 @@ function createMainWindow(): BrowserWindow {
 }
 
 app.whenReady().then(() => {
+  for (const method of CHAT_RUNTIME_GATEWAY_METHODS) {
+    const spec = desktopChatRuntimeGatewayRegistry[method]
+    ipcMain.handle(spec.channel, async (_event, input) =>
+      executeDesktopChatRuntimeGatewayMethod(
+        companyDir,
+        method,
+        parseDesktopChatRuntimeGatewayMethodInput(method, input),
+      ),
+    )
+  }
+
   createMainWindow()
 
   app.on("activate", () => {

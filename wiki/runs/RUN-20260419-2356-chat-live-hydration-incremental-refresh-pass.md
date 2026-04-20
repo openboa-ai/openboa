@@ -1,0 +1,26 @@
+# RUN-20260419-2356-chat-live-hydration-incremental-refresh-pass
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260419-2348-chat-live-hydration-room-management-pass`
+- `Owner skill`: `auto-coding`
+- `Baseline`: The hydrated chat shell already loaded real ledger state and routed message, attention, and room-management commands through the desktop runtime gateway, but background refresh still depended on explicit full snapshot reloads after local actions and had no durable event watermark seam.
+- `Hypothesis`: If the runtime seed carries an `eventWatermark` and the renderer polls the desktop gateway for new readable chat events before reloading, then the hydrated shell can refresh incrementally in the background without re-reading the full snapshot on every idle loop.
+- `Single bounded change`:
+  - add `eventWatermark` to `ChatShellRuntimeSeed`
+  - extend the runtime gateway with lightweight event polling
+  - expose desktop `readChatEvents` polling through the preload and IPC bridge
+  - teach `chat-app-state` to poll by watermark and reload only when new readable events appear, with an in-flight guard to avoid overlapping command-triggered reloads
+  - add focused tests for gateway poll passthrough, desktop watermark polling, and seed watermark progression
+- `Measurement`:
+  - `pnpm exec tsc -p tsconfig.chat.json --noEmit --pretty false`
+  - `pnpm exec vitest run test/chat-app-state.test.ts test/web-chat-import-boundary.test.ts test/shell-chat-import-boundary.test.ts`
+  - `pnpm build`
+  - `pnpm build:web`
+- `Evidence`:
+  - chat-focused typecheck passed after widening the seed and gateway contracts
+  - `69` targeted tests passed, including new coverage for event polling and watermark advancement
+  - CLI and web production builds both succeeded after the IPC polling seam was added
+- `Quality axis targeted`: background refresh efficiency, runtime boundary integrity, and hydrated-shell continuity
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-project`

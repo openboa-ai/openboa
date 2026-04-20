@@ -6,6 +6,7 @@ import { ScrollArea } from "../../../../components/ui/scroll-area.js"
 import { Textarea } from "../../../../components/ui/textarea.js"
 import { cn } from "../../../../lib/utils.js"
 import type { ChatTranscriptViewState } from "../../../chat/index.js"
+import { shouldSubmitChatComposerFromKeyInput } from "../../chat-submit.js"
 import { ComposerShell } from "../system/composer-shell.js"
 import { PaneHeader } from "../system/pane-header.js"
 import { MessageRow } from "./message-row.js"
@@ -331,7 +332,16 @@ export function ThreadPane(props: {
                   )
                   return
                 }
-                if (event.key === "Enter" && !event.shiftKey) {
+                const nativeEvent = event.nativeEvent as KeyboardEvent
+                if (
+                  shouldSubmitChatComposerFromKeyInput({
+                    key: event.key,
+                    shiftKey: event.shiftKey,
+                    isComposing: nativeEvent.isComposing,
+                    keyCode: nativeEvent.keyCode,
+                    which: nativeEvent.which,
+                  })
+                ) {
                   event.preventDefault()
                   const selectedMention = resolveSuggestionSelection(
                     composerMentionSuggestions,

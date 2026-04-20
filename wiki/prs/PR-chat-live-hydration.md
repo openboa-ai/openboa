@@ -25,20 +25,20 @@
   - Changing the selected sidebar item changes the active conversation and transcript view.
   - Conversations without an active thread collapse the thread pane and adjust the main layout.
   - Focused inbox opens preserve the selected inbox row while opening the correct conversation state.
-- `Current status`: `looping`
-- `Current owner`: `auto-project`
-- `Current quality gap`: The shell controller and thread close/open behavior now sit below `App`, but the surface still hydrates from demo seed projections and does not yet route real post/open commands or production ledger data.
-- `Latest winning run`: `RUN-20260408-1505-chat-live-hydration-shell-controller-pass`
+- `Current status`: `final-signoff`
+- `Current owner`: `human-final-signoff`
+- `Current quality gap`: No blocking gap is currently visible inside the owned chat-hydration boundary. The remaining live Work/Observe hydration work now belongs to `PR-operational-shell-live-hydration`, not another required slice inside this PR.
+- `Latest winning run`: `RUN-20260420-2340-chat-live-hydration-codeql-pr-review-pass.md`
 - `Latest failed run`: `none`
 - `Final signoff checklist`:
   - app-owned selection state is persisted and restored
   - sidebar-driven conversation changes update transcript and composer state
   - thread pane only appears when the selected transcript view has an active thread
   - runtime-focused tests cover the new selection semantics
-  - next hydration gaps are clearly recorded in wiki memory
-- `Why this PR is not ready yet`: This is the first live hydration slice. It closes the state-ownership gap, but the shell still depends on demo projections and placeholder composer behavior rather than real chat truth and command flow.
+  - next hydration gaps are clearly recorded in wiki memory and routed to a follow-on frontier
+- `Why this PR is not ready yet`: The owned chat shell boundary is now code-complete for this frontier. The only remaining gate is human final signoff on the bounded chat-hydration behavior while the next operational-state work proceeds in `PR-operational-shell-live-hydration`.
 - `Open risks`:
-  - Work and Observe surfaces still rely on the static demo shell.
-  - Thread open state now supports close and reopen within the selected item, but it is still seeded from fixture transcript views rather than real thread commands.
-  - Composer and message actions still do not dispatch real commands.
-- `Next action`: Choose the next bounded hydration slice between real thread command flow and real composer/message dispatch.
+  - Work and Observe still depend on static demo-backed operational state, but that remaining gap is now explicitly tracked in `PR-operational-shell-live-hydration` rather than hidden inside this chat frontier.
+  - Command-triggered refresh still reloads a full snapshot instead of applying a narrower delta patch.
+  - Conversation create/direct-create and the operational shell seed are still split from any real runtime gateway.
+- `Next action`: Request human final signoff on the bounded chat-hydration frontier and route the next live Work/Observe hydration work through `PR-operational-shell-live-hydration`.

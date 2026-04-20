@@ -1,5 +1,26 @@
 import { describe, expect, it } from "vitest"
+import { CHAT_REDACTED_MESSAGE_BODY } from "../src/chat/core/model.js"
+import { ChatCommandService } from "../src/chat/policy/command-service.js"
 import { openViewerRecentConversation } from "../src/shell/chat/index.js"
+import {
+  addDesktopChatConversationParticipant,
+  archiveDesktopChatConversation,
+  editDesktopChatMessage,
+  grantDesktopChatConversationAccess,
+  joinDesktopChatConversation,
+  leaveDesktopChatConversation,
+  loadDesktopChatRuntimeSeed,
+  markDesktopChatRead,
+  pollDesktopChatEvents,
+  postDesktopChatMessage,
+  redactDesktopChatMessage,
+  removeDesktopChatConversationParticipant,
+  revokeDesktopChatConversationAccess,
+  searchDesktopChatMessages,
+  setDesktopChatMessageReaction,
+  setDesktopChatThreadFollowState,
+  updateDesktopChatConversationSettings,
+} from "../src/shell/desktop/chat-runtime-gateway.js"
 import {
   addChatConversationParticipant,
   appendChatMessage,
@@ -33,9 +54,1107 @@ import {
   toggleChatMessageReaction,
   updateChatConversationDetails,
 } from "../src/shell/web/chat-app-state.js"
+import {
+  addChatShellRuntimeConversationParticipant,
+  archiveChatShellRuntimeConversation,
+  editChatShellRuntimeMessage as editChatShellRuntimeMessageCommand,
+  grantChatShellRuntimeConversationAccess,
+  joinChatShellRuntimeConversation,
+  leaveChatShellRuntimeConversation,
+  loadChatShellRuntimeSeed,
+  markChatShellRuntimeRead,
+  pollChatShellRuntimeEvents,
+  postChatShellRuntimeMessage,
+  redactChatShellRuntimeMessage,
+  removeChatShellRuntimeConversationParticipant,
+  revokeChatShellRuntimeConversationAccess,
+  searchChatShellRuntimeMessages,
+  setChatShellRuntimeMessageReaction,
+  setChatShellRuntimeThreadFollowState,
+  updateChatShellRuntimeConversationSettings,
+} from "../src/shell/web/chat-runtime-gateway.js"
 import { makeConversationRecord, makeProjectedMessage } from "../src/shell/web/chat-seed.js"
+import { createChatSingleFlightGate } from "../src/shell/web/chat-submit.js"
+import { createChatFixture } from "./helpers.js"
+
+function restoreWindow(descriptor: PropertyDescriptor | undefined): void {
+  if (descriptor) {
+    Object.defineProperty(globalThis, "window", descriptor)
+    return
+  }
+  Reflect.deleteProperty(globalThis, "window")
+}
 
 describe("chat shell runtime state", () => {
+  it("drops overlapping submit attempts while the first send is still in flight", async () => {
+    const gate = createChatSingleFlightGate()
+    let resolveFirst: (() => void) | null = null
+    let runCount = 0
+
+    const firstRun = gate(async () => {
+      runCount += 1
+      await new Promise<void>((resolve) => {
+        resolveFirst = resolve
+      })
+    })
+    const secondRun = gate(async () => {
+      runCount += 1
+    })
+
+    await expect(secondRun).resolves.toEqual({ started: false })
+    expect(runCount).toBe(1)
+
+    resolveFirst?.()
+    await expect(firstRun).resolves.toEqual({ started: true, value: undefined })
+
+    await expect(
+      gate(async () => {
+        runCount += 1
+      }),
+    ).resolves.toEqual({ started: true, value: undefined })
+    expect(runCount).toBe(2)
+  })
+
+  it("prefers the desktop chat gateway when it is available", async () => {
+    const gatewaySeed = createChatShellRuntimeSeed({ actorId: "alpha" })
+    const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window")
+
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        openboaChatGateway: {
+          async loadSeed(input: { actorId: string }) {
+            expect(input.actorId).toBe("alpha")
+            return gatewaySeed
+          },
+        },
+      },
+    })
+
+    try {
+      await expect(
+        loadChatShellRuntimeSeed({
+          actorId: "alpha",
+        }),
+      ).resolves.toBe(gatewaySeed)
+    } finally {
+      restoreWindow(originalWindow)
+    }
+  })
+
+  it("returns null when the desktop chat gateway is unavailable", async () => {
+    const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window")
+
+    Reflect.deleteProperty(globalThis, "window")
+
+    try {
+      await expect(
+        loadChatShellRuntimeSeed({
+          actorId: "founder",
+        }),
+      ).resolves.toBeNull()
+    } finally {
+      restoreWindow(originalWindow)
+    }
+  })
+
+  it("rejects when the desktop chat gateway fails", async () => {
+    const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window")
+
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        openboaChatGateway: {
+          async loadSeed() {
+            throw new Error("boom")
+          },
+        },
+      },
+    })
+
+    try {
+      await expect(
+        loadChatShellRuntimeSeed({
+          actorId: "founder",
+        }),
+      ).rejects.toThrow("boom")
+    } finally {
+      restoreWindow(originalWindow)
+    }
+  })
+
+  it("routes message, attention, search, and room management commands through the available runtime gateway", async () => {
+    const calls: Array<{ method: string; input: unknown }> = []
+    const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window")
+
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        openboaChatGateway: {
+          async loadSeed() {
+            return createChatShellRuntimeSeed()
+          },
+          async postMessage(input: unknown) {
+            calls.push({ method: "postMessage", input })
+          },
+          async setMessageReaction(input: unknown) {
+            calls.push({ method: "setMessageReaction", input })
+          },
+          async editMessage(input: unknown) {
+            calls.push({ method: "editMessage", input })
+          },
+          async redactMessage(input: unknown) {
+            calls.push({ method: "redactMessage", input })
+          },
+          async markRead(input: unknown) {
+            calls.push({ method: "markRead", input })
+          },
+          async setThreadFollowState(input: unknown) {
+            calls.push({ method: "setThreadFollowState", input })
+          },
+          async searchMessages(input: unknown) {
+            calls.push({ method: "searchMessages", input })
+            return []
+          },
+          async pollEvents(input: unknown) {
+            calls.push({ method: "pollEvents", input })
+            return { nextSequence: 12, hasEvents: true }
+          },
+          async joinConversation(input: unknown) {
+            calls.push({ method: "joinConversation", input })
+          },
+          async leaveConversation(input: unknown) {
+            calls.push({ method: "leaveConversation", input })
+          },
+          async addParticipant(input: unknown) {
+            calls.push({ method: "addParticipant", input })
+          },
+          async removeParticipant(input: unknown) {
+            calls.push({ method: "removeParticipant", input })
+          },
+          async grantAccess(input: unknown) {
+            calls.push({ method: "grantAccess", input })
+          },
+          async revokeAccess(input: unknown) {
+            calls.push({ method: "revokeAccess", input })
+          },
+          async updateConversationSettings(input: unknown) {
+            calls.push({ method: "updateConversationSettings", input })
+          },
+          async archiveConversation(input: unknown) {
+            calls.push({ method: "archiveConversation", input })
+          },
+        },
+      },
+    })
+
+    try {
+      await expect(
+        postChatShellRuntimeMessage({
+          actorId: "founder",
+          conversationId: "general",
+          body: "hello",
+          threadId: null,
+          audienceId: "alpha",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        setChatShellRuntimeMessageReaction({
+          actorId: "founder",
+          conversationId: "general",
+          messageId: "message-1",
+          emoji: "🙂",
+          active: true,
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        editChatShellRuntimeMessageCommand({
+          actorId: "founder",
+          conversationId: "general",
+          messageId: "message-1",
+          body: "edited",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        redactChatShellRuntimeMessage({
+          actorId: "founder",
+          conversationId: "general",
+          messageId: "message-1",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        markChatShellRuntimeRead({
+          actorId: "founder",
+          conversationId: "general",
+          threadId: "thread-1",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        setChatShellRuntimeThreadFollowState({
+          actorId: "founder",
+          conversationId: "general",
+          threadId: "thread-1",
+          followed: true,
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        searchChatShellRuntimeMessages({
+          actorId: "founder",
+          query: "launch",
+          limit: 8,
+        }),
+      ).resolves.toEqual([])
+      await expect(
+        pollChatShellRuntimeEvents({
+          actorId: "founder",
+          afterSequence: 4,
+          limit: 8,
+        }),
+      ).resolves.toEqual({
+        nextSequence: 12,
+        hasEvents: true,
+      })
+      await expect(
+        joinChatShellRuntimeConversation({
+          actorId: "founder",
+          conversationId: "general",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        leaveChatShellRuntimeConversation({
+          actorId: "founder",
+          conversationId: "general",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        addChatShellRuntimeConversationParticipant({
+          actorId: "founder",
+          conversationId: "general",
+          participantId: "alpha",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        removeChatShellRuntimeConversationParticipant({
+          actorId: "founder",
+          conversationId: "general",
+          participantId: "alpha",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        grantChatShellRuntimeConversationAccess({
+          actorId: "founder",
+          conversationId: "general",
+          participantId: "alpha",
+          roleId: "viewer",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        revokeChatShellRuntimeConversationAccess({
+          actorId: "founder",
+          conversationId: "general",
+          bindingId: "binding-1",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        updateChatShellRuntimeConversationSettings({
+          actorId: "founder",
+          conversationId: "general",
+          title: "Launch",
+          topic: "Final owners",
+          visibility: "private",
+          postingPolicy: "restricted",
+        }),
+      ).resolves.toBe(true)
+      await expect(
+        archiveChatShellRuntimeConversation({
+          actorId: "founder",
+          conversationId: "general",
+        }),
+      ).resolves.toBe(true)
+
+      expect(calls).toEqual([
+        {
+          method: "postMessage",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            body: "hello",
+            threadId: null,
+            audienceId: "alpha",
+          },
+        },
+        {
+          method: "setMessageReaction",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            messageId: "message-1",
+            emoji: "🙂",
+            active: true,
+          },
+        },
+        {
+          method: "editMessage",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            messageId: "message-1",
+            body: "edited",
+          },
+        },
+        {
+          method: "redactMessage",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            messageId: "message-1",
+          },
+        },
+        {
+          method: "markRead",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            threadId: "thread-1",
+          },
+        },
+        {
+          method: "setThreadFollowState",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            threadId: "thread-1",
+            followed: true,
+          },
+        },
+        {
+          method: "searchMessages",
+          input: {
+            actorId: "founder",
+            query: "launch",
+            limit: 8,
+          },
+        },
+        {
+          method: "pollEvents",
+          input: {
+            actorId: "founder",
+            afterSequence: 4,
+            limit: 8,
+          },
+        },
+        {
+          method: "joinConversation",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+          },
+        },
+        {
+          method: "leaveConversation",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+          },
+        },
+        {
+          method: "addParticipant",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            participantId: "alpha",
+          },
+        },
+        {
+          method: "removeParticipant",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            participantId: "alpha",
+          },
+        },
+        {
+          method: "grantAccess",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            participantId: "alpha",
+            roleId: "viewer",
+          },
+        },
+        {
+          method: "revokeAccess",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            bindingId: "binding-1",
+          },
+        },
+        {
+          method: "updateConversationSettings",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+            title: "Launch",
+            topic: "Final owners",
+            visibility: "private",
+            postingPolicy: "restricted",
+          },
+        },
+        {
+          method: "archiveConversation",
+          input: {
+            actorId: "founder",
+            conversationId: "general",
+          },
+        },
+      ])
+    } finally {
+      restoreWindow(originalWindow)
+    }
+  })
+
+  it("applies desktop message mutations and rehydrates the updated ledger seed", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const conversation = await app.createChannel({
+      slug: "general",
+      title: "general",
+      createdById: "founder",
+    })
+
+    await postDesktopChatMessage(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      body: "Launch note ready for review.",
+    })
+    const postedMessage =
+      (
+        await app.readConversationMessages({
+          conversationId: conversation.conversationId,
+          actorId: "founder",
+        })
+      ).at(-1) ?? null
+    expect(postedMessage).not.toBeNull()
+    if (!postedMessage) {
+      return
+    }
+
+    await setDesktopChatMessageReaction(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      messageId: postedMessage.messageId,
+      emoji: "🙂",
+      active: true,
+    })
+    await editDesktopChatMessage(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      messageId: postedMessage.messageId,
+      body: "Edited launch note ready for review.",
+    })
+
+    let seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    const watermarkAfterEdit = seed.eventWatermark
+    let transcriptMessage =
+      seed.itemsBySidebarItemId[conversation.conversationId]?.projection.mainTranscript.at(-1) ??
+      null
+
+    expect(transcriptMessage).toMatchObject({
+      messageId: postedMessage.messageId,
+      body: "Edited launch note ready for review.",
+      editedAt: expect.any(String),
+      reactions: [
+        expect.objectContaining({
+          emoji: "🙂",
+          participantIds: ["founder"],
+        }),
+      ],
+    })
+
+    await redactDesktopChatMessage(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      messageId: postedMessage.messageId,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    expect(seed.eventWatermark).toBeGreaterThan(watermarkAfterEdit)
+    transcriptMessage =
+      seed.itemsBySidebarItemId[conversation.conversationId]?.projection.mainTranscript.at(-1) ??
+      null
+
+    expect(transcriptMessage).toMatchObject({
+      messageId: postedMessage.messageId,
+      body: CHAT_REDACTED_MESSAGE_BODY,
+      redactedAt: expect.any(String),
+    })
+  })
+
+  it("polls desktop chat events from the current watermark", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const conversation = await app.createChannel({
+      slug: "general",
+      title: "general",
+      createdById: "founder",
+    })
+
+    const initialSeed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    const initialPoll = await pollDesktopChatEvents(storageDir, {
+      actorId: "founder",
+      afterSequence: initialSeed.eventWatermark,
+      limit: 8,
+    })
+    expect(initialPoll).toEqual({
+      nextSequence: initialSeed.eventWatermark,
+      hasEvents: false,
+    })
+
+    await postDesktopChatMessage(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      body: "incremental refresh probe",
+    })
+
+    const nextPoll = await pollDesktopChatEvents(storageDir, {
+      actorId: "founder",
+      afterSequence: initialSeed.eventWatermark,
+      limit: 8,
+    })
+    expect(nextPoll.hasEvents).toBe(true)
+    expect(nextPoll.nextSequence).toBeGreaterThan(initialSeed.eventWatermark)
+  })
+
+  it("applies desktop attention mutations and rehydrates read and follow state", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const conversation = await app.createChannel({
+      slug: "general",
+      title: "general",
+      createdById: "founder",
+    })
+    await app.inviteParticipant({
+      conversationId: conversation.conversationId,
+      subjectId: "alpha",
+      invitedById: "founder",
+    })
+    await app.joinConversation({
+      conversationId: conversation.conversationId,
+      participantId: "alpha",
+    })
+
+    const threadRoot = await app.postMessage({
+      conversationId: conversation.conversationId,
+      senderId: "alpha",
+      body: "@founder check the launch thread.",
+    })
+    await app.postMessage({
+      conversationId: conversation.conversationId,
+      senderId: "alpha",
+      threadId: threadRoot.messageId,
+      body: "thread follow-up",
+    })
+    await setDesktopChatThreadFollowState(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      threadId: threadRoot.messageId,
+      followed: true,
+    })
+
+    let seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    expect(seed.baseChat.sidebar.inbox).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          conversationId: conversation.conversationId,
+          kind: "mention",
+        }),
+      ]),
+    )
+    expect(seed.baseChat.sidebar.followedThreads).toEqual([
+      expect.objectContaining({
+        conversationId: conversation.conversationId,
+        threadRootMessageId: threadRoot.messageId,
+        unreadReplyCount: 1,
+      }),
+    ])
+
+    await markDesktopChatRead(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      threadId: threadRoot.messageId,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    expect(seed.baseChat.sidebar.followedThreads).toEqual([
+      expect.objectContaining({
+        conversationId: conversation.conversationId,
+        threadRootMessageId: threadRoot.messageId,
+        unreadReplyCount: 0,
+      }),
+    ])
+
+    await markDesktopChatRead(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      threadId: null,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    expect(seed.baseChat.sidebar.inbox).toEqual([])
+
+    await setDesktopChatThreadFollowState(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      threadId: threadRoot.messageId,
+      followed: false,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    expect(seed.baseChat.sidebar.followedThreads).toEqual([])
+  })
+
+  it("applies desktop join and leave mutations and rehydrates viewer state", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const conversation = await app.createChannel({
+      slug: "ops",
+      title: "ops",
+      createdById: "founder",
+      visibility: "private",
+    })
+    await app.grantViewerAccess({
+      conversationId: conversation.conversationId,
+      subjectId: "alpha",
+      grantedById: "founder",
+    })
+    await app.inviteParticipant({
+      conversationId: conversation.conversationId,
+      subjectId: "alpha",
+      invitedById: "founder",
+    })
+    await app.setConversationWatchState({
+      conversationId: conversation.conversationId,
+      actorId: "alpha",
+      attached: true,
+    })
+
+    let seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "alpha",
+    })
+    expect(seed.baseChat.sidebar.viewerRecents).toEqual([
+      expect.objectContaining({
+        conversationId: conversation.conversationId,
+      }),
+    ])
+    expect(seed.itemsBySidebarItemId[conversation.conversationId]?.openIntent.openMode).toBe(
+      "viewer",
+    )
+
+    await joinDesktopChatConversation(storageDir, {
+      actorId: "alpha",
+      conversationId: conversation.conversationId,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "alpha",
+    })
+    expect(seed.baseChat.sidebar.channels).toEqual([
+      expect.objectContaining({
+        conversationId: conversation.conversationId,
+      }),
+    ])
+    expect(seed.baseChat.sidebar.viewerRecents).toEqual([])
+    expect(seed.itemsBySidebarItemId[conversation.conversationId]?.openIntent.openMode).toBe(
+      "joined",
+    )
+
+    await leaveDesktopChatConversation(storageDir, {
+      actorId: "alpha",
+      conversationId: conversation.conversationId,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "alpha",
+    })
+    expect(seed.baseChat.sidebar.channels).toEqual([])
+    expect(seed.baseChat.sidebar.viewerRecents).toEqual([
+      expect.objectContaining({
+        conversationId: conversation.conversationId,
+      }),
+    ])
+    expect(seed.itemsBySidebarItemId[conversation.conversationId]?.openIntent.openMode).toBe(
+      "viewer",
+    )
+  })
+
+  it("applies desktop room management mutations and rehydrates roster, grants, settings, and archive state", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const conversation = await app.createChannel({
+      slug: "general",
+      title: "general",
+      createdById: "founder",
+    })
+
+    await addDesktopChatConversationParticipant(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      participantId: "alpha",
+    })
+    await grantDesktopChatConversationAccess(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      participantId: "alpha",
+      roleId: "room_manager",
+    })
+    await grantDesktopChatConversationAccess(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      participantId: "beta",
+      roleId: "viewer",
+    })
+    await grantDesktopChatConversationAccess(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      participantId: "gamma",
+      roleId: "participant",
+    })
+
+    let seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    let item = seed.itemsBySidebarItemId[conversation.conversationId]
+    expect(item?.conversation.participantIds).toEqual(expect.arrayContaining(["founder", "alpha"]))
+    expect(item?.accessGrants).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          subjectId: "alpha",
+          roleId: "room_manager",
+        }),
+        expect.objectContaining({
+          subjectId: "beta",
+          roleId: "viewer",
+        }),
+        expect.objectContaining({
+          subjectId: "gamma",
+          roleId: "participant",
+        }),
+      ]),
+    )
+
+    const viewerGrantBindingId = item?.accessGrants?.find(
+      (grant) => grant.subjectId === "beta" && grant.roleId === "viewer",
+    )?.bindingId
+    expect(viewerGrantBindingId).toBeTruthy()
+
+    await updateDesktopChatConversationSettings(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      title: "Launch Readiness",
+      topic: "Final release owners",
+      visibility: "private",
+      postingPolicy: "restricted",
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    item = seed.itemsBySidebarItemId[conversation.conversationId]
+    expect(item?.conversation).toMatchObject({
+      title: "Launch Readiness",
+      topic: "Final release owners",
+      visibility: "private",
+      postingPolicy: "restricted",
+    })
+
+    await removeDesktopChatConversationParticipant(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      participantId: "alpha",
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    item = seed.itemsBySidebarItemId[conversation.conversationId]
+    expect(item?.conversation.participantIds).not.toContain("alpha")
+    expect(
+      item?.accessGrants?.some(
+        (grant) => grant.subjectId === "alpha" && grant.roleId === "room_manager",
+      ),
+    ).toBe(false)
+
+    await revokeDesktopChatConversationAccess(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+      bindingId: viewerGrantBindingId ?? "",
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    item = seed.itemsBySidebarItemId[conversation.conversationId]
+    expect(
+      item?.accessGrants?.some((grant) => grant.subjectId === "beta" && grant.roleId === "viewer"),
+    ).toBe(false)
+
+    await archiveDesktopChatConversation(storageDir, {
+      actorId: "founder",
+      conversationId: conversation.conversationId,
+    })
+
+    seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    item = seed.itemsBySidebarItemId[conversation.conversationId]
+    expect(item?.conversation.lifecycleState).toBe("archived")
+    expect(item?.projection.mainTranscript.at(-1)).toMatchObject({
+      systemEventKind: "room-archived",
+      body: "Room archived.",
+    })
+  })
+
+  it("searches through command service results and can open hidden viewer hits", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const joinedConversation = await app.ensureDirectConversation({
+      participants: [
+        { kind: "participant", id: "founder" },
+        { kind: "participant", id: "alpha" },
+      ],
+      title: "alpha",
+    })
+    const hiddenViewerConversation = await app.createChannel({
+      slug: "ops",
+      title: "ops",
+      createdById: "alpha",
+      visibility: "private",
+    })
+    await app.grantViewerAccess({
+      conversationId: hiddenViewerConversation.conversationId,
+      subjectId: "founder",
+      grantedById: "alpha",
+    })
+    await app.postMessage({
+      conversationId: joinedConversation.conversationId,
+      senderId: "alpha",
+      body: "launch plan is ready",
+    })
+    const hiddenViewerMessage = await app.postMessage({
+      conversationId: hiddenViewerConversation.conversationId,
+      senderId: "alpha",
+      body: "incident update",
+    })
+
+    const seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+    const results = await searchDesktopChatMessages(storageDir, {
+      actorId: "founder",
+      query: "incident",
+      limit: 8,
+    })
+    const firstResult = results[0]
+    if (!firstResult) {
+      throw new Error("Expected at least one desktop search result")
+    }
+
+    expect(firstResult).toMatchObject({
+      sidebarItemId: hiddenViewerConversation.conversationId,
+      conversationId: hiddenViewerConversation.conversationId,
+      messageId: hiddenViewerMessage.messageId,
+      openMode: "viewer",
+    })
+    expect(
+      seed.itemsBySidebarItemId[`viewer:${hiddenViewerConversation.conversationId}`],
+    ).toBeUndefined()
+
+    const nextSeed = openChatSearchResult(seed, firstResult)
+    const runtime = buildChatRuntimeState(firstResult.sidebarItemId, {
+      seed: nextSeed,
+      threadDrawerOpenOverrides: {
+        [firstResult.sidebarItemId]: !!firstResult.threadId,
+      },
+    })
+
+    expect(runtime.selectedSidebarItemId).toBe(hiddenViewerConversation.conversationId)
+    expect(runtime.chat.activeConversationId).toBe(hiddenViewerConversation.conversationId)
+    expect(runtime.transcriptView.openMode).toBe("viewer")
+    expect(runtime.transcriptView.focusMessageId).toBe(hiddenViewerMessage.messageId)
+    expect(
+      runtime.chat.sidebar.viewerRecents.some(
+        (entry) => entry.conversationId === hiddenViewerConversation.conversationId,
+      ),
+    ).toBe(true)
+  })
+
+  it("loads desktop chat hydration from ledger state without treating viewer rooms as joined", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const generalConversation = await app.createChannel({
+      slug: "general",
+      title: "general",
+      createdById: "founder",
+    })
+    await app.inviteParticipant({
+      conversationId: generalConversation.conversationId,
+      subjectId: "alpha",
+      invitedById: "founder",
+    })
+    await app.joinConversation({
+      conversationId: generalConversation.conversationId,
+      participantId: "alpha",
+    })
+    const threadRoot = await app.postMessage({
+      conversationId: generalConversation.conversationId,
+      senderId: "alpha",
+      body: "@founder can you check the launch checklist?",
+    })
+    await app.postMessage({
+      conversationId: generalConversation.conversationId,
+      senderId: "founder",
+      threadId: threadRoot.messageId,
+      body: "Watching the launch thread.",
+    })
+    await app.setThreadFollowState({
+      conversationId: generalConversation.conversationId,
+      actorId: "founder",
+      threadId: threadRoot.messageId,
+      attached: true,
+    })
+
+    const directConversation = await app.ensureDirectConversation({
+      participants: [
+        { kind: "participant", id: "founder" },
+        { kind: "participant", id: "alpha" },
+      ],
+    })
+    await app.postMessage({
+      conversationId: directConversation.conversationId,
+      senderId: "alpha",
+      body: "Direct update for founder.",
+    })
+
+    const viewerConversation = await app.createChannel({
+      slug: "ops",
+      title: "ops",
+      createdById: "alpha",
+      visibility: "private",
+    })
+    await app.grantViewerAccess({
+      conversationId: viewerConversation.conversationId,
+      subjectId: "founder",
+      grantedById: "alpha",
+    })
+    await app.setConversationWatchState({
+      conversationId: viewerConversation.conversationId,
+      actorId: "founder",
+      attached: true,
+    })
+    await app.postMessage({
+      conversationId: viewerConversation.conversationId,
+      senderId: "alpha",
+      body: "Viewer room update.",
+    })
+
+    const seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+
+    expect(seed.baseChat.sidebar.channels).toEqual([
+      expect.objectContaining({
+        conversationId: generalConversation.conversationId,
+        title: "general",
+      }),
+    ])
+    expect(seed.baseChat.sidebar.viewerRecents).toEqual([
+      expect.objectContaining({
+        conversationId: viewerConversation.conversationId,
+        title: "ops",
+      }),
+    ])
+    expect(seed.baseChat.sidebar.inbox).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: "mention",
+          conversationId: generalConversation.conversationId,
+        }),
+        expect.objectContaining({
+          kind: "direct",
+          conversationId: directConversation.conversationId,
+        }),
+      ]),
+    )
+    expect(seed.baseChat.sidebar.followedThreads).toEqual([
+      expect.objectContaining({
+        conversationId: generalConversation.conversationId,
+        threadRootMessageId: threadRoot.messageId,
+      }),
+    ])
+    expect(seed.itemsBySidebarItemId[directConversation.conversationId]?.conversation.title).toBe(
+      "Alpha",
+    )
+    expect(seed.itemsBySidebarItemId[generalConversation.conversationId]?.openIntent.openMode).toBe(
+      "joined",
+    )
+    expect(seed.itemsBySidebarItemId[viewerConversation.conversationId]?.openIntent.openMode).toBe(
+      "viewer",
+    )
+  })
+
+  it("defaults to the viewer recent row when viewer access is the only available chat entry", async () => {
+    const storageDir = await createChatFixture()
+    const app = new ChatCommandService(storageDir)
+    const viewerConversation = await app.createChannel({
+      slug: "ops",
+      title: "ops",
+      createdById: "alpha",
+      visibility: "private",
+    })
+    await app.grantViewerAccess({
+      conversationId: viewerConversation.conversationId,
+      subjectId: "founder",
+      grantedById: "alpha",
+    })
+    await app.setConversationWatchState({
+      conversationId: viewerConversation.conversationId,
+      actorId: "founder",
+      attached: true,
+    })
+    await app.postMessage({
+      conversationId: viewerConversation.conversationId,
+      senderId: "alpha",
+      body: "Viewer-only room update.",
+    })
+
+    const seed = await loadDesktopChatRuntimeSeed(storageDir, {
+      actorId: "founder",
+    })
+
+    expect(seed.defaultSidebarItemId).toBe(`viewer:${viewerConversation.conversationId}`)
+    expect(seed.baseChat.sidebar.channels).toEqual([])
+    expect(seed.baseChat.sidebar.viewerRecents).toEqual([
+      expect.objectContaining({
+        entryId: `viewer:${viewerConversation.conversationId}`,
+      }),
+    ])
+  })
+
   it("accepts only known sidebar selections", () => {
     expect(resolveInitialChatSidebarItemId("ops")).toBe("ops")
     expect(resolveInitialChatSidebarItemId("mention:general-second")).toBe("mention:general-second")
@@ -558,7 +1677,7 @@ describe("chat shell runtime state", () => {
     })
   })
 
-  it("opens dynamically created inbox rows and clears room attention", () => {
+  it("opens dynamically created inbox rows without clearing room attention", () => {
     const seed = createChatShellRuntimeSeed()
     const nextSeed = appendChatMessage({
       seed,
@@ -578,23 +1697,19 @@ describe("chat shell runtime state", () => {
     }
 
     const openedSeed = openChatSidebarItem(nextSeed, mentionEntry.entryId)
-    const openedRuntime = buildChatRuntimeState("ops", { seed: openedSeed })
+    const openedRuntime = buildChatRuntimeState(mentionEntry.entryId, { seed: openedSeed })
 
-    expect(openedRuntime.selectedSidebarItemId).toBe("ops")
+    expect(openedRuntime.selectedSidebarItemId).toBe(mentionEntry.entryId)
     expect(openedRuntime.chat.activeConversationId).toBe("ops")
     expect(openedRuntime.chat.activeConversation).toMatchObject({
-      unreadCount: 0,
-      mentionCount: 0,
+      unreadCount: 1,
+      mentionCount: 1,
     })
     expect(
       openedRuntime.chat.sidebar.inbox.find(
         (entry) => entry.conversationId === "ops" && entry.kind === "mention",
       ),
-    ).toEqual(
-      expect.objectContaining({
-        resolvedAt: expect.any(String),
-      }),
-    )
+    ).toEqual(expect.objectContaining({ resolvedAt: null }))
   })
 
   it("does not raise unread attention for external messages in the actively open room", () => {

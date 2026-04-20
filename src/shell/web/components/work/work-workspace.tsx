@@ -1,8 +1,8 @@
 import { Badge } from "../../../../components/ui/badge.js"
 import { SidebarInset } from "../../../../components/ui/sidebar.js"
 import { cn } from "../../../../lib/utils.js"
+import type { CompanyWorkSurface } from "../../../../shared/company-model.js"
 import { workItemStateLabel } from "../../../../shared/company-model.js"
-import { demoCompanyShell } from "../../demo-shell.js"
 import type { CompanyShellFrameState } from "../../frame-state.js"
 import { GlobalBar } from "../chrome/global-bar.js"
 import { OperationalSidebar } from "../chrome/operational-sidebar.js"
@@ -15,9 +15,15 @@ import {
   workflowPillClass,
 } from "../shared/presentation.js"
 
-export function WorkWorkspace(props: { frame: CompanyShellFrameState }) {
-  const spotlight = demoCompanyShell.work.lanes[0]?.items[0] ?? null
-  const activeLane = demoCompanyShell.work.lanes[0] ?? null
+export function WorkWorkspace(props: {
+  frame: CompanyShellFrameState
+  surface: CompanyWorkSurface
+}) {
+  const spotlight = props.surface.selectedItem ?? props.surface.lanes[0]?.items[0] ?? null
+  const activeLane =
+    props.surface.lanes.find((lane) => lane.laneId === props.surface.activeQueueId) ??
+    props.surface.lanes[0] ??
+    null
 
   return (
     <div className="flex min-h-0 flex-1 max-md:flex-col">
@@ -43,17 +49,16 @@ export function WorkWorkspace(props: { frame: CompanyShellFrameState }) {
                     variant="outline"
                     className="rounded-[9999px] border-border bg-white/[0.03] text-foreground"
                   >
-                    {demoCompanyShell.work.queueSidebar.find((queue) => queue.queueId === "all")
-                      ?.count ?? 0}{" "}
+                    {props.surface.queueSidebar.find((queue) => queue.queueId === "all")?.count ??
+                      0}{" "}
                     total
                   </Badge>
                   <Badge
                     variant="outline"
                     className="rounded-[9999px] border-border bg-white/[0.03] text-foreground"
                   >
-                    {demoCompanyShell.work.queueSidebar.find(
-                      (queue) => queue.queueId === "needs_decision",
-                    )?.count ?? 0}{" "}
+                    {props.surface.queueSidebar.find((queue) => queue.queueId === "needs_decision")
+                      ?.count ?? 0}{" "}
                     need decision
                   </Badge>
                 </div>
@@ -68,7 +73,7 @@ export function WorkWorkspace(props: { frame: CompanyShellFrameState }) {
                   </div>
 
                   <div>
-                    {demoCompanyShell.work.lanes.map((lane, index) => {
+                    {props.surface.lanes.map((lane, index) => {
                       const selected = lane.laneId === activeLane?.laneId
 
                       return (

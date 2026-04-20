@@ -8,7 +8,7 @@ describe("chat app", () => {
     vi.unstubAllGlobals()
   })
 
-  it("renders the standalone chat surface without operational shell chrome", () => {
+  it("renders an unavailable state instead of demo chat data when no runtime gateway is present", () => {
     const storage = new Map<string, string>()
     vi.stubGlobal("window", {
       localStorage: {
@@ -25,8 +25,9 @@ describe("chat app", () => {
       </SidebarProvider>,
     )
 
-    expect(html).toContain("openboa")
-    expect(html).toContain("general")
+    expect(html).toContain("Chat runtime unavailable")
+    expect(html).toContain("no longer falls back to demo chat data")
+    expect(html).not.toContain("general")
     expect(html).not.toContain("Queues")
     expect(html).not.toContain("Participants")
   })

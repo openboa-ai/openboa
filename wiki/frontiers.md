@@ -45,11 +45,19 @@ For each frontier include:
 
 ## PR-chat-live-hydration
 
+- current status: `final-signoff`
+- current owner: `human-final-signoff`
+- primary metric: the chat shell no longer depends on direct global demo imports for active conversation selection, transcript view construction, or thread-pane behavior because those concerns live in the shared shell runtime
+- active quality gap: no blocking gap is currently visible inside the owned chat-hydration boundary; remaining live Work/Observe truth now belongs to `PR-operational-shell-live-hydration` rather than another required slice here
+- next action: request final signoff on the bounded chat-hydration frontier, then route `PR-operational-shell-live-hydration` to `auto-project` for the first read-only hydration slice
+
+## PR-operational-shell-live-hydration
+
 - current status: `looping`
 - current owner: `auto-project`
-- primary metric: the chat shell no longer depends on direct global demo imports for active conversation selection, transcript view construction, or thread-pane behavior because those concerns live in the shared shell runtime
-- active quality gap: selection, thread close, and thread reopen now live below `App`, but the surface still relies on demo seed projections and does not yet hydrate from real chat state or live command dispatch
-- next action: choose the next bounded hydration slice between real thread command flow and real composer/message dispatch
+- primary metric: the operational shell stops reading from fixed demo state and instead hydrates Work and Observe surfaces from a shared runtime-backed company state seam, with demo fallback preserved where no bridge exists
+- active quality gap: `src/shell/web/company-shell-state.ts` still returns demo-backed operational state directly; no runtime gateway, snapshot aggregator, or refresh seam exists yet for Work and Observe
+- next action: open the first bounded run around read-only operational-shell hydration through a shared gateway plus desktop bridge, then verify gateway-backed and fallback behavior in the existing app/work/observe tests
 
 ## PR-agent-runtime-heartbeat
 
