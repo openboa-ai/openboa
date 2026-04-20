@@ -17,6 +17,7 @@ import { Separator } from "../../../../components/ui/separator.js"
 import { Textarea } from "../../../../components/ui/textarea.js"
 import { cn } from "../../../../lib/utils.js"
 import type { ChatTranscriptViewState } from "../../../chat/index.js"
+import { shouldSubmitChatComposerFromKeyInput } from "../../chat-submit.js"
 import { ComposerShell } from "../system/composer-shell.js"
 import { MetaPill } from "../system/meta-pill.js"
 import { PaneHeader } from "../system/pane-header.js"
@@ -143,6 +144,7 @@ export function TranscriptPane(props: {
     topic: string | null,
     visibility: ChatConversation["visibility"] | undefined,
   ) => void
+  canHideViewerConversation: boolean
   onHideViewerConversation: () => void
   onStartEditingMessage: (messageId: string) => void
   onEditingMessageDraftChange: (value: string) => void
@@ -772,14 +774,16 @@ export function TranscriptPane(props: {
           >
             {view.viewerTreatment.actionLabel}
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 px-3 text-[13px] hover:bg-white/[0.05]"
-            onClick={props.onHideViewerConversation}
-          >
-            Hide
-          </Button>
+          {props.canHideViewerConversation ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 text-[13px] hover:bg-white/[0.05]"
+              onClick={props.onHideViewerConversation}
+            >
+              Hide
+            </Button>
+          ) : null}
         </div>
       ) : null}
 
@@ -916,7 +920,16 @@ export function TranscriptPane(props: {
                   )
                   return
                 }
-                if (event.key === "Enter" && !event.shiftKey) {
+                const nativeEvent = event.nativeEvent as KeyboardEvent
+                if (
+                  shouldSubmitChatComposerFromKeyInput({
+                    key: event.key,
+                    shiftKey: event.shiftKey,
+                    isComposing: nativeEvent.isComposing,
+                    keyCode: nativeEvent.keyCode,
+                    which: nativeEvent.which,
+                  })
+                ) {
                   event.preventDefault()
                   const selectedMention = resolveSuggestionSelection(
                     composerMentionSuggestions,

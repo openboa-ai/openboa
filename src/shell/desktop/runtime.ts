@@ -20,6 +20,7 @@ export interface DesktopWindowSpec {
 export interface DesktopWebPreferencesSpec {
   contextIsolation: boolean
   nodeIntegration: boolean
+  preload: string
   sandbox: boolean
   spellcheck: boolean
 }
@@ -30,15 +31,19 @@ export interface DesktopRuntimeSpec {
   webPreferences: DesktopWebPreferencesSpec
 }
 
-export function resolveDesktopChatIndexPath(moduleUrl: string): string {
-  return resolve(dirname(fileURLToPath(moduleUrl)), "../../web/chat/index.html")
+export function resolveDesktopAppIndexPath(moduleUrl: string): string {
+  return resolve(dirname(fileURLToPath(moduleUrl)), "../../web/index.html")
+}
+
+export function resolveDesktopPreloadPath(moduleUrl: string): string {
+  return resolve(dirname(fileURLToPath(moduleUrl)), "./preload.cjs")
 }
 
 export function buildDesktopRuntimeSpec(moduleUrl: string): DesktopRuntimeSpec {
   return {
     loadTarget: {
       kind: "file",
-      path: resolveDesktopChatIndexPath(moduleUrl),
+      path: resolveDesktopAppIndexPath(moduleUrl),
     },
     window: {
       title: "openboa",
@@ -53,6 +58,7 @@ export function buildDesktopRuntimeSpec(moduleUrl: string): DesktopRuntimeSpec {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: resolveDesktopPreloadPath(moduleUrl),
       sandbox: true,
       spellcheck: true,
     },

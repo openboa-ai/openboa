@@ -1,0 +1,29 @@
+# RUN-20260420-2232-chat-live-hydration-runtime-registry-and-state-split-pass
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: human request to implement the structural cleanup plan for the live chat shell without widening product scope
+- `Owner skill`: `auto-coding`
+- `Baseline`: `chat` already behaved like a live shell, but the gateway surface still duplicated dispatch logic across Electron IPC and Vite HTTP, and `src/shell/web/chat-app-state.ts` still concentrated hydration, selection, search, and command wiring in one oversized hook body.
+- `Hypothesis`: If the chat runtime gateway is rewritten around one shared method map plus one desktop-side registry, and the `useChatShellState()` internals are split into focused hook responsibilities while preserving the public return shape, then the live shell stays behaviorally stable while future gateway additions and shell edits become less error-prone.
+- `Single bounded change`:
+  - added a shared `ChatRuntimeGatewayMethodMap`, IPC channel map, and client builder in `src/shell/chat/runtime-gateway.ts`
+  - moved desktop-side method parsing and handler dispatch into `src/shell/desktop/chat-runtime-gateway-registry.ts`, then reused that registry from Electron main and the Vite dev HTTP gateway
+  - split `useChatShellState()` internals into focused internal hooks for UI state, selection, hydration, search, and command actions without changing the exported hook contract
+  - added gateway contract coverage and a web/desktop parity integration test
+- `Measurement`:
+  - `pnpm exec tsc -p tsconfig.chat.json --noEmit --pretty false`
+  - `pnpm exec vitest run test/chat-app-state.test.ts test/chat-runtime-gateway.integration.test.ts test/chat-web-runtime-gateway.integration.test.ts test/chat-runtime-gateway.contract.test.ts test/company-shell-desktop.test.ts test/chat-transcript-pane.test.tsx test/chat-thread-pane.test.tsx`
+  - `pnpm run check:chat`
+  - `pnpm precommit:check`
+- `Evidence`:
+  - the targeted chat/runtime suite passed at `96/96`
+  - `check:chat` passed end-to-end, including chat boundary checks, chat-only typecheck, `build:web`, and `242/242` chat tests
+  - `precommit:check` passed end-to-end, including repo-wide format, lint, typecheck, and `440/440` tests
+  - the new parity test shows the web HTTP gateway and desktop runtime gateway returning the same live transcript/search truth for the same actor and conversation
+- `Quality axis targeted`: architecture clarity, adapter parity, and regression resistance inside the bounded live chat shell frontier
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Remaining quality gap`:
+  - no blocking runtime gap is visible inside this bounded chat shell refactor
+- `Post-run note`: the shared gateway contract was subsequently tightened to remove the remaining `Biome` warnings around method-map command outputs; the latest local `check:chat` and `precommit:check` are both clean
+- `Next recommended owner`: `human-final-signoff`

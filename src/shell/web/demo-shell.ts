@@ -1,11 +1,13 @@
 import type {
+  CompanyDetailPane,
   CompanyObserveSurface,
   CompanyShell,
+  CompanyTopLevelTab,
   CompanyWorkSurface,
 } from "../../shared/company-model.js"
 import { chatSeedSurface } from "./chat-seed.js"
 
-const workSurface: CompanyWorkSurface = {
+export const demoWorkSurface: CompanyWorkSurface = {
   queueSidebar: [
     { queueId: "all", label: "All", count: 4 },
     { queueId: "needs_decision", label: "Needs decision", count: 1 },
@@ -49,7 +51,7 @@ const workSurface: CompanyWorkSurface = {
   selectedItem: null,
 }
 
-const observeSurface: CompanyObserveSurface = {
+export const demoObserveSurface: CompanyObserveSurface = {
   queueSidebar: [
     { queueId: "all", label: "All", count: 2 },
     { queueId: "in_progress", label: "In progress", count: 1 },
@@ -89,21 +91,25 @@ const observeSurface: CompanyObserveSurface = {
   selectedWork: null,
 }
 
+export const demoTopLevelTabs: CompanyTopLevelTab[] = [
+  { surface: "chat", label: "Chat", badgeCount: 4 },
+  { surface: "work", label: "Work", badgeCount: 2 },
+  { surface: "observe", label: "Observe", badgeCount: 1 },
+]
+
+export const demoDetailPane: CompanyDetailPane = {
+  surface: "chat",
+  kind: "thread",
+  title: "Quality-pass thread",
+}
+
 export const demoCompanyShell: CompanyShell = {
   companyId: "demo-company",
   viewerId: "founder",
   activeSurface: "chat",
-  topLevelTabs: [
-    { surface: "chat", label: "Chat", badgeCount: 4 },
-    { surface: "work", label: "Work", badgeCount: 2 },
-    { surface: "observe", label: "Observe", badgeCount: 1 },
-  ],
-  detailPane: {
-    surface: "chat",
-    kind: "thread",
-    title: "Quality-pass thread",
-  },
+  topLevelTabs: demoTopLevelTabs,
+  detailPane: demoDetailPane,
   chat: chatSeedSurface,
-  work: workSurface,
-  observe: observeSurface,
+  work: demoWorkSurface,
+  observe: demoObserveSurface,
 }

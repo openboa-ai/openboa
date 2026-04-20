@@ -8,8 +8,8 @@ import {
 } from "../../../../components/ui/card.js"
 import { SidebarInset } from "../../../../components/ui/sidebar.js"
 import { cn } from "../../../../lib/utils.js"
+import type { CompanyObserveSurface } from "../../../../shared/company-model.js"
 import { workItemStateLabel } from "../../../../shared/company-model.js"
-import { demoCompanyShell } from "../../demo-shell.js"
 import type { CompanyShellFrameState } from "../../frame-state.js"
 import { GlobalBar } from "../chrome/global-bar.js"
 import { OperationalSidebar } from "../chrome/operational-sidebar.js"
@@ -23,8 +23,11 @@ import {
   workflowPillClass,
 } from "../shared/presentation.js"
 
-export function ObserveWorkspace(props: { frame: CompanyShellFrameState }) {
-  const spotlight = demoCompanyShell.observe.workItems[0] ?? null
+export function ObserveWorkspace(props: {
+  frame: CompanyShellFrameState
+  surface: CompanyObserveSurface
+}) {
+  const spotlight = props.surface.selectedWork ?? props.surface.workItems[0] ?? null
 
   return (
     <div className="flex min-h-0 flex-1 max-md:flex-col">
@@ -47,7 +50,7 @@ export function ObserveWorkspace(props: { frame: CompanyShellFrameState }) {
                 </div>
 
                 <div>
-                  {demoCompanyShell.observe.workItems.map((item, index) => (
+                  {props.surface.workItems.map((item, index) => (
                     <div
                       key={item.workItemId}
                       className={cn(

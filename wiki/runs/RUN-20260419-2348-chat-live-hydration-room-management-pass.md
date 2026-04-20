@@ -1,0 +1,26 @@
+# RUN-20260419-2348-chat-live-hydration-room-management-pass
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260408-1505-chat-live-hydration-shell-controller-pass`
+- `Owner skill`: `auto-coding`
+- `Baseline`: The hydrated chat shell already loaded real ledger state and routed message plus attention commands through the desktop runtime gateway, but room join/leave, roster updates, grants, conversation settings, and archive actions still used demo-local mutations inside `chat-app-state`.
+- `Hypothesis`: If room-management actions move onto the same runtime-gateway boundary and continue to rehydrate the shell from the command-service snapshot after each command, then the transcript pane, roster, and grants surface will behave like a real chat runtime instead of a demo-only controller.
+- `Single bounded change`:
+  - extend `src/shell/chat/runtime-gateway.ts` with room-management commands
+  - wire the new commands through `src/shell/desktop/preload.ts`, `src/shell/desktop/main.ts`, and `src/shell/desktop/chat-runtime-gateway.ts`
+  - route join/leave, participant add/remove, grant revoke/manage, settings updates, and archive through the gateway in `src/shell/web/chat-app-state.ts`
+  - preserve selection correctly across gateway reloads, including explicit selection handoff when a viewer row joins into a joined conversation row
+  - add focused runtime-gateway and desktop hydration tests for join/leave plus room-management reload behavior
+- `Measurement`:
+  - `pnpm exec tsc -p tsconfig.chat.json --noEmit --pretty false`
+  - `pnpm exec vitest run test/chat-app-state.test.ts test/web-chat-import-boundary.test.ts test/shell-chat-import-boundary.test.ts`
+  - `pnpm build`
+  - `pnpm build:web`
+- `Evidence`:
+  - chat-focused typecheck passed after extending the runtime gateway
+  - `68` targeted tests passed, including new desktop coverage for join/leave hydration and roster/grant/settings/archive rehydration
+  - desktop and web production builds both succeeded after widening the IPC bridge
+- `Quality axis targeted`: real runtime command dispatch, hydration correctness, and shell/controller boundary integrity
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-project`

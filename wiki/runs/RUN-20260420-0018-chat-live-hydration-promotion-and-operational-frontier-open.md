@@ -1,0 +1,26 @@
+# RUN-20260420-0018-chat-live-hydration-promotion-and-operational-frontier-open
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260420-0011-chat-live-hydration-operational-source-gap`
+- `Owner skill`: `auto-pm`
+- `Baseline`: `PR-chat-live-hydration` had no blocking coding gap left inside its owned boundary, but frontier memory still left promotion and the next operational-state work implicit.
+- `Hypothesis`: If the current chat-hydration PR is promoted to `final-signoff` and the remaining Work/Observe live-source gap is opened as its own bounded PR frontier, then the next owner can continue without widening the closed chat frontier or inventing scope.
+- `Single bounded change`:
+  - promote `PR-chat-live-hydration` memory from `looping` to `final-signoff`
+  - define a new follow-on frontier for live operational-shell hydration
+  - update frontier memory so the next owner sees one explicit bounded packet instead of an implicit spillover
+- `Measurement`:
+  - `sed -n '1,240p' wiki/frontiers.md`
+  - `sed -n '1,260p' wiki/prs/PR-chat-live-hydration.md`
+  - `sed -n '1,220p' docs/work.md`
+  - `sed -n '1,220p' docs/observe.md`
+  - `sed -n '1,220p' src/shell/web/company-shell-state.ts`
+- `Evidence`:
+  - `PR-chat-live-hydration` already had green local verification on the bounded chat shell changes, and no additional blocking gap was visible inside that owned boundary
+  - the remaining operational gap is isolated in `src/shell/web/company-shell-state.ts`, which still returns demo-backed state directly from `demo-shell`
+  - `docs/work.md` and `docs/observe.md` both describe Work and Observe as intentionally ahead-of-full-implementation scaffolding, supporting a separate hydration-first follow-on frontier instead of widening the current chat PR
+  - `PR-operational-shell-live-hydration` is now opened with explicit goal, metric, boundary, acceptance, and next owner
+- `Quality axis targeted`: frontier clarity, promotion discipline, and next-owner readiness
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-project`

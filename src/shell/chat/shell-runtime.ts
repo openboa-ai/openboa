@@ -17,6 +17,7 @@ export interface ChatShellRuntimeSeedItem {
 
 export interface ChatShellRuntimeSeed {
   actorId: string
+  eventWatermark: number
   baseChat: ChatSurface
   defaultSidebarItemId: string
   itemsBySidebarItemId: Record<string, ChatShellRuntimeSeedItem>

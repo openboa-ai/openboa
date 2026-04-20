@@ -1,4 +1,14 @@
-import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  type Dispatch,
+  type MutableRefObject,
+  type SetStateAction,
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import {
   CHAT_REDACTED_MESSAGE_BODY,
   type ChatConversation,
@@ -11,7 +21,7 @@ import {
   buildChatShellRuntimeState,
   type ChatConversationAccessGrant,
   type ChatOpenIntent,
-  type ChatOpenMode,
+  type ChatRuntimeGatewaySearchResult,
   type ChatShellRuntimeSeed,
   type ChatShellRuntimeSeedItem,
   type ChatShellRuntimeState,
@@ -21,13 +31,58 @@ import {
   resolveInitialChatShellSidebarItemId,
 } from "../chat/index.js"
 import { canChatActorModerateMessages, canChatActorPostMessages } from "../chat/permissions.js"
+import {
+  addChatShellRuntimeConversationParticipant,
+  archiveChatShellRuntimeConversation,
+  editChatShellRuntimeMessage as editChatShellRuntimeMessageCommand,
+  grantChatShellRuntimeConversationAccess,
+  hasChatShellRuntimeGateway,
+  joinChatShellRuntimeConversation,
+  leaveChatShellRuntimeConversation,
+  loadChatShellRuntimeSeed,
+  loadChatShellRuntimeSeedFromGateway,
+  markChatShellRuntimeRead,
+  pollChatShellRuntimeEvents,
+  postChatShellRuntimeMessage,
+  redactChatShellRuntimeMessage,
+  removeChatShellRuntimeConversationParticipant,
+  revokeChatShellRuntimeConversationAccess,
+  searchChatShellRuntimeMessages,
+  setChatShellRuntimeMessageReaction,
+  setChatShellRuntimeThreadFollowState,
+  updateChatShellRuntimeConversationSettings,
+} from "./chat-runtime-gateway.js"
 import { chatSeedSurface, makeConversationRecord, makeProjectedMessage } from "./chat-seed.js"
+import { createChatSingleFlightGate } from "./chat-submit.js"
 
 const CHAT_STORAGE_KEY = "openboa.shell.chat.sidebarItem"
-const CHAT_SEED_STORAGE_KEY = "openboa.shell.chat.seed"
+const CHAT_ACTOR_STORAGE_KEY = "openboa.shell.chat.actor"
 const CHAT_DRAFTS_STORAGE_KEY = "openboa.shell.chat.drafts"
 const DEFAULT_PARTICIPANT_ID = "founder"
 const SEARCH_RESULT_LIMIT = 8
+const CHAT_EVENT_POLL_INTERVAL_MS = 2000
+const CHAT_CREATE_CONVERSATION_ENABLED = false
+const CHAT_HIDE_VIEWER_CONVERSATION_ENABLED = false
+
+export type ChatRuntimeAvailability = "loading" | "ready" | "unavailable" | "error"
+
+function readLocalStorage(key: string): string | null {
+  if (typeof window === "undefined") {
+    return null
+  }
+  return window.localStorage.getItem(key)
+}
+
+function writeLocalStorage(key: string, value: string): void {
+  if (typeof window === "undefined") {
+    return
+  }
+  window.localStorage.setItem(key, value)
+}
+
+function warnUnavailableChatRuntimeAction(action: string): void {
+  console.warn(`Chat runtime action is unavailable without a live gateway: ${action}`)
+}
 
 interface ChatDraftPersistence {
   conversationDrafts: Record<string, string>
@@ -466,6 +521,18 @@ function buildSeedBaseChat(input: {
   }
 }
 
+function computeSeedEventWatermark(
+  itemsBySidebarItemId: Record<string, ChatShellRuntimeSeedItem>,
+): number {
+  return Object.values(itemsBySidebarItemId).reduce((maxSequence, item) => {
+    const projectionMaxSequence = item.projection.conversationMessages.reduce(
+      (projectionSequence, message) => Math.max(projectionSequence, message.sequence),
+      item.conversation.sequence,
+    )
+    return Math.max(maxSequence, projectionMaxSequence)
+  }, 0)
+}
+
 export function createChatShellRuntimeSeed(input?: { actorId?: string }): ChatShellRuntimeSeed {
   const actorId = input?.actorId ?? DEFAULT_PARTICIPANT_ID
   const itemsBySidebarItemId = {
@@ -620,6 +687,7 @@ export function createChatShellRuntimeSeed(input?: { actorId?: string }): ChatSh
 
   return syncDerivedSidebarItems({
     actorId,
+    eventWatermark: computeSeedEventWatermark(actorItemsBySidebarItemId),
     baseChat: buildSeedBaseChat({
       actorId,
       itemsBySidebarItemId: actorItemsBySidebarItemId,
@@ -654,7 +722,13 @@ export function restoreChatShellRuntimeSeed(
       return createChatShellRuntimeSeed()
     }
 
-    return syncDerivedSidebarItems(parsed as ChatShellRuntimeSeed)
+    return syncDerivedSidebarItems({
+      ...(parsed as ChatShellRuntimeSeed),
+      eventWatermark:
+        typeof Reflect.get(parsed, "eventWatermark") === "number"
+          ? (Reflect.get(parsed, "eventWatermark") as number)
+          : 0,
+    })
   } catch {
     return createChatShellRuntimeSeed()
   }
@@ -1651,17 +1725,7 @@ function appendSystemConversationEvent(
   return appendMainlineMessage(projection, message)
 }
 
-export interface ChatSearchResult {
-  resultKind: "message" | "conversation"
-  sidebarItemId: string
-  conversationId: string
-  conversationTitle: string
-  messageId: string | null
-  threadId: string | null
-  openMode: ChatOpenMode
-  preview: string
-  createdAt: string
-}
+export type ChatSearchResult = ChatRuntimeGatewaySearchResult
 
 export function chatSearchResultKey(result: ChatSearchResult): string {
   return [
@@ -1771,7 +1835,20 @@ export function openChatSearchResult(
   seed: ChatShellRuntimeSeed,
   result: ChatSearchResult,
 ): ChatShellRuntimeSeed {
-  const resolved = resolveSeedItem(seed, result.sidebarItemId)
+  const materializedSeed =
+    !seed.itemsBySidebarItemId[result.sidebarItemId] && result.seedItem
+      ? syncDerivedSidebarItems({
+          ...seed,
+          baseChat: result.viewerRecentEntry
+            ? upsertViewerRecentConversation(seed.baseChat, result.viewerRecentEntry)
+            : seed.baseChat,
+          itemsBySidebarItemId: {
+            ...seed.itemsBySidebarItemId,
+            [result.seedItem.conversation.conversationId]: result.seedItem,
+          },
+        })
+      : seed
+  const resolved = resolveSeedItem(materializedSeed, result.sidebarItemId)
   const item = resolved.item
   if (!item) {
     return resolved.seed
@@ -1794,17 +1871,7 @@ export function openChatSearchResult(
       },
     },
   }
-  const openedSeed = result.threadId
-    ? {
-        ...nextSeed,
-        baseChat: clearFollowedThreadAttention(
-          nextSeed.baseChat,
-          result.conversationId,
-          result.threadId,
-        ),
-      }
-    : nextSeed
-  return openChatSidebarItem(openedSeed, result.sidebarItemId)
+  return nextSeed
 }
 
 export function createChatConversation(input: {
@@ -2584,18 +2651,7 @@ export function openChatSidebarItem(
   if (!item) {
     return syncedSeed
   }
-
-  let nextSeed = syncedSeed
-  if (item.openIntent.openMode === "joined") {
-    nextSeed = {
-      ...nextSeed,
-      baseChat: clearConversationAttention(nextSeed.baseChat, item.openIntent.openConversationId),
-    }
-  }
-  if (item.openIntent.activeThreadId) {
-    nextSeed = clearChatThreadAttention(nextSeed, sidebarItemId, item.openIntent.activeThreadId)
-  }
-  return nextSeed
+  return syncedSeed
 }
 
 export function resolveChatSidebarSelection(
@@ -2607,7 +2663,18 @@ export function resolveChatSidebarSelection(
   if (!item) {
     return syncedSeed.defaultSidebarItemId
   }
-  return item.openIntent.source === "inbox" ? item.openIntent.openConversationId : sidebarItemId
+  return sidebarItemId
+}
+
+function resolveChatSidebarConversationId(
+  seed: ChatShellRuntimeSeed,
+  sidebarItemId: string,
+): string | null {
+  return resolveSeedItem(seed, sidebarItemId).item?.conversation.conversationId ?? null
+}
+
+function isThreadSidebarItemId(sidebarItemId: string): boolean {
+  return sidebarItemId.startsWith("thread:")
 }
 
 export function clearChatThreadAttention(
@@ -3403,15 +3470,16 @@ export function buildChatRuntimeState(
   )
 }
 
-export function useChatShellState() {
-  const persistedDrafts = restoreChatDraftPersistence(
-    window.localStorage.getItem(CHAT_DRAFTS_STORAGE_KEY),
-  )
-  const [seed, setSeed] = useState<ChatShellRuntimeSeed>(() =>
-    restoreChatShellRuntimeSeed(window.localStorage.getItem(CHAT_SEED_STORAGE_KEY)),
-  )
-  const [activeSidebarItemId, setActiveSidebarItemId] = useState(() =>
-    resolveInitialChatSidebarItemId(window.localStorage.getItem(CHAT_STORAGE_KEY)),
+type ChatEditingMessage = {
+  sidebarItemId: string
+  messageId: string
+  draft: string
+}
+
+function useChatShellUiState() {
+  const persistedDrafts = restoreChatDraftPersistence(readLocalStorage(CHAT_DRAFTS_STORAGE_KEY))
+  const [actorId, setActorId] = useState(
+    () => readLocalStorage(CHAT_ACTOR_STORAGE_KEY) ?? DEFAULT_PARTICIPANT_ID,
   )
   const [threadDrawerOpenOverrides, setThreadDrawerOpenOverrides] = useState<
     Record<string, boolean | undefined>
@@ -3428,45 +3496,14 @@ export function useChatShellState() {
   const [threadAudienceSelections, setThreadAudienceSelections] = useState<
     Record<string, string | null | undefined>
   >(persistedDrafts.threadAudienceSelections)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeSearchResultKey, setActiveSearchResultKey] = useState<string | null>(null)
-  const [editingMessage, setEditingMessage] = useState<{
-    sidebarItemId: string
-    messageId: string
-    draft: string
-  } | null>(null)
-  const seedRef = useRef(seed)
-
-  const runtime = useMemo(
-    () =>
-      buildChatRuntimeState(activeSidebarItemId, {
-        seed,
-        threadDrawerOpenOverrides,
-      }),
-    [activeSidebarItemId, seed, threadDrawerOpenOverrides],
-  )
-  const searchResults = useMemo(() => searchChatMessages(seed, searchQuery), [searchQuery, seed])
-  const resolvedSearchSelection = useMemo(
-    () => resolveChatSearchSelection(searchResults, activeSearchResultKey),
-    [searchResults, activeSearchResultKey],
-  )
-  const activeSearchResultIndex = resolvedSearchSelection.activeIndex
+  const [editingMessage, setEditingMessage] = useState<ChatEditingMessage | null>(null)
 
   useEffect(() => {
-    seedRef.current = seed
-  }, [seed])
-  const actorId = seed.actorId
+    writeLocalStorage(CHAT_ACTOR_STORAGE_KEY, actorId)
+  }, [actorId])
 
   useEffect(() => {
-    window.localStorage.setItem(CHAT_STORAGE_KEY, runtime.selectedSidebarItemId)
-  }, [runtime.selectedSidebarItemId])
-
-  useEffect(() => {
-    window.localStorage.setItem(CHAT_SEED_STORAGE_KEY, JSON.stringify(seed))
-  }, [seed])
-
-  useEffect(() => {
-    window.localStorage.setItem(
+    writeLocalStorage(
       CHAT_DRAFTS_STORAGE_KEY,
       JSON.stringify({
         conversationDrafts,
@@ -3477,17 +3514,86 @@ export function useChatShellState() {
     )
   }, [conversationAudienceSelections, conversationDrafts, threadAudienceSelections, threadDrafts])
 
-  useEffect(() => {
-    setEditingMessage((current) =>
-      current && current.sidebarItemId !== runtime.selectedSidebarItemId ? null : current,
-    )
-  }, [runtime.selectedSidebarItemId])
+  return {
+    actorId,
+    setActorId,
+    threadDrawerOpenOverrides,
+    setThreadDrawerOpenOverrides,
+    conversationDrafts,
+    setConversationDrafts,
+    threadDrafts,
+    setThreadDrafts,
+    conversationAudienceSelections,
+    setConversationAudienceSelections,
+    threadAudienceSelections,
+    setThreadAudienceSelections,
+    editingMessage,
+    setEditingMessage,
+  }
+}
+
+function useChatShellSelectionState({
+  threadDrawerOpenOverrides,
+  setThreadDrawerOpenOverrides,
+}: {
+  threadDrawerOpenOverrides: Record<string, boolean | undefined>
+  setThreadDrawerOpenOverrides: Dispatch<SetStateAction<Record<string, boolean | undefined>>>
+}) {
+  const [seed, setSeed] = useState<ChatShellRuntimeSeed>(() =>
+    createChatShellRuntimeSeed({
+      actorId: readLocalStorage(CHAT_ACTOR_STORAGE_KEY) ?? DEFAULT_PARTICIPANT_ID,
+    }),
+  )
+  const [activeSidebarItemId, setActiveSidebarItemId] = useState(() =>
+    resolveInitialChatSidebarItemId(readLocalStorage(CHAT_STORAGE_KEY)),
+  )
+  const seedRef = useRef(seed)
+  const activeSidebarItemIdRef = useRef(activeSidebarItemId)
+  const activeThreadSelectionRef = useRef<{
+    selectedSidebarItemId: string
+    threadId: string | null
+    open: boolean
+  }>({
+    selectedSidebarItemId: activeSidebarItemId,
+    threadId: null,
+    open: false,
+  })
+
+  const runtime = useMemo(
+    () =>
+      buildChatRuntimeState(activeSidebarItemId, {
+        seed,
+        threadDrawerOpenOverrides,
+      }),
+    [activeSidebarItemId, seed, threadDrawerOpenOverrides],
+  )
 
   useEffect(() => {
-    if (resolvedSearchSelection.activeKey !== activeSearchResultKey) {
-      setActiveSearchResultKey(resolvedSearchSelection.activeKey)
+    seedRef.current = seed
+  }, [seed])
+
+  useEffect(() => {
+    activeSidebarItemIdRef.current = activeSidebarItemId
+  }, [activeSidebarItemId])
+
+  useEffect(() => {
+    activeThreadSelectionRef.current = {
+      selectedSidebarItemId: runtime.selectedSidebarItemId,
+      threadId: runtime.transcriptView.threadDrawer.rootMessage?.messageId ?? null,
+      open:
+        runtime.transcriptView.threadDrawer.open &&
+        runtime.transcriptView.threadDrawer.rootMessage != null,
     }
-  }, [activeSearchResultKey, resolvedSearchSelection.activeKey])
+  }, [
+    runtime.selectedSidebarItemId,
+    runtime.transcriptView.threadDrawer.open,
+    runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+    runtime.transcriptView.threadDrawer.rootMessage,
+  ])
+
+  useEffect(() => {
+    writeLocalStorage(CHAT_STORAGE_KEY, runtime.selectedSidebarItemId)
+  }, [runtime.selectedSidebarItemId])
 
   const selectSidebarItem = useCallback((itemId: string) => {
     startTransition(() => {
@@ -3495,44 +3601,6 @@ export function useChatShellState() {
       setActiveSidebarItemId(resolveChatSidebarSelection(seedRef.current, itemId))
     })
   }, [])
-
-  const createConversation = useCallback(
-    (
-      input:
-        | {
-            kind: "channel"
-            title: string
-            visibility: ChatConversationRecord["visibility"]
-          }
-        | {
-            kind: "direct"
-            participantIds: string[]
-          },
-    ) => {
-      startTransition(() => {
-        const created =
-          input.kind === "channel"
-            ? createChatConversation({
-                seed: seedRef.current,
-                title: input.title,
-                creatorId: seedRef.current.actorId,
-                visibility: input.visibility,
-              })
-            : createChatDirectConversation({
-                seed: seedRef.current,
-                creatorId: seedRef.current.actorId,
-                participantIds: input.participantIds,
-              })
-        setSeed(created.seed)
-        setActiveSidebarItemId(created.sidebarItemId)
-        setThreadDrawerOpenOverrides((current) => ({
-          ...current,
-          [created.sidebarItemId]: false,
-        }))
-      })
-    },
-    [],
-  )
 
   const openInbox = useCallback(() => {
     const firstInboxEntry = runtime.chat.sidebar.inbox[0]
@@ -3555,7 +3623,7 @@ export function useChatShellState() {
         }))
       })
     },
-    [activeSidebarItemId],
+    [activeSidebarItemId, setThreadDrawerOpenOverrides],
   )
 
   const closeThreadDrawer = useCallback(() => {
@@ -3565,334 +3633,350 @@ export function useChatShellState() {
         [runtime.selectedSidebarItemId]: false,
       }))
     })
-  }, [runtime.selectedSidebarItemId])
+  }, [runtime.selectedSidebarItemId, setThreadDrawerOpenOverrides])
 
-  const updateConversationDraft = useCallback(
-    (value: string) => {
-      setConversationDrafts((current) => ({
-        ...current,
-        [runtime.selectedSidebarItemId]: value,
-      }))
+  return {
+    seed,
+    setSeed,
+    seedRef,
+    activeSidebarItemId,
+    setActiveSidebarItemId,
+    activeSidebarItemIdRef,
+    activeThreadSelectionRef,
+    runtime,
+    selectSidebarItem,
+    openInbox,
+    openThreadDrawer,
+    closeThreadDrawer,
+  }
+}
+
+function useChatShellHydrationState({
+  actorId,
+  seedRef,
+  activeSidebarItemIdRef,
+  activeThreadSelectionRef,
+  setSeed,
+  setActiveSidebarItemId,
+  setThreadDrawerOpenOverrides,
+}: {
+  actorId: string
+  seedRef: MutableRefObject<ChatShellRuntimeSeed>
+  activeSidebarItemIdRef: MutableRefObject<string>
+  activeThreadSelectionRef: MutableRefObject<{
+    selectedSidebarItemId: string
+    threadId: string | null
+    open: boolean
+  }>
+  setSeed: Dispatch<SetStateAction<ChatShellRuntimeSeed>>
+  setActiveSidebarItemId: Dispatch<SetStateAction<string>>
+  setThreadDrawerOpenOverrides: Dispatch<SetStateAction<Record<string, boolean | undefined>>>
+}) {
+  const [runtimeAvailability, setRuntimeAvailability] = useState<ChatRuntimeAvailability>(() =>
+    hasChatShellRuntimeGateway() ? "loading" : "unavailable",
+  )
+  const refreshInFlightRef = useRef(false)
+
+  const reloadSeedFromGateway = useCallback(
+    async (options?: { preferredSidebarItemId?: string }): Promise<boolean> => {
+      if (!hasChatShellRuntimeGateway()) {
+        setRuntimeAvailability("unavailable")
+        return false
+      }
+      if (refreshInFlightRef.current) {
+        return false
+      }
+
+      refreshInFlightRef.current = true
+      try {
+        const nextSeed = await loadChatShellRuntimeSeedFromGateway({ actorId })
+        if (!nextSeed) {
+          setRuntimeAvailability("unavailable")
+          return false
+        }
+        setRuntimeAvailability("ready")
+
+        let syncedSeed = syncDerivedSidebarItems(nextSeed)
+        const currentSidebarItemId = activeSidebarItemIdRef.current
+        const activeThreadSelection = activeThreadSelectionRef.current
+        const selectionPreference = options?.preferredSidebarItemId ?? currentSidebarItemId
+        const preserveThreadSelection =
+          options?.preferredSidebarItemId == null ||
+          options.preferredSidebarItemId === activeThreadSelection.selectedSidebarItemId
+        const selectedSidebarItemId = resolveInitialChatShellSidebarItemId(
+          syncedSeed,
+          selectionPreference,
+        )
+
+        if (
+          preserveThreadSelection &&
+          activeThreadSelection.open &&
+          activeThreadSelection.threadId &&
+          selectedSidebarItemId === activeThreadSelection.selectedSidebarItemId &&
+          !isThreadSidebarItemId(selectedSidebarItemId)
+        ) {
+          syncedSeed = setChatThreadOpenState(
+            syncedSeed,
+            selectedSidebarItemId,
+            activeThreadSelection.threadId,
+          )
+        }
+
+        const nextSelectedSidebarItemId = resolveInitialChatShellSidebarItemId(
+          syncedSeed,
+          selectionPreference,
+        )
+
+        startTransition(() => {
+          setSeed(syncedSeed)
+          setActiveSidebarItemId(nextSelectedSidebarItemId)
+          setThreadDrawerOpenOverrides((current) => {
+            const filtered = Object.fromEntries(
+              Object.entries(current).filter(([sidebarItemId]) => {
+                return syncedSeed.itemsBySidebarItemId[sidebarItemId] != null
+              }),
+            )
+            if (
+              preserveThreadSelection &&
+              activeThreadSelection.open &&
+              activeThreadSelection.threadId &&
+              nextSelectedSidebarItemId === activeThreadSelection.selectedSidebarItemId &&
+              !isThreadSidebarItemId(nextSelectedSidebarItemId)
+            ) {
+              filtered[nextSelectedSidebarItemId] = true
+            }
+            return filtered
+          })
+        })
+
+        return true
+      } catch (error) {
+        console.error("Chat runtime hydration reload failed", error)
+        setRuntimeAvailability("error")
+        return false
+      } finally {
+        refreshInFlightRef.current = false
+      }
     },
-    [runtime.selectedSidebarItemId],
+    [
+      actorId,
+      activeSidebarItemIdRef,
+      activeThreadSelectionRef,
+      setActiveSidebarItemId,
+      setSeed,
+      setThreadDrawerOpenOverrides,
+    ],
   )
 
-  const insertConversationDraftToken = useCallback(
-    (token: string) => {
-      setConversationDrafts((current) => {
-        const existing = current[runtime.selectedSidebarItemId] ?? ""
-        const needsSpace = existing.length > 0 && !existing.endsWith(" ")
-        return {
-          ...current,
-          [runtime.selectedSidebarItemId]: `${existing}${needsSpace ? " " : ""}${token}`,
+  useEffect(() => {
+    let cancelled = false
+    if (!hasChatShellRuntimeGateway()) {
+      setRuntimeAvailability("unavailable")
+      return () => {
+        cancelled = true
+      }
+    }
+
+    setRuntimeAvailability("loading")
+    void loadChatShellRuntimeSeed({ actorId })
+      .then((nextSeed) => {
+        if (cancelled) {
+          return
+        }
+        if (!nextSeed) {
+          setRuntimeAvailability("unavailable")
+          return
+        }
+        const syncedSeed = syncDerivedSidebarItems(nextSeed)
+
+        setRuntimeAvailability("ready")
+        setSeed(syncedSeed)
+        setActiveSidebarItemId((current) =>
+          resolveInitialChatShellSidebarItemId(syncedSeed, current),
+        )
+        setThreadDrawerOpenOverrides((current) =>
+          Object.fromEntries(
+            Object.entries(current).filter(([sidebarItemId]) => {
+              return syncedSeed.itemsBySidebarItemId[sidebarItemId] != null
+            }),
+          ),
+        )
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          console.error("Chat runtime initial hydration failed", error)
+          setRuntimeAvailability("error")
         }
       })
-    },
-    [runtime.selectedSidebarItemId],
-  )
 
-  const submitConversationDraft = useCallback(() => {
-    const draft = conversationDrafts[runtime.selectedSidebarItemId]?.trim()
-    if (!draft || !runtime.transcriptView.composer.enabled) {
-      return
+    return () => {
+      cancelled = true
     }
+  }, [actorId, setActiveSidebarItemId, setSeed, setThreadDrawerOpenOverrides])
 
-    startTransition(() => {
-      setSeed((current) =>
-        appendChatMessage({
-          seed: current,
-          sidebarItemId: runtime.selectedSidebarItemId,
-          body: draft,
-          senderId: seedRef.current.actorId,
-          threadId: null,
-          audienceId: conversationAudienceSelections[runtime.selectedSidebarItemId] ?? null,
-        }),
-      )
-      setConversationDrafts((current) => ({
-        ...current,
-        [runtime.selectedSidebarItemId]: "",
-      }))
-      setConversationAudienceSelections((current) => ({
-        ...current,
-        [runtime.selectedSidebarItemId]: null,
-      }))
-    })
-  }, [
-    conversationAudienceSelections,
-    conversationDrafts,
-    runtime.selectedSidebarItemId,
-    runtime.transcriptView.composer.enabled,
-  ])
+  useEffect(() => {
+    let cancelled = false
+    let pollInFlight = false
 
-  const updateThreadDraft = useCallback(
-    (value: string) => {
-      const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
-      if (!threadId) {
+    const poll = async () => {
+      if (
+        cancelled ||
+        pollInFlight ||
+        refreshInFlightRef.current ||
+        runtimeAvailability !== "ready"
+      ) {
         return
       }
-      const key = `${runtime.selectedSidebarItemId}:${threadId}`
-      setThreadDrafts((current) => ({
-        ...current,
-        [key]: value,
-      }))
-    },
-    [runtime.selectedSidebarItemId, runtime.transcriptView.threadDrawer.rootMessage?.messageId],
-  )
-
-  const insertThreadDraftToken = useCallback(
-    (token: string) => {
-      const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
-      if (!threadId) {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
         return
       }
-      const key = `${runtime.selectedSidebarItemId}:${threadId}`
-      setThreadDrafts((current) => {
-        const existing = current[key] ?? ""
-        const needsSpace = existing.length > 0 && !existing.endsWith(" ")
-        return {
-          ...current,
-          [key]: `${existing}${needsSpace ? " " : ""}${token}`,
+
+      pollInFlight = true
+      try {
+        const result = await pollChatShellRuntimeEvents({
+          actorId,
+          afterSequence: seedRef.current.eventWatermark,
+          limit: 50,
+        })
+        if (
+          cancelled ||
+          !result ||
+          !result.hasEvents ||
+          result.nextSequence <= seedRef.current.eventWatermark
+        ) {
+          return
         }
-      })
-    },
-    [runtime.selectedSidebarItemId, runtime.transcriptView.threadDrawer.rootMessage?.messageId],
-  )
-
-  const submitThreadDraft = useCallback(() => {
-    const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
-    if (!threadId) {
-      return
-    }
-    const key = `${runtime.selectedSidebarItemId}:${threadId}`
-    const draft = threadDrafts[key]?.trim()
-    if (!draft || !runtime.transcriptView.composer.enabled) {
-      return
-    }
-
-    startTransition(() => {
-      setSeed((current) =>
-        appendChatMessage({
-          seed: current,
-          sidebarItemId: runtime.selectedSidebarItemId,
-          body: draft,
-          senderId: seedRef.current.actorId,
-          threadId,
-          audienceId: threadAudienceSelections[key] ?? null,
-        }),
-      )
-      setThreadDrafts((current) => ({
-        ...current,
-        [key]: "",
-      }))
-      setThreadAudienceSelections((current) => ({
-        ...current,
-        [key]: null,
-      }))
-      setThreadDrawerOpenOverrides((current) => ({
-        ...current,
-        [runtime.selectedSidebarItemId]: true,
-      }))
-    })
-  }, [
-    runtime.selectedSidebarItemId,
-    threadAudienceSelections,
-    runtime.transcriptView.composer.enabled,
-    runtime.transcriptView.threadDrawer.rootMessage?.messageId,
-    threadDrafts,
-  ])
-
-  const markActiveConversationRead = useCallback(() => {
-    const conversationId = runtime.chat.activeConversationId
-    startTransition(() => {
-      setSeed((current) => markChatConversationRead(current, conversationId))
-      if (runtime.selectedSidebarItemId !== conversationId) {
-        setActiveSidebarItemId(conversationId)
+        await reloadSeedFromGateway()
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Chat runtime incremental refresh poll failed", error)
+        }
+      } finally {
+        pollInFlight = false
       }
-    })
-  }, [runtime.chat.activeConversationId, runtime.selectedSidebarItemId])
-
-  const toggleActiveThreadFollow = useCallback(() => {
-    const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
-    if (!threadId) {
-      return
     }
-    startTransition(() => {
-      setSeed((current) =>
-        setChatThreadFollowState(
-          current,
-          runtime.selectedSidebarItemId,
-          threadId,
-          !runtime.transcriptView.threadDrawer.followed,
-        ),
-      )
-    })
-  }, [
-    runtime.selectedSidebarItemId,
-    runtime.transcriptView.threadDrawer.followed,
-    runtime.transcriptView.threadDrawer.rootMessage?.messageId,
-  ])
 
-  const markActiveThreadRead = useCallback(() => {
-    const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
-    if (!threadId) {
-      return
+    const intervalId = window.setInterval(() => {
+      void poll()
+    }, CHAT_EVENT_POLL_INTERVAL_MS)
+
+    return () => {
+      cancelled = true
+      window.clearInterval(intervalId)
     }
-    startTransition(() => {
-      setSeed((current) => markChatThreadRead(current, runtime.selectedSidebarItemId, threadId))
-    })
-  }, [runtime.selectedSidebarItemId, runtime.transcriptView.threadDrawer.rootMessage?.messageId])
+  }, [actorId, reloadSeedFromGateway, runtimeAvailability, seedRef])
 
-  const joinActiveConversation = useCallback(() => {
-    startTransition(() => {
-      setSeed((current) =>
-        joinChatConversation(current, runtime.selectedSidebarItemId, seedRef.current.actorId),
-      )
-      setActiveSidebarItemId(runtime.chat.activeConversationId)
-    })
-  }, [runtime.chat.activeConversationId, runtime.selectedSidebarItemId])
+  return {
+    runtimeAvailability,
+    reloadSeedFromGateway,
+  }
+}
 
-  const toggleConversationPostingPolicy = useCallback(() => {
-    startTransition(() => {
-      setSeed((current) =>
-        toggleChatConversationPostingPolicy({
-          seed: current,
-          sidebarItemId: runtime.selectedSidebarItemId,
-        }),
-      )
-    })
-  }, [runtime.selectedSidebarItemId])
+function useChatShellSearchState({
+  actorId,
+  runtimeAvailability,
+  seed,
+  seedRef,
+  setSeed,
+  setActiveSidebarItemId,
+  setThreadDrawerOpenOverrides,
+}: {
+  actorId: string
+  runtimeAvailability: ChatRuntimeAvailability
+  seed: ChatShellRuntimeSeed
+  seedRef: MutableRefObject<ChatShellRuntimeSeed>
+  setSeed: Dispatch<SetStateAction<ChatShellRuntimeSeed>>
+  setActiveSidebarItemId: Dispatch<SetStateAction<string>>
+  setThreadDrawerOpenOverrides: Dispatch<SetStateAction<Record<string, boolean | undefined>>>
+}) {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<ChatSearchResult[]>([])
+  const [activeSearchResultKey, setActiveSearchResultKey] = useState<string | null>(null)
+  const resolvedSearchSelection = useMemo(
+    () => resolveChatSearchSelection(searchResults, activeSearchResultKey),
+    [searchResults, activeSearchResultKey],
+  )
+  const activeSearchResultIndex = resolvedSearchSelection.activeIndex
 
-  const archiveActiveConversation = useCallback(() => {
-    startTransition(() => {
-      setSeed((current) =>
-        archiveChatConversation({
-          seed: current,
-          sidebarItemId: runtime.selectedSidebarItemId,
-        }),
-      )
-    })
-  }, [runtime.selectedSidebarItemId])
+  useEffect(() => {
+    let cancelled = false
+    const normalizedQuery = searchQuery.trim()
+    if (runtimeAvailability !== "ready" || !normalizedQuery) {
+      setSearchResults([])
+      return () => {
+        cancelled = true
+      }
+    }
 
-  const updateActiveConversationDetails = useCallback(
-    (
-      title: string,
-      topic: string | null,
-      visibility: ChatConversationRecord["visibility"] | undefined,
-    ) => {
-      startTransition(() => {
-        setSeed((current) =>
-          updateChatConversationDetails({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
-            title,
-            topic,
-            visibility,
-          }),
+    const localResults = searchChatMessages(seed, normalizedQuery)
+
+    void (async () => {
+      try {
+        const gatewayResults = await searchChatShellRuntimeMessages({
+          actorId,
+          query: normalizedQuery,
+          limit: SEARCH_RESULT_LIMIT,
+        })
+        if (cancelled) {
+          return
+        }
+        if (!gatewayResults) {
+          setSearchResults(localResults)
+          return
+        }
+
+        const byKey = new Map<string, ChatSearchResult>()
+        for (const result of gatewayResults) {
+          byKey.set(chatSearchResultKey(result), result)
+        }
+        for (const result of localResults) {
+          if (result.resultKind === "conversation") {
+            byKey.set(chatSearchResultKey(result), result)
+          }
+        }
+        setSearchResults(
+          [...byKey.values()]
+            .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+            .slice(0, SEARCH_RESULT_LIMIT),
         )
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Chat runtime search dispatch failed", error)
+          setSearchResults(localResults)
+        }
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [actorId, runtimeAvailability, searchQuery, seed])
+
+  useEffect(() => {
+    if (resolvedSearchSelection.activeKey !== activeSearchResultKey) {
+      setActiveSearchResultKey(resolvedSearchSelection.activeKey)
+    }
+  }, [activeSearchResultKey, resolvedSearchSelection.activeKey])
+
+  const selectSearchResult = useCallback(
+    (result: ChatSearchResult) => {
+      startTransition(() => {
+        const nextSeed = openChatSidebarItem(
+          openChatSearchResult(seedRef.current, result),
+          result.sidebarItemId,
+        )
+        setSeed(nextSeed)
+        setActiveSidebarItemId(resolveChatSidebarSelection(nextSeed, result.sidebarItemId))
+        setSearchQuery("")
+        setActiveSearchResultKey(null)
+        setThreadDrawerOpenOverrides((current) => ({
+          ...current,
+          [result.sidebarItemId]: !!result.threadId,
+        }))
       })
     },
-    [runtime.selectedSidebarItemId],
+    [seedRef, setActiveSidebarItemId, setSeed, setThreadDrawerOpenOverrides],
   )
-
-  const hideActiveViewerConversation = useCallback(() => {
-    startTransition(() => {
-      const next = hideChatViewerConversation(seedRef.current, runtime.selectedSidebarItemId)
-      setSeed(next.seed)
-      setActiveSidebarItemId(next.nextSidebarItemId)
-    })
-  }, [runtime.selectedSidebarItemId])
-
-  const leaveActiveConversation = useCallback(() => {
-    startTransition(() => {
-      const next = leaveChatConversation(
-        seedRef.current,
-        runtime.selectedSidebarItemId,
-        seedRef.current.actorId,
-      )
-      setSeed(next.seed)
-      setActiveSidebarItemId(next.nextSidebarItemId)
-      setThreadDrawerOpenOverrides((current) => ({
-        ...current,
-        [next.nextSidebarItemId]: false,
-      }))
-    })
-  }, [runtime.selectedSidebarItemId])
-
-  const removeParticipantFromActiveConversation = useCallback(
-    (participantId: string) => {
-      startTransition(() => {
-        setSeed((current) =>
-          removeChatConversationParticipant({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
-            participantId,
-          }),
-        )
-      })
-    },
-    [runtime.selectedSidebarItemId],
-  )
-
-  const addParticipantToActiveConversation = useCallback(
-    (participantId: string) => {
-      startTransition(() => {
-        setSeed((current) =>
-          addChatConversationParticipant({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
-            participantId,
-          }),
-        )
-      })
-    },
-    [runtime.selectedSidebarItemId],
-  )
-
-  const grantAccessToActiveConversation = useCallback(
-    (participantId: string, roleId: ChatConversationAccessGrant["roleId"]) => {
-      startTransition(() => {
-        setSeed((current) =>
-          grantChatConversationAccess({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
-            participantId,
-            roleId,
-          }),
-        )
-      })
-    },
-    [runtime.selectedSidebarItemId],
-  )
-
-  const revokeAccessFromActiveConversation = useCallback(
-    (bindingId: string) => {
-      startTransition(() => {
-        setSeed((current) =>
-          revokeChatConversationAccess({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
-            bindingId,
-          }),
-        )
-      })
-    },
-    [runtime.selectedSidebarItemId],
-  )
-
-  const selectSearchResult = useCallback((result: ChatSearchResult) => {
-    startTransition(() => {
-      setSeed((current) =>
-        openChatSidebarItem(openChatSearchResult(current, result), result.sidebarItemId),
-      )
-      setActiveSidebarItemId(resolveChatSidebarSelection(seedRef.current, result.sidebarItemId))
-      setSearchQuery("")
-      setActiveSearchResultKey(null)
-      setThreadDrawerOpenOverrides((current) => ({
-        ...current,
-        [result.sidebarItemId]: !!result.threadId,
-      }))
-    })
-  }, [])
 
   const moveSearchSelection = useCallback(
     (delta: number) => {
@@ -3926,17 +4010,580 @@ export function useChatShellState() {
     setSearchQuery(value)
   }, [])
 
+  return {
+    searchQuery,
+    searchResults,
+    activeSearchResultIndex,
+    setSearchQuery,
+    setSearchResults,
+    setActiveSearchResultKey,
+    selectSearchResult,
+    moveSearchSelection,
+    submitActiveSearchResult,
+    updateSearchQuery,
+  }
+}
+
+function listRuntimeMessages(runtime: ChatShellRuntimeState): ChatProjectedMessage[] {
+  return runtime.transcriptView.conversationId
+    ? [
+        ...runtime.transcriptView.transcript,
+        ...runtime.transcriptView.threadDrawer.messages,
+        ...(runtime.transcriptView.threadDrawer.rootMessage
+          ? [runtime.transcriptView.threadDrawer.rootMessage]
+          : []),
+      ]
+    : []
+}
+
+function useChatShellCommandActions({
+  actorId,
+  setActorId,
+  runtime,
+  seedRef,
+  setSeed,
+  setActiveSidebarItemId,
+  setThreadDrawerOpenOverrides,
+  conversationDrafts,
+  setConversationDrafts,
+  threadDrafts,
+  setThreadDrafts,
+  conversationAudienceSelections,
+  setConversationAudienceSelections,
+  threadAudienceSelections,
+  setThreadAudienceSelections,
+  editingMessage,
+  setEditingMessage,
+  reloadSeedFromGateway,
+  setSearchQuery,
+  setSearchResults,
+  setActiveSearchResultKey,
+}: {
+  actorId: string
+  setActorId: Dispatch<SetStateAction<string>>
+  runtime: ChatShellRuntimeState
+  seedRef: MutableRefObject<ChatShellRuntimeSeed>
+  setSeed: Dispatch<SetStateAction<ChatShellRuntimeSeed>>
+  setActiveSidebarItemId: Dispatch<SetStateAction<string>>
+  setThreadDrawerOpenOverrides: Dispatch<SetStateAction<Record<string, boolean | undefined>>>
+  conversationDrafts: Record<string, string>
+  setConversationDrafts: Dispatch<SetStateAction<Record<string, string>>>
+  threadDrafts: Record<string, string>
+  setThreadDrafts: Dispatch<SetStateAction<Record<string, string>>>
+  conversationAudienceSelections: Record<string, string | null | undefined>
+  setConversationAudienceSelections: Dispatch<
+    SetStateAction<Record<string, string | null | undefined>>
+  >
+  threadAudienceSelections: Record<string, string | null | undefined>
+  setThreadAudienceSelections: Dispatch<SetStateAction<Record<string, string | null | undefined>>>
+  editingMessage: ChatEditingMessage | null
+  setEditingMessage: Dispatch<SetStateAction<ChatEditingMessage | null>>
+  reloadSeedFromGateway: (options?: { preferredSidebarItemId?: string }) => Promise<boolean>
+  setSearchQuery: Dispatch<SetStateAction<string>>
+  setSearchResults: Dispatch<SetStateAction<ChatSearchResult[]>>
+  setActiveSearchResultKey: Dispatch<SetStateAction<string | null>>
+}) {
+  const conversationSubmitGateRef = useRef(createChatSingleFlightGate())
+  const threadSubmitGateRef = useRef(createChatSingleFlightGate())
+
+  const createConversation = useCallback(
+    (
+      input:
+        | {
+            kind: "channel"
+            title: string
+            visibility: ChatConversationRecord["visibility"]
+          }
+        | {
+            kind: "direct"
+            participantIds: string[]
+          },
+    ) => {
+      warnUnavailableChatRuntimeAction(
+        input.kind === "channel" ? "create-channel" : "create-direct-conversation",
+      )
+    },
+    [],
+  )
+
+  const updateConversationDraft = useCallback(
+    (value: string) => {
+      setConversationDrafts((current) => ({
+        ...current,
+        [runtime.selectedSidebarItemId]: value,
+      }))
+    },
+    [runtime.selectedSidebarItemId, setConversationDrafts],
+  )
+
+  const insertConversationDraftToken = useCallback(
+    (token: string) => {
+      setConversationDrafts((current) => {
+        const existing = current[runtime.selectedSidebarItemId] ?? ""
+        const needsSpace = existing.length > 0 && !existing.endsWith(" ")
+        return {
+          ...current,
+          [runtime.selectedSidebarItemId]: `${existing}${needsSpace ? " " : ""}${token}`,
+        }
+      })
+    },
+    [runtime.selectedSidebarItemId, setConversationDrafts],
+  )
+
+  const submitConversationDraft = useCallback(() => {
+    const sidebarItemId = runtime.selectedSidebarItemId
+    const draft = conversationDrafts[sidebarItemId]?.trim()
+    const conversationId = resolveChatSidebarConversationId(seedRef.current, sidebarItemId)
+    if (!draft || !runtime.transcriptView.composer.enabled || !conversationId) {
+      return
+    }
+
+    void conversationSubmitGateRef.current(async () => {
+      try {
+        const handled = await postChatShellRuntimeMessage({
+          actorId,
+          conversationId,
+          body: draft,
+          threadId: null,
+          audienceId: conversationAudienceSelections[sidebarItemId] ?? null,
+        })
+        if (handled) {
+          if (!(await reloadSeedFromGateway())) {
+            return
+          }
+          startTransition(() => {
+            setConversationDrafts((current) => ({
+              ...current,
+              [sidebarItemId]: "",
+            }))
+            setConversationAudienceSelections((current) => ({
+              ...current,
+              [sidebarItemId]: null,
+            }))
+          })
+          return
+        }
+        warnUnavailableChatRuntimeAction("post-conversation-message")
+      } catch (error) {
+        console.error("Chat runtime conversation message dispatch failed", error)
+      }
+    })
+  }, [
+    actorId,
+    conversationAudienceSelections,
+    conversationDrafts,
+    reloadSeedFromGateway,
+    runtime.selectedSidebarItemId,
+    runtime.transcriptView.composer.enabled,
+    seedRef,
+    setConversationAudienceSelections,
+    setConversationDrafts,
+  ])
+
+  const updateThreadDraft = useCallback(
+    (value: string) => {
+      const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
+      if (!threadId) {
+        return
+      }
+      const key = `${runtime.selectedSidebarItemId}:${threadId}`
+      setThreadDrafts((current) => ({
+        ...current,
+        [key]: value,
+      }))
+    },
+    [
+      runtime.selectedSidebarItemId,
+      runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+      setThreadDrafts,
+    ],
+  )
+
+  const insertThreadDraftToken = useCallback(
+    (token: string) => {
+      const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
+      if (!threadId) {
+        return
+      }
+      const key = `${runtime.selectedSidebarItemId}:${threadId}`
+      setThreadDrafts((current) => {
+        const existing = current[key] ?? ""
+        const needsSpace = existing.length > 0 && !existing.endsWith(" ")
+        return {
+          ...current,
+          [key]: `${existing}${needsSpace ? " " : ""}${token}`,
+        }
+      })
+    },
+    [
+      runtime.selectedSidebarItemId,
+      runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+      setThreadDrafts,
+    ],
+  )
+
+  const submitThreadDraft = useCallback(() => {
+    const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
+    if (!threadId) {
+      return
+    }
+    const sidebarItemId = runtime.selectedSidebarItemId
+    const key = `${sidebarItemId}:${threadId}`
+    const draft = threadDrafts[key]?.trim()
+    const conversationId = resolveChatSidebarConversationId(seedRef.current, sidebarItemId)
+    if (!draft || !runtime.transcriptView.composer.enabled || !conversationId) {
+      return
+    }
+
+    void threadSubmitGateRef.current(async () => {
+      try {
+        const handled = await postChatShellRuntimeMessage({
+          actorId,
+          conversationId,
+          body: draft,
+          threadId,
+          audienceId: threadAudienceSelections[key] ?? null,
+        })
+        if (handled) {
+          if (!(await reloadSeedFromGateway())) {
+            return
+          }
+          startTransition(() => {
+            setThreadDrafts((current) => ({
+              ...current,
+              [key]: "",
+            }))
+            setThreadAudienceSelections((current) => ({
+              ...current,
+              [key]: null,
+            }))
+            setThreadDrawerOpenOverrides((current) => ({
+              ...current,
+              [sidebarItemId]: true,
+            }))
+          })
+          return
+        }
+        warnUnavailableChatRuntimeAction("post-thread-message")
+      } catch (error) {
+        console.error("Chat runtime thread message dispatch failed", error)
+      }
+    })
+  }, [
+    actorId,
+    reloadSeedFromGateway,
+    runtime.selectedSidebarItemId,
+    runtime.transcriptView.composer.enabled,
+    runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+    seedRef,
+    setThreadAudienceSelections,
+    setThreadDrafts,
+    setThreadDrawerOpenOverrides,
+    threadAudienceSelections,
+    threadDrafts,
+  ])
+
+  const markActiveConversationRead = useCallback(() => {
+    const conversationId = runtime.chat.activeConversationId
+    void (async () => {
+      try {
+        const handled = await markChatShellRuntimeRead({
+          actorId,
+          conversationId,
+          threadId: null,
+        })
+        if (handled) {
+          await reloadSeedFromGateway()
+          return
+        }
+        warnUnavailableChatRuntimeAction("mark-conversation-read")
+      } catch (error) {
+        console.error("Chat runtime conversation read dispatch failed", error)
+      }
+    })()
+  }, [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId])
+
+  const toggleActiveThreadFollow = useCallback(() => {
+    const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
+    const conversationId = runtime.chat.activeConversationId
+    if (!threadId) {
+      return
+    }
+    void (async () => {
+      try {
+        const followed = !runtime.transcriptView.threadDrawer.followed
+        const handled = await setChatShellRuntimeThreadFollowState({
+          actorId,
+          conversationId,
+          threadId,
+          followed,
+        })
+        if (handled) {
+          await reloadSeedFromGateway()
+          return
+        }
+        warnUnavailableChatRuntimeAction("toggle-thread-follow")
+      } catch (error) {
+        console.error("Chat runtime thread follow dispatch failed", error)
+      }
+    })()
+  }, [
+    actorId,
+    reloadSeedFromGateway,
+    runtime.chat.activeConversationId,
+    runtime.transcriptView.threadDrawer.followed,
+    runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+  ])
+
+  const markActiveThreadRead = useCallback(() => {
+    const threadId = runtime.transcriptView.threadDrawer.rootMessage?.messageId
+    const conversationId = runtime.chat.activeConversationId
+    if (!threadId) {
+      return
+    }
+    void (async () => {
+      try {
+        const handled = await markChatShellRuntimeRead({
+          actorId,
+          conversationId,
+          threadId,
+        })
+        if (handled) {
+          await reloadSeedFromGateway()
+          return
+        }
+        warnUnavailableChatRuntimeAction("mark-thread-read")
+      } catch (error) {
+        console.error("Chat runtime thread read dispatch failed", error)
+      }
+    })()
+  }, [
+    actorId,
+    reloadSeedFromGateway,
+    runtime.chat.activeConversationId,
+    runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+  ])
+
+  const joinActiveConversation = useCallback(() => {
+    const conversationId = runtime.chat.activeConversationId
+    void (async () => {
+      try {
+        const handled = await joinChatShellRuntimeConversation({
+          actorId,
+          conversationId,
+        })
+        if (handled) {
+          await reloadSeedFromGateway({
+            preferredSidebarItemId: conversationId,
+          })
+          return
+        }
+        warnUnavailableChatRuntimeAction("join-conversation")
+      } catch (error) {
+        console.error("Chat runtime join conversation dispatch failed", error)
+      }
+    })()
+  }, [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId])
+
+  const toggleConversationPostingPolicy = useCallback(() => {
+    const conversationId = runtime.chat.activeConversationId
+    const postingPolicy = runtime.chat.activeConversation?.postingPolicy
+    if (!postingPolicy) {
+      return
+    }
+
+    void (async () => {
+      try {
+        const handled = await updateChatShellRuntimeConversationSettings({
+          actorId,
+          conversationId,
+          postingPolicy: postingPolicy === "open" ? "restricted" : "open",
+        })
+        if (handled) {
+          await reloadSeedFromGateway()
+          return
+        }
+        warnUnavailableChatRuntimeAction("toggle-posting-policy")
+      } catch (error) {
+        console.error("Chat runtime posting policy dispatch failed", error)
+      }
+    })()
+  }, [
+    actorId,
+    reloadSeedFromGateway,
+    runtime.chat.activeConversation?.postingPolicy,
+    runtime.chat.activeConversationId,
+  ])
+
+  const archiveActiveConversation = useCallback(() => {
+    const conversationId = runtime.chat.activeConversationId
+    void (async () => {
+      try {
+        const handled = await archiveChatShellRuntimeConversation({
+          actorId,
+          conversationId,
+        })
+        if (handled) {
+          await reloadSeedFromGateway()
+          return
+        }
+        warnUnavailableChatRuntimeAction("archive-conversation")
+      } catch (error) {
+        console.error("Chat runtime archive conversation dispatch failed", error)
+      }
+    })()
+  }, [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId])
+
+  const updateActiveConversationDetails = useCallback(
+    (
+      title: string,
+      topic: string | null,
+      visibility: ChatConversationRecord["visibility"] | undefined,
+    ) => {
+      const conversationId = runtime.chat.activeConversationId
+      void (async () => {
+        try {
+          const handled = await updateChatShellRuntimeConversationSettings({
+            actorId,
+            conversationId,
+            title,
+            topic,
+            visibility,
+          })
+          if (handled) {
+            await reloadSeedFromGateway()
+            return
+          }
+          warnUnavailableChatRuntimeAction("update-conversation-details")
+        } catch (error) {
+          console.error("Chat runtime conversation settings dispatch failed", error)
+        }
+      })()
+    },
+    [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId],
+  )
+
+  const hideActiveViewerConversation = useCallback(() => {
+    warnUnavailableChatRuntimeAction("hide-viewer-conversation")
+  }, [])
+
+  const leaveActiveConversation = useCallback(() => {
+    const conversationId = runtime.chat.activeConversationId
+    void (async () => {
+      try {
+        const handled = await leaveChatShellRuntimeConversation({
+          actorId,
+          conversationId,
+        })
+        if (handled) {
+          await reloadSeedFromGateway()
+          return
+        }
+        warnUnavailableChatRuntimeAction("leave-conversation")
+      } catch (error) {
+        console.error("Chat runtime leave conversation dispatch failed", error)
+      }
+    })()
+  }, [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId])
+
+  const removeParticipantFromActiveConversation = useCallback(
+    (participantId: string) => {
+      const conversationId = runtime.chat.activeConversationId
+      void (async () => {
+        try {
+          const handled = await removeChatShellRuntimeConversationParticipant({
+            actorId,
+            conversationId,
+            participantId,
+          })
+          if (handled) {
+            await reloadSeedFromGateway()
+            return
+          }
+          warnUnavailableChatRuntimeAction("remove-participant")
+        } catch (error) {
+          console.error("Chat runtime remove participant dispatch failed", error)
+        }
+      })()
+    },
+    [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId],
+  )
+
+  const addParticipantToActiveConversation = useCallback(
+    (participantId: string) => {
+      const conversationId = runtime.chat.activeConversationId
+      void (async () => {
+        try {
+          const handled = await addChatShellRuntimeConversationParticipant({
+            actorId,
+            conversationId,
+            participantId,
+          })
+          if (handled) {
+            await reloadSeedFromGateway()
+            return
+          }
+          warnUnavailableChatRuntimeAction("add-participant")
+        } catch (error) {
+          console.error("Chat runtime add participant dispatch failed", error)
+        }
+      })()
+    },
+    [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId],
+  )
+
+  const grantAccessToActiveConversation = useCallback(
+    (participantId: string, roleId: ChatConversationAccessGrant["roleId"]) => {
+      const conversationId = runtime.chat.activeConversationId
+      void (async () => {
+        try {
+          const handled = await grantChatShellRuntimeConversationAccess({
+            actorId,
+            conversationId,
+            participantId,
+            roleId,
+          })
+          if (handled) {
+            await reloadSeedFromGateway()
+            return
+          }
+          warnUnavailableChatRuntimeAction("grant-access")
+        } catch (error) {
+          console.error("Chat runtime grant access dispatch failed", error)
+        }
+      })()
+    },
+    [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId],
+  )
+
+  const revokeAccessFromActiveConversation = useCallback(
+    (bindingId: string) => {
+      const conversationId = runtime.chat.activeConversationId
+      void (async () => {
+        try {
+          const handled = await revokeChatShellRuntimeConversationAccess({
+            actorId,
+            conversationId,
+            bindingId,
+          })
+          if (handled) {
+            await reloadSeedFromGateway()
+            return
+          }
+          warnUnavailableChatRuntimeAction("revoke-access")
+        } catch (error) {
+          console.error("Chat runtime revoke access dispatch failed", error)
+        }
+      })()
+    },
+    [actorId, reloadSeedFromGateway, runtime.chat.activeConversationId],
+  )
+
   const startEditingMessage = useCallback(
     (messageId: string) => {
-      const message = runtime.transcriptView.conversationId
-        ? [
-            ...runtime.transcriptView.transcript,
-            ...runtime.transcriptView.threadDrawer.messages,
-            ...(runtime.transcriptView.threadDrawer.rootMessage
-              ? [runtime.transcriptView.threadDrawer.rootMessage]
-              : []),
-          ].find((candidate) => candidate.messageId === messageId)
-        : null
+      const message = listRuntimeMessages(runtime).find(
+        (candidate) => candidate.messageId === messageId,
+      )
 
       if (
         !message ||
@@ -3953,109 +4600,132 @@ export function useChatShellState() {
         draft: message.body,
       })
     },
-    [
-      runtime.selectedSidebarItemId,
-      runtime.transcriptView.conversationId,
-      runtime.transcriptView.threadDrawer.messages,
-      runtime.transcriptView.threadDrawer.rootMessage,
-      runtime.transcriptView.transcript,
-      actorId,
-    ],
+    [actorId, runtime, setEditingMessage],
   )
 
-  const updateEditingMessageDraft = useCallback((value: string) => {
-    setEditingMessage((current) => (current ? { ...current, draft: value } : current))
-  }, [])
+  const updateEditingMessageDraft = useCallback(
+    (value: string) => {
+      setEditingMessage((current) => (current ? { ...current, draft: value } : current))
+    },
+    [setEditingMessage],
+  )
 
   const cancelEditingMessage = useCallback(() => {
     setEditingMessage(null)
-  }, [])
+  }, [setEditingMessage])
 
   const saveEditingMessage = useCallback(() => {
     if (!editingMessage) {
       return
     }
+    const sidebarItemId = editingMessage.sidebarItemId
     const draft = editingMessage.draft.trim()
-    if (!draft) {
+    const conversationId = resolveChatSidebarConversationId(seedRef.current, sidebarItemId)
+    if (!draft || !conversationId) {
       return
     }
 
-    startTransition(() => {
-      setSeed((current) =>
-        editChatMessage({
-          seed: current,
-          sidebarItemId: editingMessage.sidebarItemId,
+    void (async () => {
+      try {
+        const handled = await editChatShellRuntimeMessageCommand({
+          actorId,
+          conversationId,
           messageId: editingMessage.messageId,
           body: draft,
-          actorId: seedRef.current.actorId,
-        }),
-      )
-      setEditingMessage(null)
-    })
-  }, [editingMessage])
+        })
+        if (handled) {
+          if (!(await reloadSeedFromGateway())) {
+            return
+          }
+          startTransition(() => {
+            setEditingMessage(null)
+          })
+          return
+        }
+        warnUnavailableChatRuntimeAction("edit-message")
+      } catch (error) {
+        console.error("Chat runtime edit message dispatch failed", error)
+      }
+    })()
+  }, [actorId, editingMessage, reloadSeedFromGateway, seedRef, setEditingMessage])
 
   const toggleReaction = useCallback(
     (messageId: string, emoji: string) => {
-      startTransition(() => {
-        setSeed((current) =>
-          toggleChatMessageReaction({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
+      const sidebarItemId = runtime.selectedSidebarItemId
+      const conversationId = resolveChatSidebarConversationId(seedRef.current, sidebarItemId)
+      if (!conversationId) {
+        return
+      }
+
+      const message = listRuntimeMessages(runtime).find(
+        (candidate) => candidate.messageId === messageId,
+      )
+      const active = !message?.reactions.some(
+        (reaction) => reaction.emoji === emoji && reaction.participantIds.includes(actorId),
+      )
+
+      void (async () => {
+        try {
+          const handled = await setChatShellRuntimeMessageReaction({
+            actorId,
+            conversationId,
             messageId,
             emoji,
-            participantId: seedRef.current.actorId,
-          }),
-        )
-      })
+            active,
+          })
+          if (handled) {
+            await reloadSeedFromGateway()
+            return
+          }
+          warnUnavailableChatRuntimeAction("toggle-reaction")
+        } catch (error) {
+          console.error("Chat runtime reaction dispatch failed", error)
+        }
+      })()
     },
-    [runtime.selectedSidebarItemId],
+    [actorId, reloadSeedFromGateway, runtime, seedRef],
   )
 
   const redactActiveMessage = useCallback(
     (messageId: string) => {
-      startTransition(() => {
-        setSeed((current) =>
-          redactChatMessage({
-            seed: current,
-            sidebarItemId: runtime.selectedSidebarItemId,
-            messageId,
-            actorId: seedRef.current.actorId,
-          }),
-        )
-        setEditingMessage((current) =>
-          current?.messageId === messageId &&
-          current.sidebarItemId === runtime.selectedSidebarItemId
-            ? null
-            : current,
-        )
-      })
-    },
-    [runtime.selectedSidebarItemId],
-  )
+      const sidebarItemId = runtime.selectedSidebarItemId
+      const conversationId = resolveChatSidebarConversationId(seedRef.current, sidebarItemId)
+      if (!conversationId) {
+        return
+      }
 
-  const activeConversationDraft = conversationDrafts[runtime.selectedSidebarItemId] ?? ""
-  const activeThreadDraftKey = runtime.transcriptView.threadDrawer.rootMessage
-    ? `${runtime.selectedSidebarItemId}:${runtime.transcriptView.threadDrawer.rootMessage.messageId}`
-    : null
-  const activeThreadDraft = activeThreadDraftKey ? (threadDrafts[activeThreadDraftKey] ?? "") : ""
-  const activeConversationAudienceId =
-    conversationAudienceSelections[runtime.selectedSidebarItemId] ?? null
-  const activeThreadAudienceId = activeThreadDraftKey
-    ? (threadAudienceSelections[activeThreadDraftKey] ?? null)
-    : null
-  const activeConversationAudienceOptions =
-    runtime.chat.activeConversation?.participantIds.filter(
-      (participantId) => participantId !== actorId,
-    ) ?? []
-  const knownParticipantIds = useMemo(() => listKnownParticipantIds(seed), [seed])
-  const actorOptions = useMemo(
-    () => [actorId, ...knownParticipantIds],
-    [actorId, knownParticipantIds],
+      void (async () => {
+        try {
+          const handled = await redactChatShellRuntimeMessage({
+            actorId,
+            conversationId,
+            messageId,
+          })
+          if (handled) {
+            if (!(await reloadSeedFromGateway())) {
+              return
+            }
+            startTransition(() => {
+              setEditingMessage((current) =>
+                current?.messageId === messageId && current.sidebarItemId === sidebarItemId
+                  ? null
+                  : current,
+              )
+            })
+            return
+          }
+          warnUnavailableChatRuntimeAction("redact-message")
+        } catch (error) {
+          console.error("Chat runtime redact message dispatch failed", error)
+        }
+      })()
+    },
+    [actorId, reloadSeedFromGateway, runtime.selectedSidebarItemId, seedRef, setEditingMessage],
   )
 
   const selectActor = useCallback(
     (nextActorId: string) => {
-      if (!nextActorId || nextActorId === seedRef.current.actorId) {
+      if (!nextActorId || nextActorId === actorId) {
         return
       }
       startTransition(() => {
@@ -4065,6 +4735,7 @@ export function useChatShellState() {
             ? resolveChatSidebarSelection(nextSeed, runtime.selectedSidebarItemId)
             : nextSeed.defaultSidebarItemId
         setSeed(nextSeed)
+        setActorId(nextActorId)
         setActiveSidebarItemId(nextSidebarItemId)
         setThreadDrawerOpenOverrides({})
         setConversationDrafts({})
@@ -4072,11 +4743,28 @@ export function useChatShellState() {
         setConversationAudienceSelections({})
         setThreadAudienceSelections({})
         setSearchQuery("")
+        setSearchResults([])
         setActiveSearchResultKey(null)
         setEditingMessage(null)
       })
     },
-    [runtime.selectedSidebarItemId],
+    [
+      actorId,
+      runtime.selectedSidebarItemId,
+      seedRef,
+      setActiveSearchResultKey,
+      setActorId,
+      setActiveSidebarItemId,
+      setConversationAudienceSelections,
+      setConversationDrafts,
+      setEditingMessage,
+      setSearchQuery,
+      setSearchResults,
+      setSeed,
+      setThreadAudienceSelections,
+      setThreadDrafts,
+      setThreadDrawerOpenOverrides,
+    ],
   )
 
   const toggleConversationAudience = useCallback(
@@ -4087,7 +4775,7 @@ export function useChatShellState() {
           current[runtime.selectedSidebarItemId] === participantId ? null : participantId,
       }))
     },
-    [runtime.selectedSidebarItemId],
+    [runtime.selectedSidebarItemId, setConversationAudienceSelections],
   )
 
   const toggleThreadAudience = useCallback(
@@ -4102,17 +4790,139 @@ export function useChatShellState() {
         [key]: current[key] === participantId ? null : participantId,
       }))
     },
-    [runtime.selectedSidebarItemId, runtime.transcriptView.threadDrawer.rootMessage?.messageId],
+    [
+      runtime.selectedSidebarItemId,
+      runtime.transcriptView.threadDrawer.rootMessage?.messageId,
+      setThreadAudienceSelections,
+    ],
   )
 
   return {
-    actorId,
+    createConversation,
+    updateConversationDraft,
+    insertConversationDraftToken,
+    submitConversationDraft,
+    updateThreadDraft,
+    insertThreadDraftToken,
+    submitThreadDraft,
+    markActiveConversationRead,
+    toggleActiveThreadFollow,
+    markActiveThreadRead,
+    joinActiveConversation,
+    toggleConversationPostingPolicy,
+    archiveActiveConversation,
+    updateActiveConversationDetails,
+    hideActiveViewerConversation,
+    leaveActiveConversation,
+    removeParticipantFromActiveConversation,
+    addParticipantToActiveConversation,
+    grantAccessToActiveConversation,
+    revokeAccessFromActiveConversation,
+    startEditingMessage,
+    updateEditingMessageDraft,
+    cancelEditingMessage,
+    saveEditingMessage,
+    toggleReaction,
+    redactActiveMessage,
+    selectActor,
+    toggleConversationAudience,
+    toggleThreadAudience,
+  }
+}
+
+export function useChatShellState() {
+  const uiState = useChatShellUiState()
+  const selectionState = useChatShellSelectionState({
+    threadDrawerOpenOverrides: uiState.threadDrawerOpenOverrides,
+    setThreadDrawerOpenOverrides: uiState.setThreadDrawerOpenOverrides,
+  })
+  const hydrationState = useChatShellHydrationState({
+    actorId: uiState.actorId,
+    seedRef: selectionState.seedRef,
+    activeSidebarItemIdRef: selectionState.activeSidebarItemIdRef,
+    activeThreadSelectionRef: selectionState.activeThreadSelectionRef,
+    setSeed: selectionState.setSeed,
+    setActiveSidebarItemId: selectionState.setActiveSidebarItemId,
+    setThreadDrawerOpenOverrides: uiState.setThreadDrawerOpenOverrides,
+  })
+  const searchState = useChatShellSearchState({
+    actorId: uiState.actorId,
+    runtimeAvailability: hydrationState.runtimeAvailability,
+    seed: selectionState.seed,
+    seedRef: selectionState.seedRef,
+    setSeed: selectionState.setSeed,
+    setActiveSidebarItemId: selectionState.setActiveSidebarItemId,
+    setThreadDrawerOpenOverrides: uiState.setThreadDrawerOpenOverrides,
+  })
+  const commandActions = useChatShellCommandActions({
+    actorId: uiState.actorId,
+    setActorId: uiState.setActorId,
+    runtime: selectionState.runtime,
+    seedRef: selectionState.seedRef,
+    setSeed: selectionState.setSeed,
+    setActiveSidebarItemId: selectionState.setActiveSidebarItemId,
+    setThreadDrawerOpenOverrides: uiState.setThreadDrawerOpenOverrides,
+    conversationDrafts: uiState.conversationDrafts,
+    setConversationDrafts: uiState.setConversationDrafts,
+    threadDrafts: uiState.threadDrafts,
+    setThreadDrafts: uiState.setThreadDrafts,
+    conversationAudienceSelections: uiState.conversationAudienceSelections,
+    setConversationAudienceSelections: uiState.setConversationAudienceSelections,
+    threadAudienceSelections: uiState.threadAudienceSelections,
+    setThreadAudienceSelections: uiState.setThreadAudienceSelections,
+    editingMessage: uiState.editingMessage,
+    setEditingMessage: uiState.setEditingMessage,
+    reloadSeedFromGateway: hydrationState.reloadSeedFromGateway,
+    setSearchQuery: searchState.setSearchQuery,
+    setSearchResults: searchState.setSearchResults,
+    setActiveSearchResultKey: searchState.setActiveSearchResultKey,
+  })
+
+  useEffect(() => {
+    uiState.setEditingMessage((current) =>
+      current && current.sidebarItemId !== selectionState.runtime.selectedSidebarItemId
+        ? null
+        : current,
+    )
+  }, [selectionState.runtime.selectedSidebarItemId, uiState.setEditingMessage])
+
+  const activeConversationDraft =
+    uiState.conversationDrafts[selectionState.runtime.selectedSidebarItemId] ?? ""
+  const activeThreadDraftKey = selectionState.runtime.transcriptView.threadDrawer.rootMessage
+    ? `${selectionState.runtime.selectedSidebarItemId}:${selectionState.runtime.transcriptView.threadDrawer.rootMessage.messageId}`
+    : null
+  const activeThreadDraft = activeThreadDraftKey
+    ? (uiState.threadDrafts[activeThreadDraftKey] ?? "")
+    : ""
+  const activeConversationAudienceId =
+    uiState.conversationAudienceSelections[selectionState.runtime.selectedSidebarItemId] ?? null
+  const activeThreadAudienceId = activeThreadDraftKey
+    ? (uiState.threadAudienceSelections[activeThreadDraftKey] ?? null)
+    : null
+  const activeConversationAudienceOptions =
+    selectionState.runtime.chat.activeConversation?.participantIds.filter(
+      (participantId) => participantId !== uiState.actorId,
+    ) ?? []
+  const knownParticipantIds = useMemo(
+    () => listKnownParticipantIds(selectionState.seed),
+    [selectionState.seed],
+  )
+  const actorOptions = useMemo(
+    () => [uiState.actorId, ...knownParticipantIds],
+    [uiState.actorId, knownParticipantIds],
+  )
+
+  return {
+    actorId: uiState.actorId,
     actorOptions,
-    runtime,
-    searchQuery,
-    searchResults,
-    activeSearchResultIndex,
-    inboxCount: runtime.chat.sidebar.inbox.length,
+    runtimeAvailability: hydrationState.runtimeAvailability,
+    canCreateConversation: CHAT_CREATE_CONVERSATION_ENABLED,
+    canHideViewerConversation: CHAT_HIDE_VIEWER_CONVERSATION_ENABLED,
+    runtime: selectionState.runtime,
+    searchQuery: searchState.searchQuery,
+    searchResults: searchState.searchResults,
+    activeSearchResultIndex: searchState.activeSearchResultIndex,
+    inboxCount: selectionState.runtime.chat.sidebar.inbox.length,
     knownParticipantIds,
     activeConversationDraft,
     activeThreadDraft,
@@ -4120,47 +4930,49 @@ export function useChatShellState() {
     activeThreadAudienceId,
     activeConversationAudienceOptions,
     editingMessageId:
-      editingMessage?.sidebarItemId === runtime.selectedSidebarItemId
-        ? editingMessage.messageId
+      uiState.editingMessage?.sidebarItemId === selectionState.runtime.selectedSidebarItemId
+        ? uiState.editingMessage.messageId
         : null,
     editingMessageDraft:
-      editingMessage?.sidebarItemId === runtime.selectedSidebarItemId ? editingMessage.draft : "",
-    createConversation,
-    selectActor,
-    openInbox,
-    selectSidebarItem,
-    closeThreadDrawer,
-    openThreadDrawer,
-    updateConversationDraft,
-    insertConversationDraftToken,
-    submitConversationDraft,
-    updateThreadDraft,
-    insertThreadDraftToken,
-    submitThreadDraft,
-    toggleConversationAudience,
-    toggleThreadAudience,
-    markActiveConversationRead,
-    markActiveThreadRead,
-    toggleActiveThreadFollow,
-    joinActiveConversation,
-    toggleConversationPostingPolicy,
-    archiveActiveConversation,
-    updateActiveConversationDetails,
-    leaveActiveConversation,
-    addParticipantToActiveConversation,
-    removeParticipantFromActiveConversation,
-    grantAccessToActiveConversation,
-    revokeAccessFromActiveConversation,
-    hideActiveViewerConversation,
-    setSearchQuery: updateSearchQuery,
-    moveSearchSelection,
-    selectSearchResult,
-    submitActiveSearchResult,
-    startEditingMessage,
-    updateEditingMessageDraft,
-    cancelEditingMessage,
-    saveEditingMessage,
-    toggleReaction,
-    redactActiveMessage,
+      uiState.editingMessage?.sidebarItemId === selectionState.runtime.selectedSidebarItemId
+        ? uiState.editingMessage.draft
+        : "",
+    createConversation: commandActions.createConversation,
+    selectActor: commandActions.selectActor,
+    openInbox: selectionState.openInbox,
+    selectSidebarItem: selectionState.selectSidebarItem,
+    closeThreadDrawer: selectionState.closeThreadDrawer,
+    openThreadDrawer: selectionState.openThreadDrawer,
+    updateConversationDraft: commandActions.updateConversationDraft,
+    insertConversationDraftToken: commandActions.insertConversationDraftToken,
+    submitConversationDraft: commandActions.submitConversationDraft,
+    updateThreadDraft: commandActions.updateThreadDraft,
+    insertThreadDraftToken: commandActions.insertThreadDraftToken,
+    submitThreadDraft: commandActions.submitThreadDraft,
+    toggleConversationAudience: commandActions.toggleConversationAudience,
+    toggleThreadAudience: commandActions.toggleThreadAudience,
+    markActiveConversationRead: commandActions.markActiveConversationRead,
+    markActiveThreadRead: commandActions.markActiveThreadRead,
+    toggleActiveThreadFollow: commandActions.toggleActiveThreadFollow,
+    joinActiveConversation: commandActions.joinActiveConversation,
+    toggleConversationPostingPolicy: commandActions.toggleConversationPostingPolicy,
+    archiveActiveConversation: commandActions.archiveActiveConversation,
+    updateActiveConversationDetails: commandActions.updateActiveConversationDetails,
+    leaveActiveConversation: commandActions.leaveActiveConversation,
+    addParticipantToActiveConversation: commandActions.addParticipantToActiveConversation,
+    removeParticipantFromActiveConversation: commandActions.removeParticipantFromActiveConversation,
+    grantAccessToActiveConversation: commandActions.grantAccessToActiveConversation,
+    revokeAccessFromActiveConversation: commandActions.revokeAccessFromActiveConversation,
+    hideActiveViewerConversation: commandActions.hideActiveViewerConversation,
+    setSearchQuery: searchState.updateSearchQuery,
+    moveSearchSelection: searchState.moveSearchSelection,
+    selectSearchResult: searchState.selectSearchResult,
+    submitActiveSearchResult: searchState.submitActiveSearchResult,
+    startEditingMessage: commandActions.startEditingMessage,
+    updateEditingMessageDraft: commandActions.updateEditingMessageDraft,
+    cancelEditingMessage: commandActions.cancelEditingMessage,
+    saveEditingMessage: commandActions.saveEditingMessage,
+    toggleReaction: commandActions.toggleReaction,
+    redactActiveMessage: commandActions.redactActiveMessage,
   }
 }

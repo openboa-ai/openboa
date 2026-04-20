@@ -23,6 +23,8 @@ export function ChatWorkspace(props: {
   searchResults: ChatSearchResult[]
   activeSearchResultIndex: number
   inboxCount: number
+  canCreateConversation: boolean
+  canHideViewerConversation: boolean
   participantOptions: string[]
   audienceOptions: string[]
   selectedConversationAudienceId: string | null
@@ -94,6 +96,7 @@ export function ChatWorkspace(props: {
         actorOptions={props.actorOptions}
         frame={props.frame}
         activeItemId={props.activeSidebarItemId}
+        canCreateConversation={props.canCreateConversation}
         participantOptions={props.participantOptions}
         onSelectActor={props.onSelectActor}
         onSelectItem={props.onSelectSidebarItem}
@@ -119,6 +122,7 @@ export function ChatWorkspace(props: {
             actorOptions={props.actorOptions}
             frame={props.frame}
             activeItemId={props.activeSidebarItemId}
+            canCreateConversation={props.canCreateConversation}
             participantOptions={props.participantOptions}
             onSelectActor={props.onSelectActor}
             onSelectItem={props.onSelectSidebarItem}
@@ -154,6 +158,7 @@ export function ChatWorkspace(props: {
               onTogglePostingPolicy={props.onTogglePostingPolicy}
               onArchiveConversation={props.onArchiveConversation}
               onUpdateConversationDetails={props.onUpdateConversationDetails}
+              canHideViewerConversation={props.canHideViewerConversation}
               onHideViewerConversation={props.onHideViewerConversation}
               onStartEditingMessage={props.onStartEditingMessage}
               onEditingMessageDraftChange={props.onEditingMessageDraftChange}

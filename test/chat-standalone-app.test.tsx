@@ -20,9 +20,9 @@ describe("chat standalone app", () => {
 
     const html = renderToStaticMarkup(<ChatStandaloneApp />)
 
-    expect(html).toContain("openboa")
-    expect(html).toContain("general")
+    expect(html).toContain("Chat runtime unavailable")
     expect(html).toContain("h-full min-h-0")
+    expect(html).not.toContain("general")
     expect(html).not.toContain(">Work<")
     expect(html).not.toContain(">Observe<")
   })

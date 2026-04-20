@@ -15,4 +15,10 @@ describe("company-shell vite config", () => {
 
     expect(config.base).toBe("/")
   })
+
+  it("registers the live chat gateway plugin for the dev server", () => {
+    const config = buildShellViteConfig("serve")
+
+    expect(config.plugins.map((plugin) => plugin?.name)).toContain("openboa-chat-gateway")
+  })
 })

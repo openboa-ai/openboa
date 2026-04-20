@@ -1,0 +1,27 @@
+# RUN-20260420-0006-chat-live-hydration-operational-dedemo-pass
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: `RUN-20260419-2356-chat-live-hydration-incremental-refresh-pass`
+- `Owner skill`: `auto-coding`
+- `Baseline`: The chat shell was runtime-backed and incrementally refreshed, but the top-level `App`, `WorkWorkspace`, and `ObserveWorkspace` still imported `demoCompanyShell` directly and reached back into that global demo object instead of receiving operational state through props.
+- `Hypothesis`: If operational shell state is isolated behind a small state hook and Work/Observe consume explicit surface props, then the top-level shell boundary will stop depending on direct global demo imports while preserving the current visual surface.
+- `Single bounded change`:
+  - export reusable demo operational seed pieces from `src/shell/web/demo-shell.ts`
+  - add `src/shell/web/company-shell-state.ts` to isolate the operational shell seed behind a hook/factory
+  - make `src/shell/web/App.tsx` consume operational shell state instead of `demoCompanyShell`
+  - make `WorkWorkspace` and `ObserveWorkspace` render from explicit `surface` props rather than reopening the demo singleton
+  - remove the now-unused `demoCompanyShell` dependency from shared presentation helpers
+  - add a focused import-boundary test proving the app and operational workspaces no longer import `demo-shell`
+- `Measurement`:
+  - `pnpm exec tsc -p tsconfig.chat.json --noEmit --pretty false`
+  - `pnpm exec vitest run test/company-shell-web.test.ts test/company-operational-import-boundary.test.ts test/chat-app.test.tsx test/chat-standalone-app.test.tsx`
+  - `pnpm build`
+  - `pnpm build:web`
+- `Evidence`:
+  - targeted typecheck passed after changing the workspace prop signatures
+  - `7` focused tests passed, including the new direct-import boundary check
+  - CLI and web production builds both succeeded after the operational shell state isolation
+- `Quality axis targeted`: shell-boundary clarity, de-demo architecture, and top-level wiring integrity
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Next recommended owner`: `auto-project`

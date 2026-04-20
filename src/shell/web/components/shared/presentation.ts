@@ -1,7 +1,6 @@
 import type { LucideIcon } from "lucide-react"
 import { Activity, AtSign, Eye, Hash, LayoutGrid, MessageSquareText, Users } from "lucide-react"
 import type { TopLevelSurfaceState, WorkItemState } from "../../../../shared/company-model.js"
-import { demoCompanyShell } from "../../demo-shell.js"
 
 const timeFormatter = new Intl.DateTimeFormat("en-US", {
   hour: "numeric",
@@ -111,23 +110,4 @@ export function workflowDotClass(state: WorkItemState) {
     case "inbox":
       return "bg-foreground/55"
   }
-}
-
-export function workItemStateFor(workItemId: string | null | undefined): WorkItemState | null {
-  if (!workItemId) {
-    return null
-  }
-
-  const workCard = demoCompanyShell.work.lanes
-    .flatMap((lane) => lane.items)
-    .find((item) => item.workItemId === workItemId)
-
-  if (workCard) {
-    return workCard.state
-  }
-
-  const observeCard = demoCompanyShell.observe.workItems.find(
-    (item) => item.workItemId === workItemId,
-  )
-  return observeCard?.state ?? null
 }

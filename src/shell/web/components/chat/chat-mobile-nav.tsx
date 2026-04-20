@@ -12,6 +12,7 @@ export function ChatMobileNav(props: {
   actorOptions: string[]
   frame: ChatFrameState
   activeItemId: string
+  canCreateConversation: boolean
   participantOptions: string[]
   onSelectActor: (actorId: string) => void
   onSelectItem: (itemId: string) => void
@@ -74,6 +75,7 @@ export function ChatMobileNav(props: {
             variant={creating ? "secondary" : "ghost"}
             size="xs"
             className="hover:bg-white/[0.04]"
+            disabled={!props.canCreateConversation}
             onClick={() => setCreating((current) => !current)}
           >
             <Plus className="size-3.5" strokeWidth={2.1} />
@@ -103,7 +105,7 @@ export function ChatMobileNav(props: {
           })}
         </div>
       ) : null}
-      {creating ? (
+      {creating && props.canCreateConversation ? (
         <div
           ref={createPanelRef}
           className="absolute top-[calc(100%-0.35rem)] left-3 right-3 z-20 rounded-[var(--radius-card)] border border-border bg-[var(--surface-1)] p-3 shadow-[var(--shadow-card-strong)]"

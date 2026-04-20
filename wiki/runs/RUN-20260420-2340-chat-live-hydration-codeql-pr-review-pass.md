@@ -1,0 +1,24 @@
+# RUN-20260420-2340-chat-live-hydration-codeql-pr-review-pass
+
+- `PR`: `PR-chat-live-hydration`
+- `Triggered by`: human request to inspect PR review feedback and fix the actionable issue directly on the branch
+- `Owner skill`: `auto-coding`
+- `Baseline`: PR #12 had one unresolved `github-advanced-security` review thread pointing to `test/chat-web-runtime-gateway.integration.test.ts` with CodeQL alert `js/file-access-to-http` (`File data in outbound network request`).
+- `Hypothesis`: If the web gateway integration test stops issuing a real outbound loopback `fetch` and instead exercises the same Vite-backed gateway dispatch in-process, then the PR keeps the bounded live-shell coverage while removing the CodeQL sink that triggered the review.
+- `Single bounded change`:
+  - replaced the test-local HTTP server boot and `fetch` helper in `test/chat-web-runtime-gateway.integration.test.ts` with direct calls to exported Vite gateway dispatch via `invokeChatGatewayMethod(...)`
+  - kept the same functional assertions for live seed hydration, persisted writes, search, polling, and desktop/web parity
+  - added a small `company-shell vite config` assertion that the dev config still registers the `openboa-chat-gateway` plugin
+- `Measurement`:
+  - `pnpm run check:chat`
+  - `pnpm precommit:check`
+- `Evidence`:
+  - `check:chat` passed end-to-end, including chat boundary checks, chat-only typecheck, `build:web`, and `242/242` chat tests
+  - `precommit:check` passed end-to-end, including repo-wide format, lint, typecheck, and `441/441` tests
+  - the reviewed test file no longer performs any outbound HTTP request while still covering the same web gateway method surface used by the Vite dev bridge
+- `Quality axis targeted`: PR review closure, security-signal cleanup, and regression-safe gateway coverage
+- `Net quality delta`: `positive`
+- `Decision`: `keep`
+- `Remaining quality gap`:
+  - no new blocking gap is visible inside the bounded chat live-shell frontier; GitHub-side CodeQL rerun is expected to clear the previous thread after push
+- `Next recommended owner`: `human-final-signoff`

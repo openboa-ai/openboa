@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import type { ChatConversation } from "../src/chat/core/model.js"
 import type { ChatTranscriptViewState } from "../src/shell/chat/index.js"
 import { makeProjectedMessage } from "../src/shell/web/chat-seed.js"
+import { shouldSubmitChatComposerFromKeyInput } from "../src/shell/web/chat-submit.js"
 import { TranscriptPane } from "../src/shell/web/components/chat/transcript-pane.js"
 
 function makeConversation(
@@ -584,5 +585,35 @@ describe("chat transcript pane", () => {
 
     expect(html).toContain('aria-selected="true"')
     expect(html).toContain("Alpha")
+  })
+
+  it("does not treat IME composition enter as a submit gesture", () => {
+    expect(
+      shouldSubmitChatComposerFromKeyInput({
+        key: "Enter",
+        shiftKey: false,
+        isComposing: true,
+      }),
+    ).toBe(false)
+    expect(
+      shouldSubmitChatComposerFromKeyInput({
+        key: "Enter",
+        shiftKey: false,
+        keyCode: 229,
+      }),
+    ).toBe(false)
+    expect(
+      shouldSubmitChatComposerFromKeyInput({
+        key: "Enter",
+        shiftKey: false,
+        which: 229,
+      }),
+    ).toBe(false)
+    expect(
+      shouldSubmitChatComposerFromKeyInput({
+        key: "Enter",
+        shiftKey: false,
+      }),
+    ).toBe(true)
   })
 })
