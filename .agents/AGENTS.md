@@ -126,6 +126,9 @@ Ownership returns to `auto-project` after every run.
 - every worker pass must end with a handoff or completion signal
 - every state transition must be written back by `auto-wiki`
 - every kept change must have explicit evidence
+- after a PR is opened or updated, the active worker retains ownership through review and CI follow-through until merge or explicit human handoff
+- push is not the end of the loop; the worker must keep checking comments, review threads, code scanning, and CI, address actionable feedback, and push again until the PR is green
+- merge once the PR is green and blocking feedback is resolved, unless a human explicitly asks to hold, keep draft, or reserve final signoff
 
 Required handoff packet:
 

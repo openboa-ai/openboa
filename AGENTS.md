@@ -23,3 +23,9 @@ Core rules:
 - only one worker writes at a time
 - keep only measured improvements
 - escalate immediately for safety-critical situations
+
+PR follow-through rule:
+
+- after opening or updating a PR, the active worker owns review and CI follow-through until the PR is merged or explicitly handed back to a human
+- do not stop at push; keep checking PR comments, review threads, code scanning, and CI, fix actionable issues, push updates, and re-check the PR state
+- merge once the PR is green and there is no remaining blocking feedback, unless the human explicitly asks to hold, keep the PR in draft, or reserve final signoff
