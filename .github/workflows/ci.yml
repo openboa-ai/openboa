@@ -13,6 +13,9 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  dependency-audit:
+    uses: ./.github/workflows/dependency-audit.yml
+
   scope:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -235,7 +238,7 @@ jobs:
 
   required-ci:
     name: required-ci
-    needs: [check, docs, secrets, gitleaks, policy, desktop-artifact]
+    needs: [check, docs, secrets, gitleaks, policy, desktop-artifact, dependency-audit]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -249,6 +252,7 @@ jobs:
           gitleaks_result="${{ needs.gitleaks.result }}"
           policy_result="${{ needs.policy.result }}"
           desktop_result="${{ needs.desktop-artifact.result }}"
+          dependency_audit_result="${{ needs.dependency-audit.result }}"
 
           echo "check:    ${check_result}"
           echo "docs:     ${docs_result}"
@@ -256,8 +260,12 @@ jobs:
           echo "gitleaks: ${gitleaks_result}"
           echo "policy:   ${policy_result}"
           echo "desktop:  ${desktop_result}"
+          echo "dependency audit: ${dependency_audit_result}"
 
           failed=0
+          if [[ "${dependency_audit_result}" != "success" ]]; then
+            failed=1
+          fi
           if [[ "${check_result}" == "failure" || "${check_result}" == "cancelled" ]]; then
             failed=1
           fi

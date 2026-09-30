@@ -2,7 +2,7 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 const STANDARD_PR_TITLE_PATTERN = /^(feat|fix|docs|chore|refactor|test|ci|build|perf|revert): .+/
-const DEPENDABOT_PR_TITLE_PATTERN = /^(?:build\(deps(?:-dev)?\): .+|bump .+ from .+ to .+)$/i
+const DEPENDABOT_PR_TITLE_PATTERN = /^(?:build(?:\(deps(?:-dev)?\))?: .+|bump .+ from .+ to .+)$/i
 const REQUIRED_BODY_SECTIONS = ["Summary", "Checklist", "Validation", "Related"]
 
 function hasSection(body, section) {
@@ -19,7 +19,9 @@ export function validatePrConvention({ title, body, author }) {
 
   if (isDependabot) {
     if (!DEPENDABOT_PR_TITLE_PATTERN.test(normalizedTitle)) {
-      errors.push("Dependabot PR title must match 'build(deps): ...' or 'Bump ... from ... to ...'")
+      errors.push(
+        "Dependabot PR title must match 'build: ...', 'build(deps): ...', or 'Bump ... from ... to ...'",
+      )
     }
 
     return errors
