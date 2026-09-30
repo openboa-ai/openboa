@@ -116,3 +116,61 @@ the collector and evaluator enforce the full provenance, invocation, findings
 and coverage-related evidence contract. This adds
 runner time on infrastructure changes and makes the prospective call contract
 observable. It is not evidence that a post-merge run occurred.
+
+## Default-OFF README writer proposal
+
+`readme-writer-pilot.yml` is a separate, inactive event-driven writer proposal.
+The tracked pilot policy has `enabled: false`; the writer job additionally requires
+`OPENBOA_README_WRITER_ENABLED == true`. This change creates neither that variable
+nor a live permission grant. Its new trigger warning is deliberately unsuppressed;
+the earlier read-only exception does not apply to this workflow. Landing, any
+exception, enabling the policy/variable, and actually merging require separate
+approval. The read-only reporter remains independent.
+
+The only durable target is PR68 and the exact regular README blob transition
+`1f91d44dbd4482ec7f4c63816871c749dd3620ac` to
+`69e48877815a57cb5acbf5497663381010a3b3db` (`docs` to `documentation`). Every other
+file must remain unchanged. The controller derives fresh base/head SHAs from the
+API and requires the base to equal its trusted default workflow revision; it never
+pins a stale approval to a later head. It collects all evidence itself using the
+same captured token later used for one normal expected-head squash merge request.
+The unchanged evaluator's report-only result supplies evidence, not authority.
+No uploaded/cached report authorizes this writer.
+
+Up to three independent collections can wait for the observed completed-success
+job-step metadata lag. Each wait is at most 240 seconds and shortens to retain
+120 seconds for the next collection plus a 60-second merge/reconciliation reserve;
+less than 30 seconds of available delay denies. They share a 600-second, 300-request
+and 75-MiB compressed/JSON byte ceiling; each collection phase retains a 120-second
+and 100-request cap. No records are combined, no producer is rerun, and negative,
+changed or still-unavailable evidence denies. All non-step facts, artifact/raw
+digests and already-terminal steps remain bound across collections; later success
+cannot erase an earlier negative. Each original observation/report is retained.
+These bounds do not guarantee API convergence. The sole PUT is never retried, even after an ambiguous response.
+Read-only reconciliation verifies the actual merged SHA, its parent and exact tree;
+an unresolved outcome is `merge-unknown`, never a success receipt.
+
+GitHub's expected SHA guards the PR head, not the base atomically. The writer relies
+on unchanged strict server protection, immediate base/rules rereads and owner
+stability; it cannot promise an atomic expected-base operation that the API lacks.
+The policy and own workflow active state are reread before PUT. The variable is a
+job-start gate, not an instantaneous in-flight kill switch. Disabling the workflow
+or cancelling a run cannot recall an already transmitted merge request. An operator
+must reconcile a crash between the request and persisted outcome read-only.
+
+The full workflow is serialized with cancellation disabled. GitHub's default queue
+still replaces a pending run with a newer wake-up; this is not a lossless queue.
+The current pinned actionlint rejects the new `queue: max` syntax, so this draft
+retains the existing syntax and documents operator recovery: after separate
+activation approval, a missed wake-up requires an explicitly authorized rerun
+that recollects fresh evidence. No rerun or activation happens in this proposal.
+A verified returned
+merge SHA drives actual reusable full CI and all three CodeQL languages, without
+`actions: write`, dispatch or deployment. Strict raw gates require zero results,
+successful invocations, no warning/error notifications, exact source receipt/caller
+bindings and nonempty tracked-language extraction. They do not attest complete
+source coverage. Caller workflow/event identity remains truthful, distinct from
+the merged checkout SHA; no standalone push/native Code Quality run is fabricated.
+An always-running aggregate reports merged-but-validation-failed on any failed,
+skipped or unavailable continuation. It does not revert automatically. Manual run
+cancellation can still interrupt continuation and requires operator follow-through.

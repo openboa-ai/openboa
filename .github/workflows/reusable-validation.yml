@@ -15,6 +15,12 @@ on:
       - "test/test_collect_merge_evidence.py"
       - "test/merge-canary-adapter.test.mjs"
       - "test/merge-source-receipt.test.ts"
+      - ".github/readme-writer-policy.json"
+      - ".github/workflows/readme-writer-pilot.yml"
+      - "scripts/readme-writer-pilot.py"
+      - "test/test_readme_writer_pilot.py"
+      - "scripts/validate-postmerge-sarif.py"
+      - "test/test_validate_postmerge_sarif.py"
 
 permissions:
   contents: read
@@ -102,3 +108,5 @@ jobs:
         run: |
           node --test test/merge-canary-adapter.test.mjs
           python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'
+          python3 -m unittest discover -s test -p 'test_readme_writer_pilot.py'
+          python3 -m unittest discover -s test -p 'test_validate_postmerge_sarif.py'

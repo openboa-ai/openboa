@@ -18,6 +18,10 @@ on:
         description: Git ref associated with the source commit for CodeQL analysis.
         required: true
         type: string
+      strict_postmerge:
+        description: Require actual clean raw analysis for the separately reviewed writer continuation.
+        default: false
+        type: boolean
       upload_results:
         description: Upload genuine analysis; false supports isolated reusable-workflow validation.
         default: true
@@ -195,6 +199,7 @@ jobs:
           PYTHON
 
       - name: Prepare merge evidence
+        id: prepare_evidence
         shell: bash
         env:
           LANGUAGE: ${{ matrix.language }}
@@ -224,7 +229,28 @@ jobs:
           shutil.copyfile(Path(os.environ["RECEIPT_DIRECTORY"]) / "receipt.json", output / "receipt.json")
           PYTHON
 
+      - name: Require strict post-merge raw evidence
+        if: inputs.strict_postmerge == true
+        env:
+          LANGUAGE: ${{ matrix.language }}
+          REQUESTED_REVISION: ${{ inputs.revision }}
+          REPOSITORY_ID: ${{ github.repository_id }}
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          UPLOAD_RESULTS: ${{ inputs.upload_results }}
+        run: |
+          test "$UPLOAD_RESULTS" = false
+          python3 scripts/validate-postmerge-sarif.py \
+            --directory "$RUNNER_TEMP/merge-evidence" --language "$LANGUAGE" \
+            --revision "$REQUESTED_REVISION" --repository "$GITHUB_REPOSITORY" \
+            --repository-id "$REPOSITORY_ID" --run-id "$GITHUB_RUN_ID" \
+            --attempt "$GITHUB_RUN_ATTEMPT" --workflow-sha "$GITHUB_WORKFLOW_SHA" \
+            --workflow-ref "$GITHUB_WORKFLOW_REF" --event "$GITHUB_EVENT_NAME" \
+            --event-sha "$GITHUB_SHA" --source-root "$GITHUB_WORKSPACE"
+
       - name: Upload merge evidence
+        # Preserve already-prepared raw evidence when the optional strict gate
+        # fails; the failed gate/job still blocks the continuation aggregate.
+        if: always() && !cancelled() && steps.prepare_evidence.outcome == 'success' && (success() || inputs.strict_postmerge == true)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: merge-evidence-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.language }}
