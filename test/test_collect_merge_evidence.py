@@ -27,10 +27,13 @@ P = "/repos/example/project"
 class FakeAPI:
     def __init__(self):
         self.requests, self.overrides, self.counts, self.archives = [], {}, {}, {}
+        self.token = "fixture-credential"
         self.policy = {"schemaVersion": 1, "repository": {"id": 7, "fullName": "example/project", "defaultBranch": "main"},
                        "workflows": [{"id": 11, "path": ".github/workflows/codeql.yml", "event": "pull_request", "role": "codeql"}],
                        "requiredLanguages": [{"language": "python", "category": "codeql-python"}],
-                       "allowedDocumentationPaths": ["README.md"], "controlPaths": [".github/workflows/codeql.yml"]}
+                       "allowedDocumentationPaths": ["README.md"], "controlPaths": [".github/workflows/codeql.yml"],
+                       "evaluation": {"runs": [{"workflowId": 11, "jobs": [{"name": "analyze (python)",
+                           "steps": ["Perform CodeQL Analysis", "Upload merge evidence"]}]}]}}
         self.event = {"action": "completed", "repository": {"id": 7}, "workflow_run": {"id": 101}}
         self.context = {"GITHUB_EVENT_NAME": "workflow_run", "GITHUB_REPOSITORY": "example/project",
                         "GITHUB_SHA": M, "GITHUB_WORKFLOW_SHA": M}
@@ -46,13 +49,17 @@ class FakeAPI:
                         {"path": "README.md", "mode": "100644", "type": "blob", "sha": OLD}]
 
     def get(self, route):
-        self.requests.append({"route": route, "status": 200})
+        self.requests.append({"method": "GET", "route": route, "status": 200, "principal": dict(C.REPORT_PRINCIPAL)})
+        record = self.requests[-1]
+        def respond(value):
+            record["bodyDigest"] = C.digest(json.dumps(value, sort_keys=True).encode())
+            return copy.deepcopy(value)
         self.counts[route] = self.counts.get(route, 0) + 1
         if route in self.overrides:
             value = self.overrides[route]
             if isinstance(value, Exception):
                 raise value
-            return copy.deepcopy(value(self.counts[route]) if callable(value) else value)
+            return respond(value(self.counts[route]) if callable(value) else value)
         routes = {
             P + "/git/ref/heads/main": {"object": {"sha": M}},
             P + "/actions/runs/101": self.run,
@@ -70,17 +77,20 @@ class FakeAPI:
             P + f"/compare/{M}...{H}?per_page=1": {"merge_base_commit": {"sha": M}},
             P + f"/actions/workflows/11/runs?head_sha={H}&per_page=100&page=1": {"total_count": 1, "workflow_runs": [self.run]},
             P + "/actions/runs/101/attempts/1/jobs?per_page=100&page=1": {"total_count": 1, "jobs": [
-                {"id": 301, "run_id": 101, "head_sha": H, "name": "analyze (python)", "status": "completed", "conclusion": "success",
+                {"id": 301, "run_id": 101, "head_sha": H, "name": "analyze (python)", "status": "completed", "conclusion": "success", "run_attempt": 1,
+                 "started_at": "2026-09-30T00:00:00Z", "completed_at": "2026-09-30T00:02:00Z",
                  "steps": [{"number": 1, "name": "Perform CodeQL Analysis", "status": "completed", "conclusion": "success"}]}]},
-            P + "/rules/branches/main": [{"type": "required_status_checks", "ruleset_id": 4}],
-            P + "/rulesets/4": {"id": 4, "enforcement": "active", "bypass_actors": []},
+            P + "/rules/branches/main": [{"type": "required_status_checks", "ruleset_id": 4, "ruleset_source_type": "Repository", "ruleset_source": "example/project"}],
+            P + "/rulesets/4": {"id": 4, "enforcement": "active", "source_type": "Repository", "source": "example/project", "current_user_can_bypass": "never"},
             P + f"/commits/{H}/check-runs?filter=all&per_page=100&page=1": {"total_count": 0, "check_runs": []},
             P + f"/commits/{H}/statuses?per_page=100&page=1": [],
             P + "/actions/runs/101/artifacts?per_page=100&page=1": {"total_count": 0, "artifacts": []},
         }
+        if route == P + "/actions/jobs/301":
+            return respond(routes[P + "/actions/runs/101/attempts/1/jobs?per_page=100&page=1"]["jobs"][0])
         if route not in routes:
             raise AssertionError("unexpected route: " + route)
-        return copy.deepcopy(routes[route])
+        return respond(routes[route])
 
     def collect(self):
         return C.collect(self.policy, self.event, self.context, self)
@@ -249,13 +259,13 @@ class CollectorTests(unittest.TestCase):
 
     def test_bypass_read_denial_is_unknown(self):
         self.api.overrides[P + "/rulesets/4"] = C.EvidenceError("github_http_error", 403)
-        result = self.assertBlocked("rule_bypass_details_unavailable")
+        result = self.assertBlocked("current_principal_bypass_unverified")
         self.assertEqual(result["protection"]["ruleDetailStatus"], "unavailable")
 
     def test_bypass_actor_drift_blocks_with_unchanged_effective_rules(self):
         self.api.add_receipt_artifact()
         self.api.overrides[P + "/rulesets/4"] = lambda n: {
-            "id": 4, "enforcement": "active", "bypass_actors": [] if n == 1 else
+            "id": 4, "enforcement": "active", "source_type": "Repository", "source": "example/project", "current_user_can_bypass": "never", "bypass_actors": [] if n == 1 else
             [{"actor_id": 15368, "actor_type": "Integration", "bypass_mode": "always"}]}
         result = self.assertBlocked("ruleset_details_changed_during_collection")
         self.assertEqual(result["protection"]["ruleDetailStatus"], "changed")
@@ -375,6 +385,154 @@ class CollectorTests(unittest.TestCase):
         with self.assertRaises(C.EvidenceError) as error:
             C.artifact_members(self.api, metadata, ["receipt.json"], C.DEFAULT_LIMITS)
         self.assertEqual(error.exception.code, "artifact_nonregular_member")
+
+
+class EvidenceRefreshTests(unittest.TestCase):
+    jobs_route = P + "/actions/runs/101/attempts/1/jobs?per_page=100&page=1"
+    direct_route = P + "/actions/jobs/301"
+
+    def setUp(self):
+        self.api = FakeAPI()
+        self.api.add_receipt_artifact()
+        self.listed = self.api.overrides[self.jobs_route]["jobs"][0]
+        self.direct = copy.deepcopy(self.listed)
+        self.listed["steps"] = self.listed["steps"][:1]
+        self.api.overrides[self.direct_route] = self.direct
+
+    def test_real_direct_steps_complete_stale_list_without_fabrication(self):
+        result = self.api.collect()
+        self.assertEqual(result["collection"]["status"], "completed", result["collection"])
+        job = result["workflows"][0]["jobs"][0]
+        self.assertEqual(job["steps"], self.direct["steps"])
+        self.assertEqual(job["stepRefresh"]["listedSteps"], self.listed["steps"])
+        self.assertEqual(job["stepRefresh"]["request"]["route"], self.direct_route)
+        self.assertRegex(job["stepRefresh"]["request"]["bodyDigest"], r"^[a-f0-9]{64}$")
+        self.assertEqual(self.api.counts[self.direct_route], 1)
+
+    def test_null_conclusions_refresh_but_nonrequired_cleanup_does_not(self):
+        self.listed["steps"] = copy.deepcopy(self.direct["steps"])
+        self.listed["steps"][-1].update(status="pending", conclusion=None)
+        self.assertEqual(self.api.collect()["collection"]["status"], "completed")
+        self.setUp()
+        self.listed["steps"] = copy.deepcopy(self.direct["steps"])
+        self.listed["steps"].append({"number": 3, "name": "Post cleanup", "status": "in_progress", "conclusion": None})
+        self.assertEqual(self.api.collect()["collection"]["status"], "completed")
+        self.assertNotIn(self.direct_route, self.api.counts)
+
+    def test_direct_identity_attempt_and_terminal_outcome_must_match(self):
+        changes = {"id": 302, "run_id": 102, "run_attempt": 2, "head_sha": M,
+                   "name": "other producer", "status": "queued", "conclusion": "failure",
+                   "started_at": "2026-09-29T00:00:00Z", "completed_at": "2026-09-30T00:03:00Z"}
+        for field, value in changes.items():
+            with self.subTest(field=field):
+                self.setUp(); self.direct[field] = value
+                result = self.api.collect()
+                self.assertIn("direct_job_identity_or_outcome_mismatch", result["collection"]["blockers"])
+
+    def test_explicit_negative_required_step_is_not_replaced(self):
+        for conclusion in ("failure", "cancelled", "skipped", "neutral"):
+            with self.subTest(conclusion=conclusion):
+                self.setUp()
+                self.listed["steps"] = copy.deepcopy(self.direct["steps"])
+                self.listed["steps"][-1]["conclusion"] = conclusion
+                result = self.api.collect()
+                self.assertEqual(result["collection"]["status"], "blocked")
+                self.assertNotIn(self.direct_route, self.api.counts)
+
+    def test_duplicate_numbers_names_or_conflicting_steps_deny(self):
+        for location in ("listed", "direct"):
+            for kind in ("number", "name"):
+                with self.subTest(location=location, kind=kind):
+                    self.setUp(); target = getattr(self, location)
+                    duplicate = copy.deepcopy(target["steps"][0])
+                    if kind == "name": duplicate["number"] = 9
+                    else: duplicate["name"] = "another step"
+                    target["steps"].append(duplicate)
+                    self.assertIn("ambiguous_job_steps", self.api.collect()["collection"]["blockers"])
+        self.setUp(); self.direct["steps"][0]["conclusion"] = "failure"
+        self.assertIn("direct_job_terminal_step_conflict", self.api.collect()["collection"]["blockers"])
+        self.setUp(); self.direct["steps"][0]["name"] = "different step"
+        self.assertIn("direct_job_step_identity_conflict", self.api.collect()["collection"]["blockers"])
+
+    def test_direct_still_incomplete_denies_once(self):
+        self.direct["steps"] = copy.deepcopy(self.listed["steps"])
+        result = self.api.collect()
+        self.assertIn("required_job_steps_unavailable:301", result["collection"]["blockers"])
+        self.assertEqual(self.api.counts[self.direct_route], 1)
+        self.assertEqual(result["rawSarif"][0]["status"], "unverified")
+
+    def test_optional_http_unavailable_vs_infrastructure_failure(self):
+        for status in (403, 404, 500):
+            with self.subTest(status=status):
+                self.setUp(); self.api.overrides[self.direct_route] = C.EvidenceError("github_http_error", status)
+                result = self.api.collect()
+                self.assertEqual(result["collection"]["status"], "failure" if status == 500 else "blocked")
+                self.assertEqual(self.api.counts[self.direct_route], 1)
+        self.setUp(); self.api.overrides[self.direct_route] = C.EvidenceError("collection_budget_exceeded")
+        self.assertIn("collection_budget_exceeded", self.api.collect()["collection"]["blockers"])
+
+    def test_same_job_refresh_is_cached_and_attempt_drift_still_denies(self):
+        cache = {}
+        for _ in range(2):
+            C.refresh_job_steps(self.api, P, self.listed, 101, 1, H,
+                                ["Perform CodeQL Analysis", "Upload merge evidence"], cache)
+        self.assertEqual(self.api.counts[self.direct_route], 1)
+        self.api.overrides[P + "/actions/runs/101"] = lambda n: self.api.run if n == 1 else {**self.api.run, "run_attempt": 2}
+        self.assertIn("run_changed_during_collection", self.api.collect()["collection"]["blockers"])
+
+    def test_current_credential_never_does_not_mean_no_other_bypass_actors(self):
+        detail = self.api.get(P + "/rulesets/4")
+        detail["bypass_actors"] = [{"actor_id": 9, "actor_type": "User", "bypass_mode": "always"}]
+        self.api.overrides[P + "/rulesets/4"] = detail
+        result = self.api.collect()
+        self.assertEqual(result["collection"]["status"], "completed")
+        self.assertEqual(result["protection"]["ruleDetails"][0]["bypass_actors"], detail["bypass_actors"])
+        self.assertEqual(result["collector"]["principal"], C.REPORT_PRINCIPAL)
+        self.assertNotIn(self.api.token, json.dumps(result))
+
+    def test_every_applicable_ruleset_needs_explicit_current_never(self):
+        rules = self.api.get(P + "/rules/branches/main")
+        self.api.overrides[P + "/rules/branches/main"] = rules + [{**rules[0], "ruleset_id": 5}]
+        detail = {**self.api.get(P + "/rulesets/4"), "id": 5}
+        self.api.overrides[P + "/rulesets/5"] = detail
+        self.assertEqual(self.api.collect()["collection"]["status"], "completed")
+        for value in (None, "always", "pull_requests", "unknown", False):
+            with self.subTest(value=value):
+                detail["current_user_can_bypass"] = value
+                self.assertIn("current_principal_bypass_unverified", self.api.collect()["collection"]["blockers"])
+        detail["current_user_can_bypass"] = "never"; detail["source"] = "other/project"
+        self.assertIn("current_principal_bypass_unverified", self.api.collect()["collection"]["blockers"])
+
+    def test_actor_value_or_credential_change_during_collection_denies(self):
+        initial = self.api.get(P + "/rulesets/4")
+        self.api.overrides[P + "/rulesets/4"] = lambda n: initial if n == 2 else {**initial, "current_user_can_bypass": "always"}
+        self.assertIn("ruleset_details_changed_during_collection", self.api.collect()["collection"]["blockers"])
+        self.setUp(); initial = self.api.get(P + "/rulesets/4")
+        def changed(_):
+            self.api.token = "different-fixture-credential"
+            return initial
+        self.api.overrides[P + "/rulesets/4"] = changed
+        self.assertIn("collector_credential_changed", self.api.collect()["collection"]["blockers"])
+
+    def test_real_client_credential_is_immutable_and_not_reread_from_environment(self):
+        import os
+        from unittest.mock import patch
+        class Response(io.BytesIO):
+            status = 200
+        class Opener:
+            def __init__(self): self.headers = []
+            def open(self, request, timeout):
+                self.headers.append(request.get_header("Authorization"))
+                return Response(b'{"current_user_can_bypass":"never"}')
+        opener = Opener()
+        with patch.dict(os.environ, {"GITHUB_TOKEN": "original-fixture-token"}):
+            client = C.GitHubGet("example/project", os.environ["GITHUB_TOKEN"], opener=opener)
+            os.environ["GITHUB_TOKEN"] = "changed-fixture-token"
+            client.get(P + "/rulesets/4")
+        self.assertEqual(opener.headers, ["Bearer original-fixture-token"])
+        with self.assertRaises(AttributeError): client.token = "replacement"
+        self.assertNotIn("original-fixture-token", json.dumps(client.requests))
+        self.assertNotIn("changed-fixture-token", json.dumps(client.requests))
 
 
 if __name__ == "__main__":

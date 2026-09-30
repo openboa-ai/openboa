@@ -259,8 +259,8 @@
   ],
   "evaluator": {
     "repository": "openboa-ai/.github",
-    "revision": "ad38905cbe5c4113665c8ce38ee4798a1fce5fae",
+    "revision": "e1ec2781ec180c96bcd520a497780bf6b8dc29ca",
     "path": "lib/evaluate-merge-evidence.mjs",
-    "sha256": "0bdea1e2d69f9e67362865113005955f90e3ddee6ef20fdab565faf4a92e68c3"
+    "sha256": "482ea35629a9250bc591bd3ab169ddc163ee14e74b9c630f6e7e09c06ccfba22"
   }
 }

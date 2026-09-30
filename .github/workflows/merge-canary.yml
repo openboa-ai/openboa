@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: openboa-ai/.github
-          ref: ad38905cbe5c4113665c8ce38ee4798a1fce5fae
+          ref: e1ec2781ec180c96bcd520a497780bf6b8dc29ca
           path: .merge-evaluator
           persist-credentials: false
 

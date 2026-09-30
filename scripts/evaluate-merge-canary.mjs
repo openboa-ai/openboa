@@ -126,8 +126,45 @@ export function prepareEvaluation(policy, observation, context, now = Date.now()
   )
   const detailsVerified =
     protection.ruleDetailStatus === "verified" &&
+    protection.ruleDetailRereadStatus === "unchanged" &&
     details.length > 0 &&
-    details.every((entry) => entry.enforcement === "active" && Array.isArray(entry.bypass_actors))
+    details.every(
+      (entry) => entry.enforcement === "active" && entry.current_user_can_bypass === "never",
+    )
+  const applicableRulesets = [
+    ...new Map(
+      rules.map((entry) => [
+        entry.ruleset_id,
+        {
+          id: entry.ruleset_id,
+          sourceType: entry.ruleset_source_type,
+          source: entry.ruleset_source,
+        },
+      ]),
+    ).values(),
+  ]
+  block(
+    rules.every((entry) =>
+      applicableRulesets.some(
+        (rule) =>
+          rule.id === entry.ruleset_id &&
+          rule.sourceType === entry.ruleset_source_type &&
+          rule.source === entry.ruleset_source,
+      ),
+    ),
+    "ruleset-source-conflict",
+  )
+  const principalObservation = (detail, requests) => ({
+    id: detail?.id,
+    sourceType: detail?.source_type,
+    source: detail?.source,
+    enforcement: detail?.enforcement,
+    currentUserCanBypass: detail?.current_user_can_bypass,
+    request:
+      array(requests).filter((entry) => entry.rulesetId === detail?.id).length === 1
+        ? array(requests).find((entry) => entry.rulesetId === detail?.id).request
+        : null,
+  })
   const statusRule = rule("required_status_checks")[0]?.parameters
   const scanTools = rule("code_scanning")[0]?.parameters?.code_scanning_tools
   const checks = array(protection.checkRuns)
@@ -245,6 +282,7 @@ export function prepareEvaluation(policy, observation, context, now = Date.now()
   const snapshot = {
     version: 1,
     collection: {
+      principal: observation.collector?.principal,
       status:
         observation.collection?.status === "failure" ||
         array(observation.collection?.errors).length > 0
@@ -317,7 +355,21 @@ export function prepareEvaluation(policy, observation, context, now = Date.now()
       enforcement: detailsVerified ? "active" : "unavailable",
       requirePullRequest: rule("pull_request").length === 1,
       strictRequiredChecks: statusRule?.strict_required_status_checks_policy,
-      bypassActors: detailsVerified ? details.flatMap((entry) => entry.bypass_actors) : null,
+      applicableRulesets,
+      currentPrincipalBypass: {
+        status: detailsVerified ? "verified" : "unavailable",
+        principal: observation.collector?.principal,
+        rulesets: details.map((detail) => ({
+          initial: principalObservation(detail, protection.ruleDetailRequests),
+          final: principalObservation(
+            array(protection.ruleDetailsAfter).filter((entry) => entry.id === detail.id).length ===
+              1
+              ? array(protection.ruleDetailsAfter).find((entry) => entry.id === detail.id)
+              : null,
+            protection.ruleDetailRequestsAfter,
+          ),
+        })),
+      },
       requiredChecks: array(statusRule?.required_status_checks).map((check) => ({
         context: check.context,
         appId: check.integration_id,

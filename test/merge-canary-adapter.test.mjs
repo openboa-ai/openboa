@@ -17,6 +17,7 @@ const { evaluateMergeEvidence } = await import(
   pathToFileURL(resolve(process.env.MERGE_EVALUATOR_MODULE)).href
 )
 const digest = (value, algorithm = "sha256") => createHash(algorithm).update(value).digest("hex")
+const principal = { kind: "current-request-credential", scope: "report-only-collector" }
 const now = 1800000000000
 test("trusted control reads bind regular file bytes and reject substituted local objects", () => {
   const root = mkdtempSync(resolve(tmpdir(), "merge-control-"))
@@ -80,6 +81,7 @@ function fixture() {
     schemaVersion: 1,
     collector: {
       revision: base,
+      principal: structuredClone(principal),
       policyFileDigest: context.policyFileDigest,
       finishedAt: new Date(now).toISOString(),
     },
@@ -131,14 +133,44 @@ function fixture() {
     },
     protection: {
       ruleDetailStatus: "verified",
-      ruleDetails: [{ id: 1, enforcement: "active", bypass_actors: [] }],
-      rules: policy.expectedRuleTypes.map((type) => ({ type, ruleset_id: 1 })),
+      ruleDetailRereadStatus: "unchanged",
+      ruleDetails: [
+        {
+          id: 1,
+          enforcement: "active",
+          source_type: "Repository",
+          source: "openboa-ai/openboa",
+          current_user_can_bypass: "never",
+        },
+      ],
+      rules: policy.expectedRuleTypes.map((type) => ({
+        type,
+        ruleset_id: 1,
+        ruleset_source_type: "Repository",
+        ruleset_source: "openboa-ai/openboa",
+      })),
       checkRuns: [],
     },
     workflows: [],
     rawSarif: [],
     artifactInventories: [],
   }
+  observation.protection.ruleDetailsAfter = structuredClone(observation.protection.ruleDetails)
+  observation.protection.ruleDetailRequests = [
+    {
+      rulesetId: 1,
+      request: {
+        method: "GET",
+        route: "/repos/openboa-ai/openboa/rulesets/1",
+        status: 200,
+        bodyDigest: digest("actual synthetic ruleset response"),
+        principal: structuredClone(principal),
+      },
+    },
+  ]
+  observation.protection.ruleDetailRequestsAfter = structuredClone(
+    observation.protection.ruleDetailRequests,
+  )
   observation.protection.rules.find((r) => r.type === "required_status_checks").parameters = {
     strict_required_status_checks_policy: true,
     required_status_checks: policy.evaluation.requiredChecks.map((c) => ({
@@ -331,7 +363,7 @@ test("each missing proof, forged identity and changed control blocks through the
       f.observation.protection.ruleDetailStatus = "unavailable"
     },
     (f) => {
-      f.observation.protection.ruleDetails[0].bypass_actors = [{ actor_id: 7 }]
+      f.observation.protection.ruleDetails[0].current_user_can_bypass = "always"
     },
     (f) => {
       f.observation.protection.checkRuns[0].app.id = 7
@@ -373,6 +405,57 @@ test("each missing proof, forged identity and changed control blocks through the
     assert.equal(evaluate(f).result.eligible, false, mutate.toString())
   }
 })
+test("current credential proof covers every ruleset without inventing global bypass actors", () => {
+  const f = fixture()
+  for (const detail of [
+    f.observation.protection.ruleDetails[0],
+    f.observation.protection.ruleDetailsAfter[0],
+  ])
+    detail.bypass_actors = [{ actor_id: 7, actor_type: "Team", bypass_mode: "always" }]
+  assert.equal(evaluate(f).result.eligible, true)
+  const { snapshot } = prepareEvaluation(f.policy, f.observation, f.context, now + 1)
+  assert.equal("bypassActors" in snapshot.rules, false)
+  assert.deepEqual(snapshot.collection.principal, principal)
+  const mutations = [
+    (f) => {
+      delete f.observation.collector.principal
+    },
+    (f) => {
+      f.observation.collector.principal.scope = "future-merge-token"
+    },
+    (f) => {
+      f.observation.protection.ruleDetailsAfter[0].current_user_can_bypass = "unknown"
+    },
+    (f) => {
+      f.observation.protection.ruleDetailRequestsAfter[0].request.bodyDigest = "0".repeat(64)
+    },
+    (f) => {
+      f.observation.protection.ruleDetailRequests[0].request.principal.scope = "another-token"
+    },
+    (f) => {
+      f.observation.protection.ruleDetailRequests[0].request.status = 403
+    },
+    (f) => {
+      f.observation.protection.ruleDetailRequestsAfter = []
+    },
+    (f) => {
+      f.observation.protection.ruleDetails.push(
+        structuredClone(f.observation.protection.ruleDetails[0]),
+      )
+    },
+    (f) => {
+      f.observation.protection.rules[0].ruleset_id = 2
+    },
+    (f) => {
+      f.observation.protection.rules[0].ruleset_source = "another/repository"
+    },
+  ]
+  for (const mutate of mutations) {
+    const changed = fixture()
+    mutate(changed)
+    assert.equal(evaluate(changed).result.eligible, false, mutate.toString())
+  }
+})
 test("infrastructure changes remain ineligible even with passing run conclusions", () => {
   const f = fixture()
   f.observation.files.treeChangedPaths = [".github/workflows/ci.yml"]
@@ -405,7 +488,7 @@ test("collector infrastructure failure takes precedence over additional missing-
 function assertReporterBoundary(workflow, policy, evaluatorBytes) {
   // Pin the reviewed source, so alternative YAML spellings cannot escape these
   // readable assertions. This is a regression tripwire, not a malicious-YAML parser.
-  assert.equal(digest(workflow), "bc12d3609a71931ab0a1b0c38c88508b46da78e9562bf9019909a38724fea297")
+  assert.equal(digest(workflow), "e214d66f85d6139123b238cb931900027f3b864755aaf12baccaa65b25d7c880")
   // Flow-style steps/jobs and YAML aliases are outside this reviewed block-style contract.
   assert.doesNotMatch(
     workflow,

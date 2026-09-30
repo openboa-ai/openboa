@@ -52,6 +52,23 @@ diff/tree, exact workflow IDs, run attempts, jobs, steps, protection rules and
 artifacts must be collected and reconciled. Missing, stale, conflicting,
 unreadable or over-budget observations deny eligibility.
 
+When a successful first-attempt job's list response has incomplete policy-required
+steps, the collector makes one direct job GET. It accepts the complete replacement
+only after reconciling job ID, run, attempt, head, name, start/end times and terminal
+outcome. Existing terminal step contradictions or duplicate identities deny;
+fragments are never combined. List and direct request digests are retained.
+This single bounded refresh is the eventual-consistency retry. If it is still
+incomplete, eligibility remains blocked. Unfinished post-cleanup steps outside
+the required policy do not cause a refresh or weaken required-step checks.
+
+Every applicable active ruleset must explicitly report
+`current_user_can_bypass: never` in unchanged initial and final authenticated GETs.
+The same collector client retains the same credential throughout. This proves
+only the current report-only request credential's bypass status; it does not
+assert that the global bypass actor list is empty, and no token value or fingerprint
+is recorded. Any future writer must recollect with its actual action credential;
+this report cannot be transferred to a different token or authorize a merge.
+
 CI scope and PR convention upload an inline source receipt before executing
 repository code. Each CodeQL language job also records its actual checkout,
 parents, workflow source digest and tracked source-file inventory before
