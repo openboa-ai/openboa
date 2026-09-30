@@ -24,7 +24,7 @@ The current shipping wedge is explicitly **chat-first** and the current default 
 - `Work` and `Observe` are not yet shipped as primary UI surfaces
 - control plane remains secondary and should never replace Chat, Work, or Observe
 
-Primary operating and architecture docs:
+Primary operating and architecture documentation:
 - [`docs/harness.md`](./docs/harness.md)
 - [`docs/PRODUCT.md`](./docs/PRODUCT.md)
 - [`docs/DESIGN.md`](./docs/DESIGN.md)
