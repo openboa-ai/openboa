@@ -1,10 +1,16 @@
 import assert from "node:assert/strict"
+import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
-import { readFileSync } from "node:fs"
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
 import { resolve } from "node:path"
 import test from "node:test"
 import { pathToFileURL } from "node:url"
-import { evaluateCanary, prepareEvaluation } from "../scripts/evaluate-merge-canary.mjs"
+import {
+  evaluateCanary,
+  prepareEvaluation,
+  trustedContext,
+} from "../scripts/evaluate-merge-canary.mjs"
 
 // All observations below are synthetic. This proves a contract, not a live PR's eligibility.
 const { evaluateMergeEvidence } = await import(
@@ -12,6 +18,45 @@ const { evaluateMergeEvidence } = await import(
 )
 const digest = (value, algorithm = "sha256") => createHash(algorithm).update(value).digest("hex")
 const now = 1800000000000
+test("trusted control reads bind regular file bytes and reject substituted local objects", () => {
+  const root = mkdtempSync(resolve(tmpdir(), "merge-control-"))
+  const git = (...args) => execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim()
+  const target = resolve(root, "control.json")
+  const bytes = Buffer.from('{"trusted":true}\n')
+  try {
+    git("init", "--quiet")
+    writeFileSync(target, bytes)
+    git("add", "control.json")
+    git(
+      "-c",
+      "user.name=Boundary Test",
+      "-c",
+      "user.email=boundary@example.invalid",
+      "commit",
+      "--quiet",
+      "-m",
+      "fixture",
+    )
+    const revision = git("rev-parse", "HEAD")
+    const read = () => trustedContext({ controlPaths: ["control.json"] }, bytes, root, revision)
+    assert.equal(read().controls[0].sha256, digest(bytes))
+    writeFileSync(target, Buffer.from('{"trusted":false}\n'))
+    assert.throws(read, /modified-controller-control/)
+    rmSync(target)
+    const alternate = resolve(root, "same-bytes.json")
+    writeFileSync(alternate, bytes)
+    symlinkSync(alternate, target)
+    assert.throws(read, /ELOOP/)
+    rmSync(target)
+    mkdirSync(target)
+    assert.throws(read, /nonregular-control/)
+    rmSync(target, { recursive: true })
+    execFileSync("mkfifo", [target])
+    assert.throws(read, /nonregular-control/)
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+  }
+})
 function fixture() {
   const policy = JSON.parse(
     readFileSync(new URL("../.github/merge-canary-policy.json", import.meta.url)),

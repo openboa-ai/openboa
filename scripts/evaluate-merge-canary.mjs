@@ -1,6 +1,15 @@
 import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
-import { appendFileSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import {
+  appendFileSync,
+  closeSync,
+  constants,
+  fstatSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 
@@ -22,9 +31,19 @@ export function trustedContext(policy, policyBytes, root, revision) {
       throw new Error("invalid-control-path")
     }
     const target = resolve(root, path)
-    if (!lstatSync(target).isFile() || lstatSync(target).isSymbolicLink())
-      throw new Error("nonregular-control")
-    const bytes = readFileSync(target)
+    // Inspect and read the same opened object. NOFOLLOW rejects a final symlink;
+    // NONBLOCK prevents an unexpected FIFO from blocking before fstat rejects it.
+    const descriptor = openSync(
+      target,
+      constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+    )
+    let bytes
+    try {
+      if (!fstatSync(descriptor).isFile()) throw new Error("nonregular-control")
+      bytes = readFileSync(descriptor)
+    } finally {
+      closeSync(descriptor)
+    }
     const blob = hash(Buffer.concat([Buffer.from(`blob ${bytes.length}\0`), bytes]), "sha1")
     const committed = execFileSync("git", ["rev-parse", `${revision}:${path}`], {
       cwd: root,
