@@ -64,7 +64,9 @@
     ".github/readme-writer-policy.json",
     ".github/workflows/readme-writer-pilot.yml",
     "scripts/readme-writer-pilot.py",
-    "scripts/validate-postmerge-sarif.py"
+    "scripts/validate-postmerge-sarif.py",
+    ".github/workflows/postmerge-verification.yml",
+    "scripts/dispatch-postmerge-verification.py"
   ],
   "evaluation": {
     "version": 1,

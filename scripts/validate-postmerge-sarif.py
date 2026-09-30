@@ -87,7 +87,7 @@ def validate(directory, expected):
     for key in ("repository_id", "run_id", "attempt"):
         require(type(expected[key]) is int and expected[key] > 0, "invalid-expected-id")
     require(re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", expected["repository"]), "invalid-repository")
-    require(expected["event"] in ("workflow_run", "workflow_dispatch"), "unsupported-postmerge-event")
+    require(expected["event"] == "workflow_dispatch", "unsupported-postmerge-event")
     require(expected["workflow_ref"].startswith(expected["repository"] + "/.github/workflows/")
             and expected["workflow_ref"].endswith("@refs/heads/main"), "invalid-caller-workflow-ref")
     root = Path(expected["source_root"])

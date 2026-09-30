@@ -92,85 +92,115 @@ audit or proof that vulnerabilities cannot exist.
 
 ## Reusable validation
 
-CI, dependency audit and CodeQL accept a full immutable source SHA. CI's explicit
-`full_scope` mode runs the real docs, code, dependency, secret, policy and native
-packaging lanes. Its aggregate still rejects missing, skipped or failed required
-lanes. CodeQL's explicit analysis ref/SHA pair prevents a future caller's event
-context from accidentally labeling a different source revision.
+CI, dependency audit and CodeQL check out the immutable server event SHA
+(`github.sha`). Reusable callers cannot select a different source revision.
+CI's explicit `full_scope` runs the real docs, code, dependency, secret, policy
+and native packaging lanes. Its aggregate rejects missing, skipped or failed
+required lanes. Checkout credentials are not persisted. The dependency audit
+uses a frozen install without lifecycle scripts and no dependency cache.
 
-Local reusable workflow definitions come from the caller's workflow commit,
-while checkouts use the requested source SHA. A future merge controller must
-verify that control closure and pass the actual returned merge commit. No such
-merge or post-merge continuation is performed by this report-only controller.
-In particular, a `GITHUB_TOKEN` merge must not rely on an ordinary push workflow
-being triggered. The callable CodeQL ref input is syntax-checked, not an API
-proof that a branch points to the requested commit. A future upload-enabled
-caller must establish that relationship before calling it.
-
-The path-filtered `reusable-validation` workflow deliberately runs an additional
-full CI/native build and three genuine CodeQL analyses when reusable plumbing
-changes. Its separate workflow name isolates cancellation from ordinary CI.
-Its CodeQL analyses use a distinct category and disable upload, preserving the
-normal authoritative analyses. They still must produce valid SARIF. The harness checks basic output structure;
-the collector and evaluator enforce the full provenance, invocation, findings
-and coverage-related evidence contract. This adds
-runner time on infrastructure changes and makes the prospective call contract
-observable. It is not evidence that a post-merge run occurred.
+The path-filtered `reusable-validation` workflow runs an additional full CI/native
+build and three genuine CodeQL analyses when reusable plumbing changes. Both
+calls retain the PR event's merge SHA. CodeQL's positive `isolated_analysis: true`
+flag selects a distinct category and disables upload; an absent input on normal
+push, PR, schedule or manual runs preserves production categories and uploads.
+The harness still validates actual SARIF structure. The collector/evaluator
+and strict postmerge validator enforce their additional evidence contracts.
+No passing result is fabricated for a skipped scan.
 
 ## Default-OFF README writer proposal
 
-`readme-writer-pilot.yml` is a separate, inactive event-driven writer proposal.
-The tracked pilot policy has `enabled: false`; the writer job additionally requires
-`OPENBOA_README_WRITER_ENABLED == true`. This change creates neither that variable
-nor a live permission grant. Its new trigger warning is deliberately unsuppressed;
-the earlier read-only exception does not apply to this workflow. Landing, any
-exception, enabling the policy/variable, and actually merging require separate
-approval. The read-only reporter remains independent.
+`readme-writer-pilot.yml` polls only the trusted default branch every 15 minutes
+at minutes 7, 22, 37 and 52, with an input-free manual trigger for owner recovery.
+Scheduling can be delayed by GitHub. This deliberately removes the privileged
+PR-completion listener; it does not suppress its former scanner findings.
+The existing read-only reporter and its separately approved exception are unchanged.
 
-The only durable target is PR68 and the exact regular README blob transition
+The variable `OPENBOA_README_WRITER_ENABLED == true` is required before even the
+read-only preparation job checks out code. The tracked policy additionally has
+`enabled: false`. Both gates remain OFF; this patch creates no variable and
+activates no writer. Scheduled runs can therefore exist with all jobs skipped.
+Landing this correction does not authorize activation or merging the canary.
+
+The only durable merge target is PR68 and the exact regular README blob transition
 `1f91d44dbd4482ec7f4c63816871c749dd3620ac` to
 `69e48877815a57cb5acbf5497663381010a3b3db` (`docs` to `documentation`). Every other
 file must remain unchanged. The controller derives fresh base/head SHAs from the
-API and requires the base to equal its trusted default workflow revision; it never
-pins a stale approval to a later head. It collects all evidence itself using the
-same captured token later used for one normal expected-head squash merge request.
-The unchanged evaluator's report-only result supplies evidence, not authority.
-No uploaded/cached report authorizes this writer.
+API and requires the base to equal its trusted default workflow revision. It
+collects all evidence using the same captured token later used for one ordinary
+expected-head squash merge. The collector's fixed-pilot mode records the actual
+schedule/manual event and selects PR68 through the API, never a fabricated
+`workflow_run` event. All run/source, rules/current-principal, strict-base, raw
+scanner and freshness checks remain mandatory. A prior report is never authority.
 
 Up to three independent collections can wait for the observed completed-success
-job-step metadata lag. Each wait is at most 240 seconds and shortens to retain
-120 seconds for the next collection plus a 60-second merge/reconciliation reserve;
-less than 30 seconds of available delay denies. They share a 600-second, 300-request
-and 75-MiB compressed/JSON byte ceiling; each collection phase retains a 120-second
-and 100-request cap. No records are combined, no producer is rerun, and negative,
-changed or still-unavailable evidence denies. All non-step facts, artifact/raw
-digests and already-terminal steps remain bound across collections; later success
-cannot erase an earlier negative. Each original observation/report is retained.
-These bounds do not guarantee API convergence. The sole PUT is never retried, even after an ambiguous response.
-Read-only reconciliation verifies the actual merged SHA, its parent and exact tree;
-an unresolved outcome is `merge-unknown`, never a success receipt.
+job-step metadata lag. Each wait is at most 240 seconds and shortens to reserve
+120 seconds for collection plus 60 seconds for merge/reconciliation; less than
+30 seconds of available delay denies. They share a 600-second, 300-request and
+75-MiB compressed/JSON ceiling; each phase retains 120-second and 100-request caps.
+No records are combined, no producer is rerun, and negative or changed evidence
+denies. All non-step facts, artifact/raw digests and terminal steps stay bound
+across collections. These bounds do not guarantee API convergence.
 
-GitHub's expected SHA guards the PR head, not the base atomically. The writer relies
-on unchanged strict server protection, immediate base/rules rereads and owner
-stability; it cannot promise an atomic expected-base operation that the API lacks.
-The policy and own workflow active state are reread before PUT. The variable is a
-job-start gate, not an instantaneous in-flight kill switch. Disabling the workflow
-or cancelling a run cannot recall an already transmitted merge request. An operator
-must reconcile a crash between the request and persisted outcome read-only.
+The sole merge PUT is never retried, even after an ambiguous response. Read-only
+reconciliation verifies the actual merged SHA, its parent and exact tree;
+an unresolved outcome remains `merge-unknown`. GitHub's expected SHA guards the
+PR head, not the base atomically. Unchanged strict server protection, immediate
+rereads and trusted-owner policy stability remain necessary assumptions. This
+Free design does not enforce policy against a malicious same-repo writer.
+The variable is a job-start gate, not an instantaneous in-flight kill switch.
+Disabling/cancelling cannot recall a transmitted request. An operator must
+reconcile a crash between the request and persisted outcome read-only.
 
-The full workflow is serialized with cancellation disabled. GitHub's default queue
-still replaces a pending run with a newer wake-up; this is not a lossless queue.
-The current pinned actionlint rejects the new `queue: max` syntax, so this draft
-retains the existing syntax and documents operator recovery: after separate
-activation approval, a missed wake-up requires an explicitly authorized rerun
-that recollects fresh evidence. No rerun or activation happens in this proposal.
-A verified returned
-merge SHA drives actual reusable full CI and all three CodeQL languages, without
-`actions: write`, dispatch or deployment. Strict raw gates require zero results,
-successful invocations, no warning/error notifications, exact source receipt/caller
-bindings and nonempty tracked-language extraction. They do not attest complete
-source coverage. Caller workflow/event identity remains truthful, distinct from
-the merged checkout SHA; no standalone push/native Code Quality run is fabricated.
-An always-running aggregate reports merged-but-validation-failed on any failed,
-skipped or unavailable continuation. It does not revert automatically. Manual run
-cancellation can still interrupt continuation and requires operator follow-through.
+## Separate postmerge verification
+
+After a confirmed merge, an isolated trusted dispatcher receives that SHA. Only
+this job proposes `contents: read` and `actions: write`; the merge job retains
+`contents: write` and its existing read permissions. Actions write is a
+repository-wide workflow-control capability, even though this code sends exactly
+one fixed dispatch endpoint, workflow filename and `main` ref. The owner approved
+this additional capability; it is never passed to test or scanner runners.
+
+The dispatcher confirms the returned merge commit's parent is its own trusted
+controller SHA and main still points to it. It then calls the fixed
+`postmerge-verification.yml` using API version `2026-03-10`, which returns an
+explicit run ID and URLs. It validates that response and never retries the POST.
+A missing or ambiguous response is unconfirmed, not a reason to create another
+run. Logs retain bounded response digests and run identity, never credentials.
+
+Before any checkout or reusable job, the target requires its actual server event,
+workflow SHA and expected commit to agree on `refs/heads/main` in this repository.
+The supplied expected SHA is a comparison value; it cannot choose code to run.
+If main races before dispatch resolves, the target fails before execution.
+If the event already captured the confirmed SHA and main later advances, testing
+the captured SHA remains valid; the report does not claim it is still latest main.
+An authorized standalone manual verification reports only that it verified the
+specified main commit. It does not claim a writer merge occurred.
+
+Separate full CI and all three CodeQL languages run with their existing read
+permissions and the existing scanner-only `security-events: write`; no secrets,
+merge token, Actions write or deployment capability is inherited. Strict raw
+gates require zero results, successful invocations, no warning/error notices,
+exact same-job source receipts and nonempty tracked-language extraction. They do
+not prove complete coverage. Failed strict gates retain prepared raw artifacts
+and still fail the final always-running aggregate.
+
+The dispatcher observes only its returned run ID: exact repository, workflow,
+event, main branch, commit and first attempt remain bound. Success additionally
+requires all 14 known verification jobs to succeed, including the source guard,
+full CI aggregate, three language lanes and final aggregate. Completed-success
+job-list metadata can receive two 15-second read-only refreshes; terminal
+contradictions never become success. A run is polled at most 101 times, 30 seconds
+apart, under 150-request, 3100-second and 10-MiB JSON bounds. Failure, cancellation,
+missing proof or timeout remains unconfirmed. There is no rerun or blanket retry.
+
+The writer workflow serializes merge, dispatch and observation without cancelling
+an active run. Scheduled pending runs may coalesce; the next scheduled poll
+recollects fresh evidence. A confirmed merge with failed verification is reported
+as merged-but-validation-failed, never unmerged or green. No automatic revert is
+performed. Recovery is a separately authorized owner investigation or exact-main
+read-only verification; no permission escalation, exception or alert dismissal
+is built in.
+
+Official semantics: [workflow dispatch API](https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event),
+[workflow events and schedule](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows).

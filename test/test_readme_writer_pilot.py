@@ -10,7 +10,6 @@ import subprocess
 import sys
 import tempfile
 import unittest
-import urllib.error
 from pathlib import Path
 from unittest.mock import patch
 
@@ -19,14 +18,14 @@ spec = importlib.util.spec_from_file_location("writer", ROOT / "scripts/readme-w
 w = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(w)
 B, H, S, BT, HT, PB = (c * 40 for c in "abcdef")
-EVENT = {"workflow_run": {"event": "pull_request"}}
+EVENT = {"repository": {"id": 1214829403}}
 
 
 def fixture():
     pilot = {**w.EXPECTED, "enabled": True}
     data = json.dumps(pilot).encode()
     policy_blob = __import__("hashlib").sha1(f"blob {len(data)}\0".encode() + data).hexdigest()
-    context = {"GITHUB_REPOSITORY": "openboa-ai/openboa", "GITHUB_EVENT_NAME": "workflow_run",
+    context = {"GITHUB_REPOSITORY": "openboa-ai/openboa", "GITHUB_EVENT_NAME": "schedule", "GITHUB_REF": "refs/heads/main",
                "GITHUB_WORKFLOW_SHA": B, "GITHUB_SHA": B, "WRITER_ENABLED": "true"}
     detail = {"id": 1, "current_user_can_bypass": "never"}
     rules = [{"type": "required_status_checks", "ruleset_id": 1}]
@@ -153,25 +152,23 @@ class WriterTests(unittest.TestCase):
     def test_workflow_default_off_and_confirmed_merge_continuation_contract(self):
         workflow = (ROOT / w.WORKFLOW).read_text()
         self.assertIn("if: needs.prepare.outputs.enabled == 'true' && vars.OPENBOA_README_WRITER_ENABLED == 'true'", workflow)
+        self.assertIn("if: github.ref == 'refs/heads/main' && vars.OPENBOA_README_WRITER_ENABLED == 'true'", workflow)
         self.assertIn("cancel-in-progress: false", workflow)
-        self.assertIn("CodeQL - Code Quality", workflow)
-        self.assertIn("github.event.workflow_run.event == 'dynamic'", workflow)
+        self.assertIn('cron: "7,22,37,52 * * * *"', workflow)
+        self.assertNotIn("workflow_run:", workflow)
         self.assertNotIn("zizmor: ignore", workflow)
         self.assertEqual(workflow.count("contents: write"), 1)
-        self.assertNotIn("actions: write", workflow)
-        self.assertIn("full_scope: true", workflow)
-        self.assertIn("strict_postmerge: true", workflow)
-        self.assertEqual(workflow.count("if: always() && needs.writer.outputs.outcome == 'merged' && needs.writer.outputs.merge_sha != ''"), 2)
-        # The explicit always() applies even if a persistence step failed AFTER
-        # the writer emitted a verified merged SHA. No skip can make final green.
-        self.assertIn('"$WRITER_RESULT" != success || "$CI_RESULT" != success || "$CODEQL_RESULT" != success', workflow)
+        self.assertEqual(workflow.count("actions: write"), 1)
+        self.assertNotIn("uses: ./.github/workflows/ci.yml", workflow)
+        self.assertNotIn("uses: ./.github/workflows/codeql.yml", workflow)
+        self.assertIn("if: always() && needs.writer.outputs.outcome == 'merged' && needs.writer.outputs.merge_sha != ''", workflow)
         shell = workflow.split("      - name: Require actual continuation success", 1)[1].split("        run: |\n", 1)[1]
         shell = "\n".join(line[10:] for line in shell.splitlines())
         with tempfile.NamedTemporaryFile() as summary:
-            for failure in [None, "WRITER_RESULT", "CI_RESULT", "CODEQL_RESULT"]:
+            for failure in [None, "WRITER_RESULT", "VERIFICATION_RESULT"]:
                 for result in (["success"] if failure is None else ["failure", "cancelled", "skipped", ""]):
                     env = {**os.environ, "GITHUB_STEP_SUMMARY": summary.name, "MERGE_SHA": S,
-                           "WRITER_RESULT": "success", "CI_RESULT": "success", "CODEQL_RESULT": "success"}
+                           "WRITER_RESULT": "success", "VERIFICATION_RESULT": "success"}
                     if failure:
                         env[failure] = result
                     status = subprocess.run(["bash", "-e", "-c", shell], env=env, capture_output=True)
@@ -245,7 +242,7 @@ class WriterTests(unittest.TestCase):
                 self.assertEqual(api.merges, [])
         pilot, data, context, responses, observation = fixture()
         api = FakeAPI(responses)
-        def collect(*args):
+        def collect(*args, **kwargs):
             api.token = "different-credential"
             return observation
         with patch.object(w.collector, "collect", side_effect=collect), self.assertRaisesRegex(w.collector.EvidenceError, "credential_changed"):
@@ -362,7 +359,7 @@ class WriterTests(unittest.TestCase):
         pilot, data, context, responses, _ = fixture()
         api = FakeAPI(responses)
         with self.assertRaisesRegex(w.collector.EvidenceError, "writer_context_invalid"):
-            w.run_pilot(pilot, data, {}, b"{}", {"workflow_run": {"event": "workflow_run"}}, context, api, lambda _: {}, True)
+            w.run_pilot(pilot, data, {}, b"{}", EVENT, {**context, "GITHUB_EVENT_NAME": "workflow_run"}, api, lambda _: {}, True)
         self.assertEqual(api.requests + api.merges, [])
 
     def test_unavailable_reconciliation_persists_unknown_without_success_output(self):
@@ -418,7 +415,7 @@ class WriterTests(unittest.TestCase):
         pilot, data, context, responses, observation = fixture()
         api = FakeAPI(responses)
         calls = []
-        def collect(*args):
+        def collect(*args, **kwargs):
             api.now += 30
             return copy.deepcopy(observation)
         def evaluate(o):

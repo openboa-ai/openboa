@@ -314,14 +314,14 @@ def run_pilot(pilot, pilot_bytes, evidence_policy, evidence_bytes, event, contex
     if not pilot["enabled"] or context.get("WRITER_ENABLED") != "true":
         return {"outcome": "disabled", "mergeAttempted": False}
     require(context.get("GITHUB_REPOSITORY") == EXPECTED["repository"]
-            and context.get("GITHUB_EVENT_NAME") == "workflow_run"
-            and event.get("workflow_run", {}).get("event") in ("pull_request", "dynamic"), "writer_context_invalid")
+            and context.get("GITHUB_EVENT_NAME") in ("schedule", "workflow_dispatch")
+            and context.get("GITHUB_REF") == "refs/heads/main", "writer_context_invalid")
     credential = api.token
     previous = None
     for attempt in range(3):
         api.begin_phase()
         scope = current_scope(api, pilot, context, pilot_bytes)
-        observation = collector.collect(evidence_policy, event, context, api)
+        observation = collector.collect(evidence_policy, event, context, api, pilot_number=68)
         observation["collector"]["policyFileDigest"] = collector.digest(evidence_bytes)
         require(api.token == credential, "writer_credential_changed")
         require(observation.get("pullRequest", {}).get("number") == 68

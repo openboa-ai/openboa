@@ -427,7 +427,7 @@ def validate_policy(policy):
             raise EvidenceError("invalid_policy_budget")
 
 
-def collect(policy, event, context, api):
+def collect(policy, event, context, api, pilot_number=None):
     """Return observations even when incomplete; no eligibility is invented here."""
     result = {"schemaVersion": 1, "collector": {"mode": "report-only", "startedAt": timestamp(),
                                                 "principal": dict(REPORT_PRINCIPAL)},
@@ -447,10 +447,20 @@ def collect(policy, event, context, api):
         repo = policy["repository"]
         prefix = "/repos/" + repo["fullName"]
         result["repository"] = dict(repo)
-        if (context.get("GITHUB_EVENT_NAME") != "workflow_run"
-                or context.get("GITHUB_REPOSITORY") != repo["fullName"]
-                or event.get("action") != "completed"
+        polling = pilot_number is not None
+        if (context.get("GITHUB_REPOSITORY") != repo["fullName"]
                 or event.get("repository", {}).get("id") != repo["id"]):
+            raise EvidenceError("controller_event_identity_mismatch")
+        if polling:
+            # This is an explicit, fixed pilot selection, not a synthetic webhook.
+            if (type(pilot_number) is not int or pilot_number != 68
+                    or repo["fullName"] != "openboa-ai/openboa" or repo["id"] != 1214829403
+                    or context.get("GITHUB_EVENT_NAME") not in ("schedule", "workflow_dispatch")
+                    or context.get("GITHUB_REF") != "refs/heads/main"):
+                raise EvidenceError("pilot_selection_context_invalid")
+            result["collector"]["selection"] = {"kind": "fixed-pilot", "number": 68,
+                                                "event": context["GITHUB_EVENT_NAME"]}
+        elif context.get("GITHUB_EVENT_NAME") != "workflow_run" or event.get("action") != "completed":
             raise EvidenceError("controller_event_identity_mismatch")
         # The repository root route is deliberately avoided: the ref/PR/run responses
         # independently bind repository IDs and the policy fixes the API namespace.
@@ -461,42 +471,50 @@ def collect(policy, event, context, api):
         result["collector"]["policyDigest"] = digest(json.dumps(policy, sort_keys=True).encode())
         if context.get("GITHUB_SHA") != main or context.get("GITHUB_WORKFLOW_SHA") != main:
             block("controller_revision_is_not_current_main")
-        trigger_id = event.get("workflow_run", {}).get("id")
-        if not positive_int(trigger_id):
-            raise EvidenceError("invalid_trigger_run_id")
-        trigger = api.get(prefix + f"/actions/runs/{trigger_id}")
         specs = {entry["id"]: entry for entry in policy["workflows"]}
-        trigger_spec = specs.get(trigger.get("workflow_id"))
-        if (trigger.get("id") != trigger_id or trigger.get("repository", {}).get("id") != repo["id"]
-                or trigger_spec is None or trigger.get("path") != trigger_spec["path"]
-                or trigger.get("event") != trigger_spec["event"]):
-            raise EvidenceError("trigger_run_identity_mismatch")
-        observed_repository = trigger.get("repository", {})
+        trigger = None
+        if polling:
+            number = pilot_number
+            pull = api.get(prefix + "/pulls/68")
+            associations = [{"id": pull.get("id"), "number": number}]
+            observed_repository = pull.get("base", {}).get("repo", {})
+        else:
+            trigger_id = event.get("workflow_run", {}).get("id")
+            if not positive_int(trigger_id):
+                raise EvidenceError("invalid_trigger_run_id")
+            trigger = api.get(prefix + f"/actions/runs/{trigger_id}")
+            trigger_spec = specs.get(trigger.get("workflow_id"))
+            if (trigger.get("id") != trigger_id or trigger.get("repository", {}).get("id") != repo["id"]
+                    or trigger_spec is None or trigger.get("path") != trigger_spec["path"]
+                    or trigger.get("event") != trigger_spec["event"]):
+                raise EvidenceError("trigger_run_identity_mismatch")
+            associations = trigger.get("pull_requests")
+            if trigger_spec.get("role") == "platform-code-quality" and not associations:
+                trigger_head = trigger.get("head_sha", "")
+                if not SHA.fullmatch(trigger_head):
+                    raise EvidenceError("invalid_platform_trigger_head")
+                associated, _ = paginated(api, prefix + f"/commits/{trigger_head}/pulls", limit=100, pages=limits["pages"])
+                associations = [p for p in associated if p.get("state") == "open"
+                                and p.get("head", {}).get("sha") == trigger_head
+                                and p.get("head", {}).get("repo", {}).get("id") == repo["id"]
+                                and p.get("base", {}).get("repo", {}).get("id") == repo["id"]
+                                and p.get("base", {}).get("ref") == "main"]
+            if not isinstance(associations, list) or len(associations) != 1:
+                raise EvidenceError("unique_pr_association_unavailable")
+            number = associations[0].get("number")
+            if not positive_int(number):
+                raise EvidenceError("invalid_pr_number")
+            pull = api.get(prefix + f"/pulls/{number}")
+            observed_repository = trigger.get("repository", {})
         private = observed_repository.get("private")
         result["repository"]["visibility"] = ("private" if private else "public") if isinstance(private, bool) else None
         result["repository"]["private"] = private
         if not isinstance(private, bool):
             block("repository_visibility_unavailable")
-        associations = trigger.get("pull_requests")
-        if trigger_spec.get("role") == "platform-code-quality" and not associations:
-            trigger_head = trigger.get("head_sha", "")
-            if not SHA.fullmatch(trigger_head):
-                raise EvidenceError("invalid_platform_trigger_head")
-            associated, _ = paginated(api, prefix + f"/commits/{trigger_head}/pulls", limit=100, pages=limits["pages"])
-            associations = [p for p in associated if p.get("state") == "open"
-                            and p.get("head", {}).get("sha") == trigger_head
-                            and p.get("head", {}).get("repo", {}).get("id") == repo["id"]
-                            and p.get("base", {}).get("repo", {}).get("id") == repo["id"]
-                            and p.get("base", {}).get("ref") == "main"]
-        if not isinstance(associations, list) or len(associations) != 1:
-            raise EvidenceError("unique_pr_association_unavailable")
-        number = associations[0].get("number")
-        if not positive_int(number):
-            raise EvidenceError("invalid_pr_number")
-        pull = api.get(prefix + f"/pulls/{number}")
         head = pull.get("head", {}).get("sha")
         base = pull.get("base", {})
-        if (pull.get("number") != number or pull.get("id") != associations[0].get("id")
+        if (pull.get("number") != number or not positive_int(pull.get("id"))
+                or pull.get("id") != associations[0].get("id")
                 or base.get("repo", {}).get("id") != repo["id"]
                 or pull.get("head", {}).get("repo", {}).get("id") != repo["id"]
                 or not isinstance(head, str) or not SHA.fullmatch(head)):
@@ -509,7 +527,7 @@ def collect(policy, event, context, api):
                                  "mergeable": pull.get("mergeable"), "mergeableState": pull.get("mergeable_state")}
         if pull.get("state") != "open" or pull.get("draft") is not False or base.get("ref") != "main":
             block("pr_not_open_nondraft_main")
-        if base.get("sha") != main or trigger.get("head_sha") != head:
+        if base.get("sha") != main or (trigger is not None and trigger.get("head_sha") != head):
             block("trigger_or_base_is_stale")
         count = pull.get("changed_files")
         if not isinstance(count, int) or isinstance(count, bool) or not 0 < count <= limits["changedFiles"]:

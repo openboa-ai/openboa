@@ -1,11 +1,11 @@
 name: readme-writer-pilot
 
-# This NEW write-capable listener has no trigger exception. Keep its scanner
-# finding visible until separately reviewed; the read-only exception does not apply.
+# Poll only the trusted default branch. Both activation gates remain OFF.
+# No upstream PR-completion event enters this write-capable workflow.
 on:
-  workflow_run:
-    workflows: [ci, codeql, PR Convention, CodeQL - Code Quality]
-    types: [completed]
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   prepare:
-    if: github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'dynamic'
+    if: github.ref == 'refs/heads/main' && vars.OPENBOA_README_WRITER_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -85,30 +85,38 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  postmerge-ci:
+  dispatch-verification:
     needs: [writer]
     if: always() && needs.writer.outputs.outcome == 'merged' && needs.writer.outputs.merge_sha != ''
-    uses: ./.github/workflows/ci.yml
-    with:
-      revision: ${{ needs.writer.outputs.merge_sha }}
-      full_scope: true
-
-  postmerge-codeql:
-    needs: [writer]
-    if: always() && needs.writer.outputs.outcome == 'merged' && needs.writer.outputs.merge_sha != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
     permissions:
       contents: read
-      actions: read
-      security-events: write
-    uses: ./.github/workflows/codeql.yml
-    with:
-      revision: ${{ needs.writer.outputs.merge_sha }}
-      analysis_ref: refs/heads/main
-      upload_results: false
-      strict_postmerge: true
+      actions: write
+    steps:
+      - name: Checkout trusted dispatcher
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Dispatch fixed main verifier and observe exact returned run
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          CONFIRMED_MERGE_SHA: ${{ needs.writer.outputs.merge_sha }}
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python3 scripts/dispatch-postmerge-verification.py --execute
+      - name: Preserve verification dispatch outcome
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: readme-dispatch-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/postmerge-dispatch/
+          if-no-files-found: error
+          retention-days: 7
 
   postmerge-result:
-    needs: [writer, postmerge-ci, postmerge-codeql]
+    needs: [writer, dispatch-verification]
     if: always() && needs.writer.outputs.outcome == 'merged'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -116,12 +124,11 @@ jobs:
       - name: Require actual continuation success
         env:
           WRITER_RESULT: ${{ needs.writer.result }}
-          CI_RESULT: ${{ needs.postmerge-ci.result }}
-          CODEQL_RESULT: ${{ needs.postmerge-codeql.result }}
+          VERIFICATION_RESULT: ${{ needs.dispatch-verification.result }}
           MERGE_SHA: ${{ needs.writer.outputs.merge_sha }}
         run: |
-          if [[ "$WRITER_RESULT" != success || "$CI_RESULT" != success || "$CODEQL_RESULT" != success ]]; then
+          if [[ "$WRITER_RESULT" != success || "$VERIFICATION_RESULT" != success ]]; then
             echo "Merged $MERGE_SHA, but post-merge validation failed or did not finish." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-          echo "Merged $MERGE_SHA; actual full CI and all three strict raw CodeQL gates succeeded." >> "$GITHUB_STEP_SUMMARY"
+          echo "Merged $MERGE_SHA; the exact dispatched run completed full CI and three strict raw CodeQL gates." >> "$GITHUB_STEP_SUMMARY"

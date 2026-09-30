@@ -6,10 +6,6 @@ on:
   pull_request:
   workflow_call:
     inputs:
-      revision:
-        description: Immutable commit to validate; workflow definitions stay at the caller revision.
-        required: true
-        type: string
       full_scope:
         description: Run all validation lanes independently of changed paths.
         default: false
@@ -25,8 +21,6 @@ concurrency:
 jobs:
   dependency-audit:
     uses: ./.github/workflows/dependency-audit.yml
-    with:
-      revision: ${{ inputs.revision || github.sha }}
 
   scope:
     runs-on: ubuntu-latest
@@ -39,7 +33,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -49,7 +43,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -61,7 +55,7 @@ jobs:
           WORKFLOW_SHA: ${{ github.workflow_sha }}
           WORKFLOW_PATH: .github/workflows/ci.yml
           JOB_NAME: "scope"
-          EXPECTED_REVISION: ${{ inputs.revision || github.sha }}
+          EXPECTED_REVISION: ${{ github.sha }}
           RECEIPT_DIRECTORY: ${{ runner.temp }}/merge-source
         run: |
           python3 - <<'PYTHON'
@@ -217,7 +211,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -227,7 +221,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -255,7 +250,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -265,7 +260,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -297,7 +293,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -307,7 +303,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -338,7 +335,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -348,8 +345,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install gitleaks
         env:
@@ -376,7 +374,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -386,7 +384,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -405,7 +404,7 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
@@ -415,7 +414,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10

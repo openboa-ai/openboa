@@ -1,0 +1,68 @@
+name: postmerge-verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Confirmed main SHA to verify; this never chooses the checkout revision.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: postmerge-verification-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  source-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Bind server event and workflow to confirmed main SHA
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          test "$GITHUB_REPOSITORY" = openboa-ai/openboa
+          test "$GITHUB_EVENT_NAME" = workflow_dispatch
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_WORKFLOW_REF" = openboa-ai/openboa/.github/workflows/postmerge-verification.yml@refs/heads/main
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$GITHUB_SHA" = "$EXPECTED_SHA"
+          test "$WORKFLOW_SHA" = "$EXPECTED_SHA"
+
+  full-ci:
+    needs: [source-boundary]
+    uses: ./.github/workflows/ci.yml
+    with:
+      full_scope: true
+
+  full-codeql:
+    needs: [source-boundary]
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    uses: ./.github/workflows/codeql.yml
+    with:
+      isolated_analysis: true
+      strict_postmerge: true
+
+  verification-result:
+    needs: [source-boundary, full-ci, full-codeql]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every verification lane
+        env:
+          SOURCE_RESULT: ${{ needs.source-boundary.result }}
+          CI_RESULT: ${{ needs.full-ci.result }}
+          CODEQL_RESULT: ${{ needs.full-codeql.result }}
+        run: |
+          test "$SOURCE_RESULT" = success
+          test "$CI_RESULT" = success
+          test "$CODEQL_RESULT" = success
+          echo "Verified main commit $GITHUB_SHA with full CI and strict three-language raw analysis." >> "$GITHUB_STEP_SUMMARY"

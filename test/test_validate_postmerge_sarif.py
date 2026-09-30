@@ -16,11 +16,11 @@ def fixture(language):
     expected = {"language": language, "revision": "a" * 40, "repository": "openboa-ai/openboa", "repository_id": 123,
                 "run_id": 456, "attempt": 1, "workflow_sha": "b" * 40,
                 "workflow_ref": "openboa-ai/openboa/.github/workflows/readme-writer.yml@refs/heads/main",
-                "event": "workflow_run", "event_sha": "b" * 40, "source_root": "/home/runner/work/openboa/openboa"}
+                "event": "workflow_dispatch", "event_sha": "b" * 40, "source_root": "/home/runner/work/openboa/openboa"}
     category = "reusable-validation:" + validator.CATEGORIES[language]
     receipt = {"schemaVersion": 1, "repositoryId": 123, "repository": expected["repository"], "runId": 456, "runAttempt": 1,
                "workflowRef": expected["workflow_ref"], "workflowPath": ".github/workflows/codeql.yml", "workflowSha": "b" * 40,
-               "workflowSha256": "c" * 64, "event": "workflow_run", "eventSha": "b" * 40, "headSha": None, "baseSha": None,
+               "workflowSha256": "c" * 64, "event": "workflow_dispatch", "eventSha": "b" * 40, "headSha": None, "baseSha": None,
                "checkoutSha": "a" * 40, "parents": ["b" * 40], "sourceTree": "d" * 40,
                "sourceFiles": [{"path": path, "mode": "100755" if language == "python" else "100644", "type": "blob", "blob": "e" * 40}],
                "jobName": f"analyze ({language})", "language": language, "category": category}
