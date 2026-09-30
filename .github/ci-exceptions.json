@@ -1,4 +1,13 @@
 {
   "slaDays": 14,
-  "exceptions": []
+  "exceptions": [
+    {
+      "id": "merge-canary-read-only-workflow-run",
+      "owner": "@SonSangjoon",
+      "openedOn": "2026-09-30",
+      "expiresOn": "2026-10-14",
+      "reason": "User-approved line-scoped Zizmor dangerous-triggers exception for the read-only default-source reporter only. Immutable sources, no candidate execution/cache, strict evidence parsing, and boundary negative controls remain required; any future write authority requires fresh review.",
+      "trackingIssue": "https://github.com/openboa-ai/openboa/pull/67"
+    }
+  ]
 }

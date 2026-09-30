@@ -2,6 +2,11 @@ name: dependency-audit
 
 on:
   workflow_call:
+    inputs:
+      revision:
+        description: Immutable commit to audit; defaults to this run's commit.
+        default: ""
+        type: string
   workflow_dispatch:
   schedule:
     - cron: "37 4 * * 1"
@@ -14,8 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Validate revision
+        shell: bash
+        env:
+          REVISION: ${{ inputs.revision || github.sha }}
+        run: |
+          if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Revision must be an immutable full commit SHA"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
