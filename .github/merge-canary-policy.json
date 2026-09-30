@@ -60,7 +60,13 @@
     "scripts/collect-merge-evidence.py",
     "scripts/evaluate-merge-canary.mjs",
     "package.json",
-    "pnpm-lock.yaml"
+    "pnpm-lock.yaml",
+    ".github/readme-writer-policy.json",
+    ".github/workflows/readme-writer-pilot.yml",
+    "scripts/readme-writer-pilot.py",
+    "scripts/validate-postmerge-sarif.py",
+    ".github/workflows/postmerge-verification.yml",
+    "scripts/dispatch-postmerge-verification.py"
   ],
   "evaluation": {
     "version": 1,

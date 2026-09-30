@@ -15,6 +15,15 @@ on:
       - "test/test_collect_merge_evidence.py"
       - "test/merge-canary-adapter.test.mjs"
       - "test/merge-source-receipt.test.ts"
+      - ".github/readme-writer-policy.json"
+      - ".github/workflows/readme-writer-pilot.yml"
+      - "scripts/readme-writer-pilot.py"
+      - "test/test_readme_writer_pilot.py"
+      - "scripts/validate-postmerge-sarif.py"
+      - "test/test_validate_postmerge_sarif.py"
+      - "test/test_dispatch_postmerge_verification.py"
+      - "scripts/dispatch-postmerge-verification.py"
+      - ".github/workflows/postmerge-verification.yml"
 
 permissions:
   contents: read
@@ -52,7 +61,6 @@ jobs:
     if: needs.validation-scope.outputs.reusable == 'true'
     uses: ./.github/workflows/ci.yml
     with:
-      revision: ${{ github.sha }}
       full_scope: true
 
   validate-codeql-call:
@@ -64,9 +72,7 @@ jobs:
       security-events: write
     uses: ./.github/workflows/codeql.yml
     with:
-      revision: ${{ github.sha }}
-      analysis_ref: refs/heads/main
-      upload_results: false
+      isolated_analysis: true
 
   validate-evidence-contract:
     runs-on: ubuntu-latest
@@ -102,3 +108,6 @@ jobs:
         run: |
           node --test test/merge-canary-adapter.test.mjs
           python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'
+          python3 -m unittest discover -s test -p 'test_readme_writer_pilot.py'
+          python3 -m unittest discover -s test -p 'test_validate_postmerge_sarif.py'
+          python3 -m unittest discover -s test -p 'test_dispatch_postmerge_verification.py'

@@ -1,0 +1,134 @@
+name: readme-writer-pilot
+
+# Poll only the trusted default branch. Both activation gates remain OFF.
+# No upstream PR-completion event enters this write-capable workflow.
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize the merge and its entire continuation. Never cancel verification
+# because another producer emits a completion event.
+concurrency:
+  group: openboa-readme-writer-pilot
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main' && vars.OPENBOA_README_WRITER_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      enabled: ${{ steps.policy.outputs.enabled }}
+    steps:
+      - name: Checkout trusted default controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Read default-OFF pilot switch
+        id: policy
+        run: python3 scripts/readme-writer-pilot.py --prepare
+
+  writer:
+    needs: [prepare]
+    if: needs.prepare.outputs.enabled == 'true' && vars.OPENBOA_README_WRITER_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+      actions: read
+      checks: read
+      pull-requests: read
+    outputs:
+      outcome: ${{ steps.write.outputs.outcome }}
+      merge_sha: ${{ steps.write.outputs.merge_sha }}
+    steps:
+      - name: Checkout trusted default controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Checkout reviewed evidence evaluator
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: openboa-ai/.github
+          ref: e1ec2781ec180c96bcd520a497780bf6b8dc29ca
+          path: .merge-evaluator
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          package-manager-cache: false
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Fresh same-credential evidence and bounded write
+        id: write
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          WRITER_ENABLED: ${{ vars.OPENBOA_README_WRITER_ENABLED }}
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python3 scripts/readme-writer-pilot.py --execute
+      - name: Preserve actual writer outcome
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: readme-writer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/readme-writer/
+          if-no-files-found: error
+          retention-days: 7
+
+  dispatch-verification:
+    needs: [writer]
+    if: always() && needs.writer.outputs.outcome == 'merged' && needs.writer.outputs.merge_sha != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout trusted dispatcher
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Dispatch fixed main verifier and observe exact returned run
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          CONFIRMED_MERGE_SHA: ${{ needs.writer.outputs.merge_sha }}
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python3 scripts/dispatch-postmerge-verification.py --execute
+      - name: Preserve verification dispatch outcome
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: readme-dispatch-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/postmerge-dispatch/
+          if-no-files-found: error
+          retention-days: 7
+
+  postmerge-result:
+    needs: [writer, dispatch-verification]
+    if: always() && needs.writer.outputs.outcome == 'merged'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require actual continuation success
+        env:
+          WRITER_RESULT: ${{ needs.writer.result }}
+          VERIFICATION_RESULT: ${{ needs.dispatch-verification.result }}
+          MERGE_SHA: ${{ needs.writer.outputs.merge_sha }}
+        run: |
+          if [[ "$WRITER_RESULT" != success || "$VERIFICATION_RESULT" != success ]]; then
+            echo "Merged $MERGE_SHA, but post-merge validation failed or did not finish." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "Merged $MERGE_SHA; the exact dispatched run completed full CI and three strict raw CodeQL gates." >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "enabled": false,
+  "repository": "openboa-ai/openboa",
+  "pullRequest": 68,
+  "path": "README.md",
+  "oldBlob": "1f91d44dbd4482ec7f4c63816871c749dd3620ac",
+  "newBlob": "69e48877815a57cb5acbf5497663381010a3b3db"
+}

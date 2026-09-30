@@ -18,7 +18,7 @@ function stepShell(workflow: string, name: string) {
 
 describe("reusable validation source binding", () => {
   it.each(["ci", "codeql", "dependency-audit"])(
-    "%s rejects mutable refs before checkout and pins every checkout to the requested commit",
+    "%s validates and uses the server event SHA, with no caller-selected source",
     (name) => {
       const workflow = readWorkflow(name)
       const guard = stepShell(workflow, "Validate revision")
@@ -41,12 +41,12 @@ describe("reusable validation source binding", () => {
           env: { ...process.env, REVISION: "abcdef0123".repeat(4) },
         }).status,
       ).toBe(0)
+      expect(workflow).not.toContain("inputs.revision")
+      expect(workflow).not.toContain("      revision:")
       const checkouts = workflow.split(/uses: actions\/checkout@[^\n]+\n/).slice(1)
       expect(checkouts.length).toBeGreaterThan(0)
       for (const checkout of checkouts) {
-        expect(checkout.split(/\n\s*- name:/)[0]).toMatch(
-          /ref: \$\{\{ inputs\.revision \|\| github\.sha \}\}/,
-        )
+        expect(checkout.split(/\n\s*- name:/)[0]).toMatch(/ref: \$\{\{ github\.sha \}\}/)
       }
       expect(workflow.indexOf("name: Validate revision")).toBeLessThan(
         workflow.indexOf("name: Checkout"),
@@ -54,34 +54,25 @@ describe("reusable validation source binding", () => {
     },
   )
 
-  it("propagates the same SHA into the nested audit and preserves ordinary CI concurrency", () => {
+  it("uses the same server event in nested audit and preserves ordinary CI concurrency", () => {
     const workflow = readWorkflow("ci")
-    expect(workflow).toMatch(
-      /uses: \.\/\.github\/workflows\/dependency-audit\.yml\n {4}with:\n {6}revision: \$\{\{ inputs\.revision \|\| github\.sha \}\}/,
-    )
+    expect(workflow).toContain("uses: ./.github/workflows/dependency-audit.yml")
+    expect(workflow).not.toContain("inputs.revision")
     expect(workflow).toContain("if: inputs.full_scope != true")
     expect(workflow).toMatch(/group: ci-\$\{\{ github\.workflow \}\}-/)
     expect(workflow).toMatch(/cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \}\}/)
   })
 
-  it("keeps ordinary CodeQL identity and pairs a callable source SHA with its analysis ref", () => {
+  it("keeps ordinary CodeQL identity and isolates callable analysis explicitly", () => {
     const workflow = readWorkflow("codeql")
-    expect(workflow).toMatch(
-      /ref: \$\{\{ inputs\.analysis_ref \}\}\n {10}sha: \$\{\{ inputs\.revision \}\}/,
-    )
-    expect(workflow).toContain("inputs.upload_results == false && 'never' || 'always'")
-    expect(workflow).toContain("inputs.upload_results == false && 'reusable-validation:' || ''")
+    expect(workflow).not.toContain("inputs.revision")
+    expect(workflow).not.toContain("inputs.analysis_ref")
+    expect(workflow).toContain("inputs.isolated_analysis == true && 'never' || 'always'")
+    expect(workflow).toContain("inputs.isolated_analysis == true && 'reusable-validation:' || ''")
     for (const suffix of ["analyze", "analyze-python", "analyze-actions"]) {
       expect(workflow).toContain(`category: .github/workflows/codeql.yml:${suffix}`)
     }
-    const guard = stepShell(workflow, "Validate analysis ref")
-    for (const ref of ["", "main", "refs/pull/66/merge", "refs/heads/main; exit 0"]) {
-      expect(
-        spawnSync("bash", ["-e", "-o", "pipefail", "-c", guard], {
-          env: { ...process.env, ANALYSIS_REF: ref },
-        }).status,
-      ).toBe(1)
-    }
+    expect(workflow).toContain("if: inputs.strict_postmerge == true")
   })
 
   it("uses distinct validation workflow identity and actual full calls without uploading CodeQL", () => {
@@ -91,8 +82,8 @@ describe("reusable validation source binding", () => {
     expect(harness).toContain("uses: ./.github/workflows/ci.yml")
     expect(harness).toContain("full_scope: true")
     expect(harness).toContain("uses: ./.github/workflows/codeql.yml")
-    expect(harness).toContain("upload_results: false")
-    expect(harness.match(/revision: \$\{\{ github.sha \}\}/g)).toHaveLength(2)
+    expect(harness).toContain("isolated_analysis: true")
+    expect(harness).not.toContain("revision:")
     expect(harness).not.toContain("actions: write")
     expect(harness).not.toContain("contents: write")
   })

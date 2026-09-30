@@ -535,5 +535,48 @@ class EvidenceRefreshTests(unittest.TestCase):
         self.assertNotIn("changed-fixture-token", json.dumps(client.requests))
 
 
+class PilotSelectionTests(unittest.TestCase):
+    def test_fixed_pilot_uses_real_event_and_keeps_all_evidence_checks(self):
+        for event_name in ("schedule", "workflow_dispatch"):
+            api = FakeAPI()
+            policy = copy.deepcopy(api.policy)
+            policy["repository"] = {"id": 1214829403, "fullName": "openboa-ai/openboa", "defaultBranch": "main"}
+            context = {**api.context, "GITHUB_REPOSITORY": "openboa-ai/openboa",
+                       "GITHUB_EVENT_NAME": event_name, "GITHUB_REF": "refs/heads/main"}
+            event = {"repository": {"id": 1214829403}}
+            get = api.get
+            def actual_pilot(route):
+                route = route.replace("/repos/openboa-ai/openboa", P).replace("/pulls/68", "/pulls/2")
+                result = get(route)
+                raw = json.dumps(result).replace('"id": 7', '"id": 1214829403').replace('"number": 2', '"number": 68')
+                result = json.loads(raw.replace("example/project", "openboa-ai/openboa"))
+                if route == P + "/pulls/2":
+                    result["base"]["repo"]["private"] = False
+                return result
+            api.get = actual_pilot
+            result = C.collect(policy, event, context, api, pilot_number=68)
+            self.assertEqual(result["collection"]["errors"], [])
+            self.assertEqual(result["pullRequest"]["number"], 68)
+            self.assertEqual(result["collector"]["selection"], {"kind": "fixed-pilot", "number": 68, "event": event_name})
+            self.assertEqual(result["collection"]["status"], "blocked")  # No invented raw evidence.
+            self.assertTrue(result["collection"]["blockers"])
+            self.assertEqual(event, {"repository": {"id": 1214829403}})
+
+    def test_pilot_mode_rejects_other_targets_events_refs_and_repository(self):
+        for number, event_name, ref, repo in [(True, "schedule", "refs/heads/main", "openboa-ai/openboa"),
+                (69, "schedule", "refs/heads/main", "openboa-ai/openboa"),
+                (68, "workflow_run", "refs/heads/main", "openboa-ai/openboa"),
+                (68, "schedule", "refs/heads/other", "openboa-ai/openboa"),
+                (68, "schedule", "refs/heads/main", "example/project")]:
+            api = FakeAPI()
+            api.policy["repository"].update(id=1214829403, fullName=repo)
+            event = {"repository": {"id": 1214829403}}
+            context = {**api.context, "GITHUB_REPOSITORY": repo, "GITHUB_EVENT_NAME": event_name, "GITHUB_REF": ref}
+            result = C.collect(api.policy, event, context, api, pilot_number=number)
+            self.assertEqual(result["collection"]["status"], "blocked")
+            self.assertIn("pilot_selection_context_invalid", result["collection"]["blockers"])
+            self.assertEqual(api.requests, [])
+
+
 if __name__ == "__main__":
     unittest.main()

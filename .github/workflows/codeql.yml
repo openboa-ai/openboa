@@ -10,17 +10,13 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      revision:
-        description: Immutable source commit; workflow definitions stay at the caller revision.
-        required: true
-        type: string
-      analysis_ref:
-        description: Git ref associated with the source commit for CodeQL analysis.
-        required: true
-        type: string
-      upload_results:
-        description: Upload genuine analysis; false supports isolated reusable-workflow validation.
-        default: true
+      strict_postmerge:
+        description: Require actual clean raw analysis for the separately reviewed writer continuation.
+        default: false
+        type: boolean
+      isolated_analysis:
+        description: Keep validation raw evidence separate from production uploads.
+        default: false
         type: boolean
 
 permissions:
@@ -47,28 +43,17 @@ jobs:
       - name: Validate revision
         shell: bash
         env:
-          REVISION: ${{ inputs.revision || github.sha }}
+          REVISION: ${{ github.sha }}
         run: |
           if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
             echo "Revision must be an immutable full commit SHA"
             exit 1
           fi
 
-      - name: Validate analysis ref
-        if: inputs.revision != ''
-        shell: bash
-        env:
-          ANALYSIS_REF: ${{ inputs.analysis_ref }}
-        run: |
-          if [[ ! "${ANALYSIS_REF}" =~ ^refs/heads/[a-zA-Z0-9._/-]+$ ]]; then
-            echo "Reusable CodeQL requires an explicit branch ref"
-            exit 1
-          fi
-
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -80,10 +65,10 @@ jobs:
           WORKFLOW_SHA: ${{ github.workflow_sha }}
           WORKFLOW_PATH: .github/workflows/codeql.yml
           JOB_NAME: "analyze (${{ matrix.language }})"
-          EXPECTED_REVISION: ${{ inputs.revision || github.sha }}
+          EXPECTED_REVISION: ${{ github.sha }}
           RECEIPT_DIRECTORY: ${{ runner.temp }}/merge-source
           LANGUAGE: ${{ matrix.language }}
-          CATEGORY: ${{ inputs.revision != '' && inputs.upload_results == false && 'reusable-validation:' || '' }}${{ matrix.category }}
+          CATEGORY: ${{ inputs.isolated_analysis == true && 'reusable-validation:' || '' }}${{ matrix.category }}
         run: |
           python3 - <<'PYTHON'
           import hashlib
@@ -162,14 +147,12 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
-          category: ${{ inputs.revision != '' && inputs.upload_results == false && 'reusable-validation:' || '' }}${{ matrix.category }}
-          ref: ${{ inputs.analysis_ref }}
-          sha: ${{ inputs.revision }}
-          upload: ${{ inputs.revision != '' && inputs.upload_results == false && 'never' || 'always' }}
+          category: ${{ inputs.isolated_analysis == true && 'reusable-validation:' || '' }}${{ matrix.category }}
+          upload: ${{ inputs.isolated_analysis == true && 'never' || 'always' }}
           output: ${{ runner.temp }}/codeql-results
 
       - name: Validate reusable analysis output
-        if: inputs.revision != '' && inputs.upload_results == false
+        if: inputs.isolated_analysis == true
         shell: bash
         env:
           SARIF_DIRECTORY: ${{ runner.temp }}/codeql-results
@@ -195,6 +178,7 @@ jobs:
           PYTHON
 
       - name: Prepare merge evidence
+        id: prepare_evidence
         shell: bash
         env:
           LANGUAGE: ${{ matrix.language }}
@@ -224,7 +208,28 @@ jobs:
           shutil.copyfile(Path(os.environ["RECEIPT_DIRECTORY"]) / "receipt.json", output / "receipt.json")
           PYTHON
 
+      - name: Require strict post-merge raw evidence
+        if: inputs.strict_postmerge == true
+        env:
+          LANGUAGE: ${{ matrix.language }}
+          REQUESTED_REVISION: ${{ github.sha }}
+          REPOSITORY_ID: ${{ github.repository_id }}
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          ISOLATED_ANALYSIS: ${{ inputs.isolated_analysis }}
+        run: |
+          test "$ISOLATED_ANALYSIS" = true
+          python3 scripts/validate-postmerge-sarif.py \
+            --directory "$RUNNER_TEMP/merge-evidence" --language "$LANGUAGE" \
+            --revision "$REQUESTED_REVISION" --repository "$GITHUB_REPOSITORY" \
+            --repository-id "$REPOSITORY_ID" --run-id "$GITHUB_RUN_ID" \
+            --attempt "$GITHUB_RUN_ATTEMPT" --workflow-sha "$GITHUB_WORKFLOW_SHA" \
+            --workflow-ref "$GITHUB_WORKFLOW_REF" --event "$GITHUB_EVENT_NAME" \
+            --event-sha "$GITHUB_SHA" --source-root "$GITHUB_WORKSPACE"
+
       - name: Upload merge evidence
+        # Preserve already-prepared raw evidence when the optional strict gate
+        # fails; the failed gate/job still blocks the continuation aggregate.
+        if: always() && !cancelled() && steps.prepare_evidence.outcome == 'success' && (success() || inputs.strict_postmerge == true)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: merge-evidence-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.language }}
