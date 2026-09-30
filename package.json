@@ -100,7 +100,7 @@
       "@puppeteer/browsers>extract-zip": "npm:@electron-internal/extract-zip@1.0.5",
       "@xmldom/xmldom@<0.8.15": "0.8.15",
       "adm-zip@<0.6.1": "0.6.1",
-      "axios": "1.18.0",
+      "axios": "1.20.0",
       "basic-ftp": "5.3.1",
       "body-parser": "1.20.6",
       "brace-expansion@1": "1.1.21",

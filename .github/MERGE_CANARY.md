@@ -112,7 +112,10 @@ No passing result is fabricated for a skipped scan.
 
 `readme-writer-pilot.yml` polls only the trusted default branch every 15 minutes
 at minutes 7, 22, 37 and 52, with an input-free manual trigger for owner recovery.
-Scheduling can be delayed by GitHub. This deliberately removes the privileged
+Scheduling can be delayed by GitHub. The cadence creates up to 96 scheduled
+events per day. While OFF, no runner or API polling job starts. Future activation
+would consume runner time for preparation, evidence collection and dispatch
+observation; this change provisions no paid service. This deliberately removes the privileged
 PR-completion listener; it does not suppress its former scanner findings.
 The existing read-only reporter and its separately approved exception are unchanged.
 
