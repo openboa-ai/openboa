@@ -355,24 +355,138 @@ test("collector infrastructure failure takes precedence over additional missing-
   assert.equal(report.result.eligible, false)
 })
 
-test("reporter retains read-only default-source execution and exact evaluator pin", () => {
-  const policy = JSON.parse(
-    readFileSync(new URL("../.github/merge-canary-policy.json", import.meta.url)),
+// This assertion is deliberately a narrow approved execution contract, not a YAML parser.
+// Unknown jobs, commands, environment values or actions require a reviewed test update.
+function assertReporterBoundary(workflow, policy, evaluatorBytes) {
+  // Pin the reviewed source, so alternative YAML spellings cannot escape these
+  // readable assertions. This is a regression tripwire, not a malicious-YAML parser.
+  assert.equal(digest(workflow), "bc12d3609a71931ab0a1b0c38c88508b46da78e9562bf9019909a38724fea297")
+  // Flow-style steps/jobs and YAML aliases are outside this reviewed block-style contract.
+  assert.doesNotMatch(
+    workflow,
+    /^\s*(?:-\s*\{|(?:jobs|steps|report):\s*[\[{]|<<:|[^#\n]*:\s*[&*])/m,
   )
-  const workflow = readFileSync(
-    new URL("../.github/workflows/merge-canary.yml", import.meta.url),
-    "utf8",
+  assert.match(workflow, /^on: # zizmor: ignore\[dangerous-triggers\] /m)
+  assert.equal((workflow.match(/zizmor: ignore/g) ?? []).length, 1)
+  const permissions = workflow.match(/^permissions:\n((?:  [^\n]+\n)+)/m)?.[1]
+  assert.equal(
+    permissions,
+    "  contents: read\n  actions: read\n  checks: read\n  pull-requests: read\n",
+  )
+  assert.equal((workflow.match(/^\s*permissions:/gm) ?? []).length, 1)
+  assert.deepEqual(
+    [...workflow.matchAll(/^  ([a-z_-]+):$/gm)].map((m) => m[1]),
+    ["workflow_run", "report"],
   )
   assert.match(workflow, /ref: \$\{\{ github\.workflow_sha \}\}/)
   assert.ok(workflow.includes(`ref: ${policy.evaluator.revision}`))
-  assert.equal(digest(readFileSync(process.env.MERGE_EVALUATOR_MODULE)), policy.evaluator.sha256)
+  assert.match(policy.evaluator.revision, /^[a-f0-9]{40}$/)
+  assert.equal(digest(evaluatorBytes), policy.evaluator.sha256)
   assert.equal((workflow.match(/persist-credentials: false/g) ?? []).length, 2)
-  assert.equal((workflow.match(/: write\b/g) ?? []).length, 0)
-  for (const permission of ["contents", "actions", "checks", "pull-requests"])
-    assert.match(workflow, new RegExp(`  ${permission}: read`))
+  assert.match(workflow, /package-manager-cache: false/)
   assert.doesNotMatch(
     workflow,
-    /workflow_run\.head_sha[^\n]*\n\s+persist-credentials|secrets: inherit|actions\/cache@|pnpm install|npm install|gh pr merge|workflow_dispatch/,
+    /secrets:|: write\b|write-all|actions\/cache@|\s+cache:|cache-dependency-path:|workflow_dispatch|pull_request_target/,
   )
+  assert.deepEqual(
+    [...workflow.matchAll(/          ref: (.+)/g)].map((m) => m[1]),
+    ["${{ github.workflow_sha }}", policy.evaluator.revision],
+  )
+  const allowedActions = [
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020",
+    "actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97",
+    "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+  ]
+  assert.deepEqual(
+    [...workflow.matchAll(/^\s*(?:- )?uses: (\S+)/gm)].map((m) => m[1]),
+    allowedActions,
+  )
+  const commands = [...workflow.matchAll(/^        run: \|\n((?:          [^\n]*\n)+)/gm)].map(
+    (m) => m[1].trim().replace(/\s+/g, " "),
+  )
+  assert.deepEqual(commands, [
+    "node --test test/merge-canary-adapter.test.mjs python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'",
+    'python3 scripts/collect-merge-evidence.py \\ --policy .github/merge-canary-policy.json \\ --event "$GITHUB_EVENT_PATH" \\ --output "$RUNNER_TEMP/merge-canary/observations.json"',
+    'node scripts/evaluate-merge-canary.mjs \\ --policy .github/merge-canary-policy.json \\ --observations "$RUNNER_TEMP/merge-canary/observations.json" \\ --evaluator .merge-evaluator/lib/evaluate-merge-evidence.mjs \\ --output "$RUNNER_TEMP/merge-canary/report.json"',
+  ])
+  assert.equal((workflow.match(/^\s*(?:- )?run:/gm) ?? []).length, 3)
+  const environments = [...workflow.matchAll(/^        env:\n((?:          [^\n]+\n)+)/gm)].map(
+    (m) => m[1].trim().replace(/\s+/g, " "),
+  )
+  assert.deepEqual(environments, [
+    'MERGE_EVALUATOR_MODULE: ${{ github.workspace }}/.merge-evaluator/lib/evaluate-merge-evidence.mjs PYTHONDONTWRITEBYTECODE: "1"',
+    "GITHUB_TOKEN: ${{ github.token }} GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}",
+    "GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}",
+  ])
+  assert.equal((workflow.match(/^\s*env:/gm) ?? []).length, 3)
   assert.equal(policy.mode, "report-only")
+}
+function reporterFixture() {
+  return {
+    policy: JSON.parse(
+      readFileSync(new URL("../.github/merge-canary-policy.json", import.meta.url)),
+    ),
+    workflow: readFileSync(
+      new URL("../.github/workflows/merge-canary.yml", import.meta.url),
+      "utf8",
+    ),
+    bytes: readFileSync(process.env.MERGE_EVALUATOR_MODULE),
+  }
+}
+test("approved reporter exception retains exact read-only execution boundary", () => {
+  const { workflow, policy, bytes } = reporterFixture()
+  assertReporterBoundary(workflow, policy, bytes)
+})
+test("reporter boundary rejects candidate execution, privilege, cache and untrusted-input regressions", () => {
+  const { workflow, policy, bytes } = reporterFixture()
+  const mutations = [
+    (w) => w.replace("github.workflow_sha", "github.event.workflow_run.head_sha"),
+    (w) => w.replace(`ref: ${policy.evaluator.revision}`, "ref: main"),
+    (w) => w.replace("contents: read", "contents: write"),
+    (w) => w.replace("    runs-on:", "    permissions: write-all\n    runs-on:"),
+    (w) => w.replace("persist-credentials: false", "persist-credentials: true"),
+    (w) => w.replace('node-version: "22"', 'node-version: "22"\n          cache: npm'),
+    (w) => w.replace("package-manager-cache: false", "package-manager-cache: true"),
+    (w) => w.replace("actions/setup-node@", "actions/cache@"),
+    (w) =>
+      w.replace(
+        "          PYTHONDONTWRITEBYTECODE:",
+        "          NODE_OPTIONS: ${{ github.event.workflow_run.head_branch }}\n          PYTHONDONTWRITEBYTECODE:",
+      ),
+    (w) => w.replace("node --test", "npm install && node --test"),
+    (w) =>
+      w.replace("node --test", "echo ${{ github.event.workflow_run.head_branch }}; node --test"),
+    (w) => w + "\n      - run: gh pr merge 1\n",
+    (w) => w + "\n      - uses: ./candidate-action\n",
+    (w) => w + "\n      - {uses: ./candidate-action}\n",
+    (w) => w + '\n  extra: {runs-on: ubuntu-latest, steps: [{run: "echo added-execution"}]}\n',
+    (w) =>
+      w.replace(
+        "jobs:\n",
+        "jobs: {report: {runs-on: ubuntu-latest, steps: [{run: 'npm install'}]}}\n",
+      ),
+    (w) => w + "\n  merge:\n    runs-on: ubuntu-latest\n    steps:\n      - run: true\n",
+    (w) => w.replace("jobs:\n", "env:\n  NODE_OPTIONS: --require ./candidate.js\njobs:\n"),
+    (w) =>
+      w.replace("report:\n", "report:\n    env:\n      NODE_OPTIONS: --require ./candidate.js\n"),
+  ]
+  for (const mutate of mutations) {
+    assert.notEqual(mutate(workflow), workflow)
+    assert.throws(
+      () => assertReporterBoundary(mutate(workflow), policy, bytes),
+      undefined,
+      mutate.toString(),
+    )
+  }
+  assert.throws(() =>
+    assertReporterBoundary(workflow, policy, Buffer.concat([bytes, Buffer.from(" ")])),
+  )
+  const modifiedPolicy = structuredClone(policy)
+  modifiedPolicy.evaluator.sha256 = "0".repeat(64)
+  assert.throws(() => assertReporterBoundary(workflow, modifiedPolicy, bytes))
+  modifiedPolicy.evaluator.sha256 = policy.evaluator.sha256
+  modifiedPolicy.mode = "merge"
+  assert.throws(() => assertReporterBoundary(workflow, modifiedPolicy, bytes))
 })

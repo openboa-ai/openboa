@@ -15,6 +15,34 @@ remain manual. Changes to workflows, scripts, dependencies or application code
 are ineligible for this policy. In particular, the PR adding this infrastructure
 cannot qualify itself.
 
+## Reviewed trigger exception
+
+The single inline `dangerous-triggers` exception on this reporter's `on:` line
+was explicitly approved for this read-only data flow. It acknowledges Zizmor's
+[broad workflow_run warning](https://docs.zizmor.sh/audits/#dangerous-triggers),
+not a blanket claim that this trigger is safe. The original unmodified warning
+was observed on draft PR67 at commit `4e11cbe397edddbff0ab41f0e3a68d9ce2c39c75`.
+No other audit, severity threshold, workflow or scanner is excluded.
+The existing CI exception policy records owner `@SonSangjoon`, PR67 and an
+expiry of 2026-10-14 in `.github/ci-exceptions.json`; expiry fails the policy gate.
+
+Only the immutable default-branch workflow revision and the exact reviewed
+central evaluator SHA/digest execute. Permissions are read-only, checkout
+credentials are not persisted, and there is no candidate checkout, candidate
+execution, cache, untrusted expression in a command/environment, or write job.
+Bounded strict JSON/ZIP parsing and deny-on-missing-proof rules still apply.
+Regression tests pin the reviewed workflow bytes and reject boundary mutations;
+they are a trusted-source regression tripwire, not an exhaustive malicious-YAML
+security parser. Any future write/merge
+authority, new executable source, cache or event-data execution requires a new
+security review; this exception does not authorize it.
+
+The exact CLI policy is `2.27.1`, verified from hosted raw SARIF in PR67's
+reusable-validation run `36720718062`. The pinned action's declared default was
+`2.26.2`; actual runner resolution selected `2.27.1`. Future version drift denies
+eligibility until a reviewed explicit policy refresh, rather than accepting a
+version range automatically.
+
 ## Evidence and trust
 
 The collector reads GitHub through bounded authenticated GET requests. It runs

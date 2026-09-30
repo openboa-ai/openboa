@@ -67,7 +67,7 @@
     "trustModel": "trusted-solo-writer",
     "deploymentPlan": "free",
     "maxAgeMs": 300000,
-    "codeqlVersion": "2.26.2",
+    "codeqlVersion": "2.27.1",
     "protectedPaths": [
       ".github",
       ".agents",
