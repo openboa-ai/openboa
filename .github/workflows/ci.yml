@@ -53,20 +53,31 @@ jobs:
       - name: Compute scope flags
         id: flags
         shell: bash
+        env:
+          DOCS_CHANGED: ${{ steps.filter.outputs.docs }}
+          DESKTOP_CHANGED: ${{ steps.filter.outputs.desktop }}
+          NON_DOCS_CHANGED: ${{ steps.filter.outputs.non_docs }}
         run: |
-          if [[ "${{ steps.filter.outputs.docs }}" == "true" ]]; then
+          for flag in "${DOCS_CHANGED}" "${DESKTOP_CHANGED}" "${NON_DOCS_CHANGED}"; do
+            if [[ "${flag}" != "true" && "${flag}" != "false" ]]; then
+              echo "Invalid path-filter output: ${flag}"
+              exit 1
+            fi
+          done
+
+          if [[ "${DOCS_CHANGED}" == "true" ]]; then
             echo "docs_changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "docs_changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-          if [[ "${{ steps.filter.outputs.desktop }}" == "true" ]]; then
+          if [[ "${DESKTOP_CHANGED}" == "true" ]]; then
             echo "desktop_changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "desktop_changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-          if [[ "${{ steps.filter.outputs.docs }}" == "true" && "${{ steps.filter.outputs.non_docs }}" != "true" ]]; then
+          if [[ "${DOCS_CHANGED}" == "true" && "${NON_DOCS_CHANGED}" == "false" ]]; then
             echo "docs_only=true" >> "$GITHUB_OUTPUT"
           else
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
@@ -238,7 +249,7 @@ jobs:
 
   required-ci:
     name: required-ci
-    needs: [check, docs, secrets, gitleaks, policy, desktop-artifact, dependency-audit]
+    needs: [scope, check, docs, secrets, gitleaks, policy, desktop-artifact, dependency-audit]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -246,6 +257,10 @@ jobs:
       - name: Evaluate job results
         shell: bash
         run: |
+          scope_result="${{ needs.scope.result }}"
+          docs_only="${{ needs.scope.outputs.docs_only }}"
+          docs_changed="${{ needs.scope.outputs.docs_changed }}"
+          desktop_changed="${{ needs.scope.outputs.desktop_changed }}"
           check_result="${{ needs.check.result }}"
           docs_result="${{ needs.docs.result }}"
           secrets_result="${{ needs.secrets.result }}"
@@ -254,6 +269,7 @@ jobs:
           desktop_result="${{ needs.desktop-artifact.result }}"
           dependency_audit_result="${{ needs.dependency-audit.result }}"
 
+          echo "scope:    ${scope_result}"
           echo "check:    ${check_result}"
           echo "docs:     ${docs_result}"
           echo "secrets:  ${secrets_result}"
@@ -263,27 +279,47 @@ jobs:
           echo "dependency audit: ${dependency_audit_result}"
 
           failed=0
-          if [[ "${dependency_audit_result}" != "success" ]]; then
+          for flag in "${docs_only}" "${docs_changed}" "${desktop_changed}"; do
+            if [[ "${flag}" != "true" && "${flag}" != "false" ]]; then
+              echo "Invalid scope output: ${flag}"
+              failed=1
+            fi
+          done
+          if [[ "${docs_only}" == "true" && "${docs_changed}" != "true" ]]; then
+            echo "Docs-only scope must include a docs change"
             failed=1
           fi
-          if [[ "${check_result}" == "failure" || "${check_result}" == "cancelled" ]]; then
+
+          require_result() {
+            local name="$1" result="$2" allow_skip="${3:-false}"
+            if [[ "${result}" == "success" ]]; then
+              return
+            fi
+            if [[ "${scope_result}" == "success" && "${allow_skip}" == "true" && "${result}" == "skipped" ]]; then
+              return
+            fi
+            echo "${name} did not complete successfully: ${result}"
             failed=1
+          }
+
+          require_result scope "${scope_result}"
+          require_result secrets "${secrets_result}"
+          require_result gitleaks "${gitleaks_result}"
+          require_result policy "${policy_result}"
+          require_result dependency-audit "${dependency_audit_result}"
+          require_result check "${check_result}" "${docs_only}"
+
+          docs_may_skip=false
+          if [[ "${docs_changed}" == "false" ]]; then
+            docs_may_skip=true
           fi
-          if [[ "${docs_result}" == "failure" || "${docs_result}" == "cancelled" ]]; then
-            failed=1
+          require_result docs "${docs_result}" "${docs_may_skip}"
+
+          desktop_may_skip=false
+          if [[ "${docs_only}" == "true" || "${desktop_changed}" == "false" ]]; then
+            desktop_may_skip=true
           fi
-          if [[ "${secrets_result}" == "failure" || "${secrets_result}" == "cancelled" ]]; then
-            failed=1
-          fi
-          if [[ "${gitleaks_result}" == "failure" || "${gitleaks_result}" == "cancelled" ]]; then
-            failed=1
-          fi
-          if [[ "${policy_result}" == "failure" || "${policy_result}" == "cancelled" ]]; then
-            failed=1
-          fi
-          if [[ "${desktop_result}" == "failure" || "${desktop_result}" == "cancelled" ]]; then
-            failed=1
-          fi
+          require_result desktop-artifact "${desktop_result}" "${desktop_may_skip}"
 
           if [[ "${failed}" -ne 0 ]]; then
             echo "required-ci failed"
