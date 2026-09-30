@@ -22,6 +22,7 @@ DEFAULT_LIMITS = {"requests": 100, "jsonBytes": 25 * 1024 * 1024,
                   "seconds": 120, "changedFiles": 200, "pages": 10,
                   "treeEntries": 50000, "blobBytes": 1024 * 1024,
                   "archiveBytes": 20 * 1024 * 1024, "expandedBytes": 100 * 1024 * 1024}
+REPORT_PRINCIPAL = {"kind": "current-request-credential", "scope": "report-only-collector"}
 
 
 class EvidenceError(Exception):
@@ -79,12 +80,17 @@ class GitHubGet:
         if not REPO.fullmatch(repository) or not token:
             raise EvidenceError("invalid_api_configuration")
         self.prefix = "/repos/" + repository
-        self.token = token
+        self._token = token
         self.limits = {**DEFAULT_LIMITS, **(limits or {})}
         self.started = time.monotonic()
         self.bytes = 0
         self.requests = []
         self.opener = opener or urllib.request.build_opener(NoRedirect())
+
+    @property
+    def token(self):
+        # One credential for the entire collection; never serialize it or a fingerprint.
+        return self._token
 
     def get(self, route):
         if (not isinstance(route, str) or not route.startswith(self.prefix + "/")
@@ -95,7 +101,7 @@ class GitHubGet:
         if (len(self.requests) >= self.limits["requests"]
                 or time.monotonic() - self.started > self.limits["seconds"]):
             raise EvidenceError("collection_budget_exceeded")
-        record = {"route": route}
+        record = {"method": "GET", "route": route, "principal": dict(REPORT_PRINCIPAL)}
         self.requests.append(record)
         request = urllib.request.Request(
             "https://api.github.com" + route, method="GET",
@@ -318,6 +324,82 @@ def language_files(tree, language):
             and (language != "actions" or p.startswith(".github/workflows/"))]
 
 
+def required_steps(policy, spec, job_name):
+    if spec.get("role") == "platform-code-quality":
+        native = policy.get("evaluation", {}).get("platformGate", {})
+        return (["Initialize CodeQL", "Perform CodeQL Analysis"]
+                if job_name in native.get("jobs", []) else [])
+    expected = [r for r in policy.get("evaluation", {}).get("runs", [])
+                if r.get("workflowId") == spec["id"]]
+    jobs = [j for r in expected for j in r.get("jobs", []) if j.get("name") == job_name]
+    return jobs[0].get("steps", []) if len(jobs) == 1 else []
+
+
+def refresh_job_steps(api, prefix, job, run_id, attempt, head, required, cache):
+    """Refresh one stale list observation once; never infer or combine step success."""
+    def validate_steps(steps):
+        if not isinstance(steps, list) or len(steps) > 200:
+            raise EvidenceError("job_steps_unavailable")
+        numbers = [s.get("number") for s in steps]
+        if (any(not positive_int(n) for n in numbers) or len(set(numbers)) != len(numbers)
+                or any(not isinstance(s.get("name"), str) or not s["name"] for s in steps)
+                or any(sum(s["name"] == name for s in steps) > 1 for name in required)):
+            raise EvidenceError("ambiguous_job_steps")
+
+    validate_steps(job.get("steps"))
+    if job.get("run_attempt", attempt) != attempt:
+        raise EvidenceError("job_attempt_mismatch")
+    if not required or attempt != 1 or job.get("status") != "completed" or job.get("conclusion") != "success":
+        return job, None
+    selected = [s for s in job["steps"] if s["name"] in required]
+    # Explicit negative terminal evidence is never replaced by a successful reread.
+    if any(s.get("conclusion") not in (None, "success") for s in selected):
+        return job, None
+    if len(selected) == len(required) and all(s.get("status") == "completed" and s.get("conclusion") == "success" for s in selected):
+        return job, None
+    route = prefix + f"/actions/jobs/{job['id']}"
+    if job["id"] not in cache:
+        try:
+            direct = api.get(route)
+            request = dict(api.requests[-1])
+            cache[job["id"]] = (direct, request, None)
+        except EvidenceError as error:
+            if error.status not in (403, 404):
+                raise
+            cache[job["id"]] = (None, dict(api.requests[-1]), error.code)
+    direct, request, unavailable = cache[job["id"]]
+    proof = {"request": request, "listedSteps": job["steps"], "status": "unavailable"}
+    if unavailable:
+        proof["reason"] = unavailable
+        return job, proof
+    expected = {"id": job["id"], "run_id": run_id, "run_attempt": attempt,
+                "head_sha": head, "name": job["name"], "status": "completed", "conclusion": "success",
+                "started_at": job.get("started_at"), "completed_at": job.get("completed_at")}
+    if any(direct.get(k) != v for k, v in expected.items()):
+        raise EvidenceError("direct_job_identity_or_outcome_mismatch")
+    try:
+        start, end = (datetime.fromisoformat(expected[k].replace("Z", "+00:00"))
+                      for k in ("started_at", "completed_at"))
+        if start.tzinfo is None or end.tzinfo is None or start > end:
+            raise ValueError("invalid time")
+    except (AttributeError, TypeError, ValueError) as error:
+        raise EvidenceError("direct_job_time_unavailable") from error
+    validate_steps(direct.get("steps"))
+    direct_by_number = {s["number"]: s for s in direct["steps"]}
+    for old in job["steps"]:
+        new = direct_by_number.get(old["number"])
+        if new is None or new["name"] != old["name"]:
+            raise EvidenceError("direct_job_step_identity_conflict")
+        if old.get("status") == "completed" and old.get("conclusion") is not None:
+            if new.get("status") != "completed" or new.get("conclusion") != old["conclusion"]:
+                raise EvidenceError("direct_job_terminal_step_conflict")
+    selected = [s for s in direct["steps"] if s["name"] in required]
+    complete = len(selected) == len(required) and all(s.get("status") == "completed" and s.get("conclusion") == "success" for s in selected)
+    proof.update({"status": "verified" if complete else "unavailable",
+                  "reason": None if complete else "required_job_steps_incomplete"})
+    return direct, proof
+
+
 def validate_policy(policy):
     repository = policy.get("repository", {})
     if (policy.get("schemaVersion") != 1 or not positive_int(repository.get("id"))
@@ -347,10 +429,13 @@ def validate_policy(policy):
 
 def collect(policy, event, context, api):
     """Return observations even when incomplete; no eligibility is invented here."""
-    result = {"schemaVersion": 1, "collector": {"mode": "report-only", "startedAt": timestamp()},
+    result = {"schemaVersion": 1, "collector": {"mode": "report-only", "startedAt": timestamp(),
+                                                "principal": dict(REPORT_PRINCIPAL)},
               "collection": {"status": "blocked", "blockers": [], "errors": []},
               "workflows": [], "rawSarif": [], "observations": {"requests": [], "drift": []}}
     blockers = result["collection"]["blockers"]
+    credential = api.token
+    direct_jobs = {}
 
     def block(reason):
         if reason not in blockers:
@@ -528,11 +613,16 @@ def collect(policy, event, context, api):
                         or job.get("run_id") != run_id or job.get("head_sha") != head):
                     raise EvidenceError("job_identity_mismatch")
                 job_ids.add(job["id"])
+                job, refresh = refresh_job_steps(api, prefix, job, run_id, attempt, head,
+                                                required_steps(policy, spec, job.get("name")), direct_jobs)
+                if refresh and refresh["status"] != "verified":
+                    block("required_job_steps_unavailable:" + str(job["id"]))
                 steps = job.get("steps")
                 if not isinstance(steps, list) or len(steps) > 200:
                     raise EvidenceError("job_steps_unavailable")
                 jobs_out.append({**{k: job.get(k) for k in ("id", "name", "status", "conclusion", "started_at", "completed_at")},
-                                 "steps": [{k: step.get(k) for k in ("number", "name", "status", "conclusion")} for step in steps]})
+                                 "steps": [{k: step.get(k) for k in ("number", "name", "status", "conclusion")} for step in steps],
+                                 **({"stepRefresh": refresh} if refresh else {})})
             references = run.get("referenced_workflows", [])
             source_proof = {"status": "unavailable", "revision": None, "kind": None}
             for ref in references:
@@ -559,22 +649,36 @@ def collect(policy, event, context, api):
         rules = api.get(prefix + "/rules/branches/main")
         if not isinstance(rules, list):
             raise EvidenceError("invalid_rules_response")
-        details, detail_status = [], "verified"
+        details, detail_requests, detail_status = [], [], "verified"
+        if not rules or any(not positive_int(r.get("ruleset_id")) for r in rules):
+            raise EvidenceError("invalid_applicable_ruleset_identity")
         for rule_id in sorted({r.get("ruleset_id") for r in rules if positive_int(r.get("ruleset_id"))}):
             try:
                 detail = api.get(prefix + f"/rulesets/{rule_id}")
                 if detail.get("id") != rule_id:
                     raise EvidenceError("rule_detail_identity_mismatch")
+                if api.token != credential:
+                    raise EvidenceError("collector_credential_changed")
                 details.append(detail)
+                detail_requests.append({"rulesetId": rule_id, "request": dict(api.requests[-1])})
+                applicable = [r for r in rules if r["ruleset_id"] == rule_id]
+                if (detail.get("enforcement") != "active" or detail.get("current_user_can_bypass") != "never"
+                        or any(detail.get("source_type") != r.get("ruleset_source_type")
+                               or detail.get("source") != r.get("ruleset_source") for r in applicable)
+                        or detail.get("source_type") not in ("Repository", "Organization")
+                        or not isinstance(detail.get("source"), str) or not detail["source"]):
+                    detail_status = "unavailable"
+                    block("current_principal_bypass_unverified")
             except EvidenceError as error:
                 if error.status in (403, 404):
                     detail_status = "unavailable"
-                    block("rule_bypass_details_unavailable")
+                    block("current_principal_bypass_unverified")
                 else:
                     raise
-        result["protection"] = {"rules": rules, "ruleDetails": details, "ruleDetailStatus": detail_status}
-        if not rules or not details or any("bypass_actors" not in d for d in details):
-            block("rule_bypass_details_unavailable")
+        result["protection"] = {"rules": rules, "ruleDetails": details, "ruleDetailStatus": detail_status,
+                                 "ruleDetailRequests": detail_requests}
+        if not details:
+            block("current_principal_bypass_unverified")
             result["protection"]["ruleDetailStatus"] = "unavailable"
         checks, check_pages = paginated(api, prefix + f"/commits/{head}/check-runs?filter=all",
                                         "check_runs", limit=500, pages=limits["pages"])
@@ -685,11 +789,15 @@ def collect(policy, event, context, api):
         if api.get(prefix + "/rules/branches/main") != rules:
             block("effective_rules_changed_during_collection")
         result["protection"]["ruleDetailsAfter"] = []
+        result["protection"]["ruleDetailRequestsAfter"] = []
         result["protection"]["ruleDetailRereadStatus"] = "unchanged" if details else "unavailable"
         for detail in details:
             try:
                 after_detail = api.get(prefix + f"/rulesets/{detail['id']}")
+                if api.token != credential:
+                    raise EvidenceError("collector_credential_changed")
                 result["protection"]["ruleDetailsAfter"].append(after_detail)
+                result["protection"]["ruleDetailRequestsAfter"].append({"rulesetId": detail["id"], "request": dict(api.requests[-1])})
                 if after_detail != detail:
                     result["protection"]["ruleDetailRereadStatus"] = "changed"
                     result["protection"]["ruleDetailStatus"] = "changed"
@@ -702,6 +810,8 @@ def collect(policy, event, context, api):
                     block("ruleset_details_reread_unavailable")
                 else:
                     raise
+        if api.token != credential:
+            raise EvidenceError("collector_credential_changed")
         platform = [w for w in result["workflows"] if specs[w["workflowId"]].get("role") == "platform-code-quality"]
         if platform:
             result["platformGate"] = platform[0]
