@@ -28,6 +28,7 @@ function runScope(overrides: Record<string, string> = {}) {
       env: {
         ...process.env,
         GITHUB_OUTPUT: output,
+        FULL_SCOPE: "false",
         DOCS_CHANGED: "true",
         DESKTOP_CHANGED: "false",
         NON_DOCS_CHANGED: "false",
@@ -61,6 +62,29 @@ function runGate(overrides: Record<string, string> = {}) {
 }
 
 describe("scope output validation", () => {
+  it("runs every protected lane in explicit full-scope mode without diff outputs", () => {
+    const result = runScope({
+      FULL_SCOPE: "true",
+      DOCS_CHANGED: "",
+      DESKTOP_CHANGED: "",
+      NON_DOCS_CHANGED: "",
+    })
+    expect(result.status, result.stderr).toBe(0)
+    expect(result.outputs).toBe("docs_changed=true\ndesktop_changed=true\ndocs_only=false\n")
+    expect(runGate().status).toBe(0)
+    for (const lane of ["check", "docs", "desktop-artifact"]) {
+      expect(runGate({ [`${lane}.result`]: "skipped" }).status).toBe(1)
+    }
+  })
+
+  it("rejects malformed full-scope mode before emitting any applicability outputs", () => {
+    for (const value of ["", "True", "unknown", "true; exit 0"]) {
+      const result = runScope({ FULL_SCOPE: value })
+      expect(result.status).toBe(1)
+      expect(result.outputs).toBe("")
+    }
+  })
+
   it("passes path-filter outputs through environment variables", () => {
     expect(scopeStep).toMatch(/DOCS_CHANGED: \$\{\{ steps\.filter\.outputs\.docs \}\}/)
     expect(scopeStep).toMatch(/DESKTOP_CHANGED: \$\{\{ steps\.filter\.outputs\.desktop \}\}/)

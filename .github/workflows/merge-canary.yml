@@ -1,0 +1,85 @@
+name: merge-canary
+
+on:
+  workflow_run:
+    workflows: [ci, codeql, PR Convention, CodeQL - Code Quality]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  checks: read
+  pull-requests: read
+
+concurrency:
+  group: merge-canary-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    if: github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'dynamic'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # workflow_run executes the default-branch controller, never the PR revision.
+      - name: Checkout trusted controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+
+      - name: Checkout reviewed evaluator
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: openboa-ai/.github
+          ref: ad38905cbe5c4113665c8ce38ee4798a1fce5fae
+          path: .merge-evaluator
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate trusted evidence boundary
+        env:
+          MERGE_EVALUATOR_MODULE: ${{ github.workspace }}/.merge-evaluator/lib/evaluate-merge-evidence.mjs
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          node --test test/merge-canary-adapter.test.mjs
+          python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'
+
+      - name: Collect current platform observations
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          python3 scripts/collect-merge-evidence.py \
+            --policy .github/merge-canary-policy.json \
+            --event "$GITHUB_EVENT_PATH" \
+            --output "$RUNNER_TEMP/merge-canary/observations.json"
+
+      - name: Evaluate report-only eligibility
+        if: always() && !cancelled()
+        env:
+          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          node scripts/evaluate-merge-canary.mjs \
+            --policy .github/merge-canary-policy.json \
+            --observations "$RUNNER_TEMP/merge-canary/observations.json" \
+            --evaluator .merge-evaluator/lib/evaluate-merge-evidence.mjs \
+            --output "$RUNNER_TEMP/merge-canary/report.json"
+
+      - name: Upload bounded canary report
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: merge-canary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/merge-canary/
+          if-no-files-found: error
+          retention-days: 7

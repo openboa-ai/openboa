@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "mode": "report-only",
+  "repository": {
+    "id": 1214829403,
+    "fullName": "openboa-ai/openboa",
+    "defaultBranch": "main"
+  },
+  "workflows": [
+    {
+      "id": 262978663,
+      "path": ".github/workflows/ci.yml",
+      "event": "pull_request",
+      "role": "ci"
+    },
+    {
+      "id": 262978664,
+      "path": ".github/workflows/codeql.yml",
+      "event": "pull_request",
+      "role": "codeql"
+    },
+    {
+      "id": 262978665,
+      "path": ".github/workflows/pr-convention.yml",
+      "event": "pull_request",
+      "role": "convention"
+    },
+    {
+      "id": 347609655,
+      "path": "dynamic/github-code-quality/codeql",
+      "event": "dynamic",
+      "role": "platform-code-quality"
+    }
+  ],
+  "requiredLanguages": [
+    {
+      "language": "javascript-typescript",
+      "category": ".github/workflows/codeql.yml:analyze"
+    },
+    {
+      "language": "python",
+      "category": ".github/workflows/codeql.yml:analyze-python"
+    },
+    {
+      "language": "actions",
+      "category": ".github/workflows/codeql.yml:analyze-actions"
+    }
+  ],
+  "allowedDocumentationPaths": [
+    "README.md"
+  ],
+  "controlPaths": [
+    ".github/merge-canary-policy.json",
+    ".github/workflows/merge-canary.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/codeql.yml",
+    ".github/workflows/dependency-audit.yml",
+    ".github/workflows/pr-convention.yml",
+    ".github/workflows/reusable-validation.yml",
+    "scripts/collect-merge-evidence.py",
+    "scripts/evaluate-merge-canary.mjs",
+    "package.json",
+    "pnpm-lock.yaml"
+  ],
+  "evaluation": {
+    "version": 1,
+    "trustModel": "trusted-solo-writer",
+    "deploymentPlan": "free",
+    "maxAgeMs": 300000,
+    "codeqlVersion": "2.26.2",
+    "protectedPaths": [
+      ".github",
+      ".agents",
+      "scripts",
+      "test",
+      "src"
+    ],
+    "requiredChecks": [
+      {
+        "context": "required-ci",
+        "appId": 15368
+      },
+      {
+        "context": "convention",
+        "appId": 15368
+      }
+    ],
+    "runs": [
+      {
+        "role": "ci",
+        "workflowId": 262978663,
+        "path": ".github/workflows/ci.yml",
+        "event": "pull_request",
+        "jobs": [
+          {
+            "role": "scope",
+            "name": "scope",
+            "steps": [
+              "Record source receipt",
+              "Upload source receipt",
+              "Detect docs scope",
+              "Compute scope flags"
+            ]
+          },
+          {
+            "role": "policy",
+            "name": "policy",
+            "steps": [
+              "Validate CI policy baseline"
+            ]
+          },
+          {
+            "role": "secrets",
+            "name": "secrets",
+            "steps": [
+              "Detect secrets baseline",
+              "Detect private keys",
+              "Lint GitHub Actions workflows",
+              "Audit GitHub Actions workflows"
+            ]
+          },
+          {
+            "role": "gitleaks",
+            "name": "gitleaks",
+            "steps": [
+              "Run gitleaks"
+            ]
+          },
+          {
+            "role": "dependencies",
+            "name": "dependency-audit / audit",
+            "steps": [
+              "Validate frozen dependency graph without lifecycle scripts",
+              "Audit all dependency scopes and severities"
+            ]
+          },
+          {
+            "role": "check",
+            "name": "check",
+            "steps": [
+              "Run checks"
+            ]
+          },
+          {
+            "role": "docs",
+            "name": "docs",
+            "steps": [
+              "Check docs",
+              "Check docs links",
+              "Validate Mintlify docs"
+            ]
+          },
+          {
+            "role": "desktop",
+            "name": "desktop-artifact",
+            "steps": [
+              "Build macOS desktop artifact",
+              "Upload desktop artifact"
+            ]
+          },
+          {
+            "role": "aggregate",
+            "name": "required-ci",
+            "steps": [
+              "Evaluate job results"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "codeql",
+        "workflowId": 262978664,
+        "path": ".github/workflows/codeql.yml",
+        "event": "pull_request",
+        "jobs": [
+          {
+            "role": "javascript-typescript",
+            "name": "analyze (javascript-typescript)",
+            "steps": [
+              "Record source receipt",
+              "Initialize CodeQL",
+              "Perform CodeQL Analysis",
+              "Prepare merge evidence",
+              "Upload merge evidence"
+            ]
+          },
+          {
+            "role": "python",
+            "name": "analyze (python)",
+            "steps": [
+              "Record source receipt",
+              "Initialize CodeQL",
+              "Perform CodeQL Analysis",
+              "Prepare merge evidence",
+              "Upload merge evidence"
+            ]
+          },
+          {
+            "role": "actions",
+            "name": "analyze (actions)",
+            "steps": [
+              "Record source receipt",
+              "Initialize CodeQL",
+              "Perform CodeQL Analysis",
+              "Prepare merge evidence",
+              "Upload merge evidence"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "convention",
+        "workflowId": 262978665,
+        "path": ".github/workflows/pr-convention.yml",
+        "event": "pull_request",
+        "jobs": [
+          {
+            "role": "convention",
+            "name": "convention",
+            "steps": [
+              "Record source receipt",
+              "Upload source receipt",
+              "Validate PR title/body convention"
+            ]
+          }
+        ]
+      }
+    ],
+    "platformGate": {
+      "workflowId": 347609655,
+      "path": "dynamic/github-code-quality/codeql",
+      "event": "dynamic",
+      "appId": 15368,
+      "jobs": [
+        "Analyze (python)",
+        "Analyze (javascript-typescript)"
+      ]
+    },
+    "receiptCategories": {
+      "javascript-typescript": ".github/workflows/codeql.yml:analyze",
+      "python": ".github/workflows/codeql.yml:analyze-python",
+      "actions": ".github/workflows/codeql.yml:analyze-actions"
+    },
+    "sarifCategories": {
+      "javascript-typescript": ".github/workflows/codeql.yml:analyze/",
+      "python": ".github/workflows/codeql.yml:analyze-python/",
+      "actions": ".github/workflows/codeql.yml:analyze-actions/"
+    }
+  },
+  "expectedRuleTypes": [
+    "deletion",
+    "non_fast_forward",
+    "copilot_code_review",
+    "code_quality",
+    "code_scanning",
+    "pull_request",
+    "required_status_checks",
+    "required_linear_history"
+  ],
+  "evaluator": {
+    "repository": "openboa-ai/.github",
+    "revision": "ad38905cbe5c4113665c8ce38ee4798a1fce5fae",
+    "path": "lib/evaluate-merge-evidence.mjs",
+    "sha256": "0bdea1e2d69f9e67362865113005955f90e3ddee6ef20fdab565faf4a92e68c3"
+  }
+}

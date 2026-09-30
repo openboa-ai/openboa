@@ -8,6 +8,20 @@ on:
   schedule:
     - cron: "23 4 * * 1"
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      revision:
+        description: Immutable source commit; workflow definitions stay at the caller revision.
+        required: true
+        type: string
+      analysis_ref:
+        description: Git ref associated with the source commit for CodeQL analysis.
+        required: true
+        type: string
+      upload_results:
+        description: Upload genuine analysis; false supports isolated reusable-workflow validation.
+        default: true
+        type: boolean
 
 permissions:
   actions: read
@@ -30,37 +44,190 @@ jobs:
           - language: actions
             category: .github/workflows/codeql.yml:analyze-actions
     steps:
+      - name: Validate revision
+        shell: bash
+        env:
+          REVISION: ${{ inputs.revision || github.sha }}
+        run: |
+          if [[ ! "${REVISION}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Revision must be an immutable full commit SHA"
+            exit 1
+          fi
+
+      - name: Validate analysis ref
+        if: inputs.revision != ''
+        shell: bash
+        env:
+          ANALYSIS_REF: ${{ inputs.analysis_ref }}
+        run: |
+          if [[ ! "${ANALYSIS_REF}" =~ ^refs/heads/[a-zA-Z0-9._/-]+$ ]]; then
+            echo "Reusable CodeQL requires an explicit branch ref"
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Record source receipt
+        shell: bash
+        env:
+          REPOSITORY_ID: ${{ github.repository_id }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+          WORKFLOW_PATH: .github/workflows/codeql.yml
+          JOB_NAME: "analyze (${{ matrix.language }})"
+          EXPECTED_REVISION: ${{ inputs.revision || github.sha }}
+          RECEIPT_DIRECTORY: ${{ runner.temp }}/merge-source
+          LANGUAGE: ${{ matrix.language }}
+          CATEGORY: ${{ inputs.revision != '' && inputs.upload_results == false && 'reusable-validation:' || '' }}${{ matrix.category }}
+        run: |
+          python3 - <<'PYTHON'
+          import hashlib
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          def git(*args):
+              return subprocess.check_output(["git", *args])
+
+          def sha(value):
+              if len(value) != 40 or any(c not in "0123456789abcdef" for c in value):
+                  raise SystemExit("Invalid source SHA")
+              return value
+
+          event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
+          checkout = sha(git("rev-parse", "HEAD").decode().strip())
+          if checkout != sha(os.environ["EXPECTED_REVISION"]):
+              raise SystemExit("Checkout does not match the requested source")
+          workflow_sha = sha(os.environ["WORKFLOW_SHA"])
+          workflow_path = os.environ["WORKFLOW_PATH"]
+          workflow_bytes = git("show", f"{workflow_sha}:{workflow_path}")
+          commit = git("cat-file", "-p", checkout).decode().split("\n\n", 1)[0]
+          parents = [sha(line[7:]) for line in commit.splitlines() if line.startswith("parent ")]
+          pull = event.get("pull_request", {})
+          source_files = []
+          language = os.environ.get("LANGUAGE", "")
+          for record in git("ls-tree", "-r", "-z", checkout).split(b"\0"):
+              if not record:
+                  continue
+              metadata, path_bytes = record.split(b"\t", 1)
+              mode, kind, blob = metadata.decode().split()
+              path = path_bytes.decode("utf-8", "strict")
+              suffix = Path(path).suffix.lower()
+              include = ((language == "javascript-typescript" and suffix in {".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"})
+                         or (language == "python" and suffix == ".py")
+                         or (language == "actions" and path.startswith(".github/workflows/") and suffix in {".yml", ".yaml"}))
+              if include:
+                  source_files.append({"path": path, "mode": mode, "type": kind, "blob": blob})
+          receipt = {
+              "schemaVersion": 1,
+              "repositoryId": int(os.environ["REPOSITORY_ID"]),
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "runId": int(os.environ["GITHUB_RUN_ID"]),
+              "runAttempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "workflowRef": os.environ["WORKFLOW_REF"],
+              "workflowPath": workflow_path,
+              "workflowSha": workflow_sha,
+              "workflowSha256": hashlib.sha256(workflow_bytes).hexdigest(),
+              "event": os.environ["GITHUB_EVENT_NAME"],
+              "eventSha": sha(os.environ["GITHUB_SHA"]),
+              "headSha": pull.get("head", {}).get("sha"),
+              "baseSha": pull.get("base", {}).get("sha"),
+              "checkoutSha": checkout,
+              "parents": parents,
+              "sourceTree": git("rev-parse", "HEAD^{tree}").decode().strip(),
+              "sourceFiles": source_files,
+              "jobName": os.environ["JOB_NAME"],
+              "language": language or None,
+              "category": os.environ.get("CATEGORY") or None,
+          }
+          output = Path(os.environ["RECEIPT_DIRECTORY"])
+          output.mkdir(parents=True, exist_ok=True)
+          (output / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+          print(f"Recorded actual source {checkout} and {len(source_files)} tracked language files")
+          PYTHON
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
-
-      - name: Setup pnpm
-        if: matrix.language == 'javascript-typescript'
-        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-        with:
-          version: "10.23.0"
-
-      - name: Setup Node
-        if: matrix.language == 'javascript-typescript'
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: "22"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        if: matrix.language == 'javascript-typescript'
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        if: matrix.language == 'javascript-typescript'
-        run: pnpm build
+          build-mode: none
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
-          category: ${{ matrix.category }}
+          category: ${{ inputs.revision != '' && inputs.upload_results == false && 'reusable-validation:' || '' }}${{ matrix.category }}
+          ref: ${{ inputs.analysis_ref }}
+          sha: ${{ inputs.revision }}
+          upload: ${{ inputs.revision != '' && inputs.upload_results == false && 'never' || 'always' }}
+          output: ${{ runner.temp }}/codeql-results
+
+      - name: Validate reusable analysis output
+        if: inputs.revision != '' && inputs.upload_results == false
+        shell: bash
+        env:
+          SARIF_DIRECTORY: ${{ runner.temp }}/codeql-results
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+
+          files = list(Path(os.environ["SARIF_DIRECTORY"]).glob("*.sarif"))
+          if not files:
+              raise SystemExit("CodeQL produced no SARIF")
+          for path in files:
+              document = json.loads(path.read_text())
+              if document.get("version") != "2.1.0" or not document.get("runs"):
+                  raise SystemExit("Invalid or empty CodeQL analysis")
+              for run in document["runs"]:
+                  if run.get("tool", {}).get("driver", {}).get("name") != "CodeQL":
+                      raise SystemExit("Unexpected analysis tool")
+                  if not isinstance(run.get("results"), list):
+                      raise SystemExit("Missing analysis results")
+          print(f"Validated {len(files)} genuine CodeQL SARIF document(s)")
+          PYTHON
+
+      - name: Prepare merge evidence
+        shell: bash
+        env:
+          LANGUAGE: ${{ matrix.language }}
+          SARIF_DIRECTORY: ${{ runner.temp }}/codeql-results
+          RECEIPT_DIRECTORY: ${{ runner.temp }}/merge-source
+          EVIDENCE_DIRECTORY: ${{ runner.temp }}/merge-evidence
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          import shutil
+          from pathlib import Path
+
+          language = os.environ["LANGUAGE"]
+          inputs = list(Path(os.environ["SARIF_DIRECTORY"]).glob("*.sarif"))
+          if len(inputs) != 1:
+              raise SystemExit("Expected exactly one language SARIF document")
+          document = json.loads(inputs[0].read_text())
+          if document.get("version") != "2.1.0" or not document.get("runs"):
+              raise SystemExit("Invalid CodeQL SARIF")
+          for run in document["runs"]:
+              if run.get("tool", {}).get("driver", {}).get("name") != "CodeQL":
+                  raise SystemExit("Unexpected analysis tool")
+          output = Path(os.environ["EVIDENCE_DIRECTORY"])
+          output.mkdir(parents=True, exist_ok=True)
+          shutil.copyfile(inputs[0], output / (language + ".sarif"))
+          shutil.copyfile(Path(os.environ["RECEIPT_DIRECTORY"]) / "receipt.json", output / "receipt.json")
+          PYTHON
+
+      - name: Upload merge evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: merge-evidence-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.language }}
+          path: ${{ runner.temp }}/merge-evidence/*
+          if-no-files-found: error
+          retention-days: 7
