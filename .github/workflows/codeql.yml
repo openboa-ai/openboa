@@ -138,14 +138,14 @@ jobs:
           PYTHON
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
+        uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
           build-mode: none
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
+        uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
           category: ${{ inputs.isolated_analysis == true && 'reusable-validation:' || '' }}${{ matrix.category }}
           upload: ${{ inputs.isolated_analysis == true && 'never' || 'always' }}
@@ -230,7 +230,7 @@ jobs:
         # Preserve already-prepared raw evidence when the optional strict gate
         # fails; the failed gate/job still blocks the continuation aggregate.
         if: always() && !cancelled() && steps.prepare_evidence.outcome == 'success' && (success() || inputs.strict_postmerge == true)
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: merge-evidence-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.language }}
           path: ${{ runner.temp }}/merge-evidence/*
