@@ -535,6 +535,55 @@ class EvidenceRefreshTests(unittest.TestCase):
         self.assertNotIn("changed-fixture-token", json.dumps(client.requests))
 
 
+class ReportSelectionTests(unittest.TestCase):
+    def test_report_selection_uses_real_event_and_all_existing_proof_checks(self):
+        for event_name in ("schedule", "workflow_dispatch"):
+            api = FakeAPI()
+            policy = copy.deepcopy(api.policy)
+            policy["mode"] = "report-only"
+            policy["repository"] = {"id": 1214829403, "fullName": "openboa-ai/openboa", "defaultBranch": "main"}
+            context = {**api.context, "GITHUB_REPOSITORY": "openboa-ai/openboa",
+                       "GITHUB_EVENT_NAME": event_name, "GITHUB_REF": "refs/heads/main"}
+            event = {"repository": {"id": 1214829403}, "inputs": {}}
+            get = api.get
+            def actual_report(route):
+                route = route.replace("/repos/openboa-ai/openboa", P).replace("/pulls/91", "/pulls/2")
+                response = get(route)
+                raw = json.dumps(response).replace('"id": 7', '"id": 1214829403').replace('"number": 2', '"number": 91')
+                response = json.loads(raw.replace("example/project", "openboa-ai/openboa"))
+                if route == P + "/pulls/2":
+                    response["base"]["repo"]["private"] = False
+                return response
+            api.get = actual_report
+            result = C.collect(policy, event, context, api, report_number=91)
+            self.assertEqual(result["collection"]["errors"], [])
+            self.assertEqual(result["pullRequest"]["number"], 91)
+            self.assertEqual(result["collector"]["selection"], {"kind": "rotating-report", "number": 91, "event": event_name})
+            self.assertEqual(result["collection"]["status"], "blocked")
+            self.assertTrue(result["collection"]["blockers"])  # Missing raw proof never becomes eligibility.
+            self.assertEqual(event, {"repository": {"id": 1214829403}, "inputs": {}})
+
+    def test_report_selection_rejects_inputs_numbers_modes_context_and_pilot_overlap(self):
+        for number, name, ref, mode, inputs in [(True, "schedule", "refs/heads/main", "report-only", {}),
+                (0, "schedule", "refs/heads/main", "report-only", {}),
+                (2, "workflow_run", "refs/heads/main", "report-only", {}),
+                (2, "workflow_dispatch", "refs/heads/other", "report-only", {}),
+                (2, "schedule", "refs/heads/main", "merge", {}),
+                (2, "workflow_dispatch", "refs/heads/main", "report-only", {"number": "2"})]:
+            api = FakeAPI()
+            api.policy.update(mode=mode)
+            api.policy["repository"].update(id=1214829403, fullName="openboa-ai/openboa")
+            event = {"repository": {"id": 1214829403}, "inputs": inputs}
+            context = {**api.context, "GITHUB_REPOSITORY": "openboa-ai/openboa", "GITHUB_EVENT_NAME": name, "GITHUB_REF": ref}
+            result = C.collect(api.policy, event, context, api, report_number=number)
+            self.assertIn("report_selection_context_invalid", result["collection"]["blockers"])
+            self.assertEqual(api.requests, [])
+        api = FakeAPI()
+        result = C.collect(api.policy, api.event, api.context, api, pilot_number=68, report_number=2)
+        self.assertIn("selection_modes_conflict", result["collection"]["blockers"])
+        self.assertEqual(api.requests, [])
+
+
 class PilotSelectionTests(unittest.TestCase):
     def test_fixed_pilot_uses_real_event_and_keeps_all_evidence_checks(self):
         for event_name in ("schedule", "workflow_dispatch"):

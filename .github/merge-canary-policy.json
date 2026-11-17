@@ -58,6 +58,7 @@
     ".github/workflows/pr-convention.yml",
     ".github/workflows/reusable-validation.yml",
     "scripts/collect-merge-evidence.py",
+    "scripts/run-merge-canary.py",
     "scripts/evaluate-merge-canary.mjs",
     "package.json",
     "pnpm-lock.yaml",

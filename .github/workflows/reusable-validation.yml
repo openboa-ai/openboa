@@ -11,8 +11,10 @@ on:
       - ".github/merge-canary-policy.json"
       - ".github/workflows/merge-canary.yml"
       - "scripts/collect-merge-evidence.py"
+      - "scripts/run-merge-canary.py"
       - "scripts/evaluate-merge-canary.mjs"
       - "test/test_collect_merge_evidence.py"
+      - "test/test_run_merge_canary.py"
       - "test/merge-canary-adapter.test.mjs"
       - "test/merge-source-receipt.test.ts"
       - ".github/readme-writer-policy.json"
@@ -108,6 +110,7 @@ jobs:
         run: |
           node --test test/merge-canary-adapter.test.mjs
           python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'
+          python3 -B -m unittest discover -s test -p 'test_run_merge_canary.py'
           python3 -m unittest discover -s test -p 'test_readme_writer_pilot.py'
           python3 -m unittest discover -s test -p 'test_validate_postmerge_sarif.py'
           python3 -m unittest discover -s test -p 'test_dispatch_postmerge_verification.py'
