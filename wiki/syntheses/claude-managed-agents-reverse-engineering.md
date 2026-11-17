@@ -29,7 +29,7 @@ The most important architectural idea is:
 
 - **the brain is not the same thing as the hands**
 
-Anthropic's engineering write-up says their managed-agent service is built around interfaces that remain stable even as harnesses change, and explicitly frames the system as "decoupling the brain from the hands."  
+Anthropic's engineering write-up says their managed-agent service is built around interfaces that remain stable even as harnesses change, and explicitly frames the system as "decoupling the brain from the hands."
 Source: [Anthropic engineering: managed agents](https://www.anthropic.com/engineering/managed-agents)
 
 That means the scalable unit is **not**:
@@ -74,7 +74,7 @@ For openboa this implies:
 
 ### 2. Environment is a separate reusable resource
 
-Claude separates the execution environment from the agent definition. An environment is created once and then referenced by many sessions, while each session still gets its own isolated container instance.  
+Claude separates the execution environment from the agent definition. An environment is created once and then referenced by many sessions, while each session still gets its own isolated container instance.
 Source: [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments)
 
 This is another key contract:
@@ -90,7 +90,7 @@ For openboa this implies:
 
 ### 3. Session is the canonical running object
 
-Claude says a session is a running agent instance within an environment. Sessions reference an agent and an environment, maintain conversation history across multiple interactions, and act as a state machine whose execution is driven by events.  
+Claude says a session is a running agent instance within an environment. Sessions reference an agent and an environment, maintain conversation history across multiple interactions, and act as a state machine whose execution is driven by events.
 Source: [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions)
 
 This is the single most important insight for openboa:
@@ -301,7 +301,7 @@ Claude's model suggests we should now tighten these into a more explicit resourc
 
 ## Outcomes
 
-Claude outcomes explicitly "elevate a session from conversation to work" by attaching a target and grader loop to the session.  
+Claude outcomes explicitly "elevate a session from conversation to work" by attaching a target and grader loop to the session.
 Source: [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes)
 
 This is highly relevant to openboa's long-term `Work` layer.

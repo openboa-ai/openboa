@@ -8,7 +8,7 @@
 - `Owned boundary`: `package.json`, `pnpm-lock.yaml`, [spec revision 1](../../docs/engineering/security-dependencies-20261117/spec.md), and this frontier's wiki records.
 - `Acceptance criteria`: Requirement-linked evidence in the specification, independent immutable-diff review, and exact-commit trusted CI; draft PR only.
 - `Current status`: `open`
-- `Current owner`: `auto-coding`
+- `Current owner`: `auto-pm`
 - `Accepted specification`: Revision 4, SHA-256 `1468eb7b83292ec952bdedcf990fe55a41c67228b5a309dbf6a4c1fe0b4a213a`, accepted by the delegated project lead after independently confirmed consumer regression review; recorded at 2026-11-17T10:59:02+00:00. This is routine lead acceptance, not new human approval. Earlier accepted revisions are recorded in `cdb463c2e7f8a955deccda85f46523fb72fc310e`, `b7fe181` and `bcc6ba5`; revision 4 is committed before the lasting CLI2 compatibility control.
 - `Baseline`: 38 open Dependabot alert entries (34 unique GHSAs; 1 critical, 14 high, 15 medium, 8 low); readable code scanning and secret scanning each return zero open alerts.
 - `Current quality gap`: The candidate graph removes all 38 original alert entries / 34 unique GHSAs, and the 512-test component suite plus unsigned desktop packaging pass. The smol-toml 1.9.0 attempt was discarded after real CLI2 TOML rule-option controls failed. Revision 4 preserves baseline smol-toml and leaves four audit GHSAs in smol-toml, katex, zod and minimatch plus the unchanged expired policy gate. Final exact-head verification and independent review remain.
@@ -37,3 +37,11 @@ The source status now records that acceptance; its source commit precedes all
 follow-up dependency, patch, test, workspace metadata and whitespace edits.
 This hands one bounded implementation run from auto-pm to auto-coding. Zod and
 reporter changes remain gated and are not implementation authority in revision 5.
+
+
+The accepted revision 5 iteration is kept in
+`RUN-20261117-security-dependencies-followup`: three remaining dependency fixes
+and all 17 exact whitespace/EOF edits are complete. The 26 focused consumer/TOML
+checks and full pre-commit profile pass without additional edits. Unsuppressed
+audit now reports only Zod GHSA-mrhx-c7xc-m3w5. Zod and the expired reporter
+mechanism remain open, and require their own accepted specification before edits.

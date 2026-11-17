@@ -8,7 +8,7 @@ read_when:
 # 소개
 
 
-**openboa**는 프로젝트이자 브랜드 이름입니다.  
+**openboa**는 프로젝트이자 브랜드 이름입니다.
 핵심 개념은 **Business of Agents (BOA)**이며, 이를 *Business of Agents* 운영 모델로 구현합니다.
 
 openboa는 **Business**를 지속되는 운영 주체로 두고, Agent를 진화 가능한 실행 인력으로 다룹니다.
@@ -28,7 +28,7 @@ openboa는 아직 초기 단계(설계 우선 단계)입니다. 프로덕션 규
 
 ## 왜 지금 필요한가
 
-AI는 콘텐츠 생성 비용을 크게 낮췄습니다.  
+AI는 콘텐츠 생성 비용을 크게 낮췄습니다.
 하지만 비즈니스 실행의 지속성까지 자동으로 해결해주지는 못했습니다.
 
 실제 병목은 운영 레버리지에 있습니다.
@@ -108,19 +108,19 @@ evidence와 governance layer입니다.
 
 ## 권장 읽기 순서
 
-1. **핵심 원칙 (Core Doctrine)** — 전략적 불변 조건과 의사결정 기준  
+1. **핵심 원칙 (Core Doctrine)** — 전략적 불변 조건과 의사결정 기준
    [./concepts/core-doctrine.md](./concepts/core-doctrine.md)
-2. **시스템 계약 (System Contracts)** — 철학을 집행 가능한 계약으로 변환  
+2. **시스템 계약 (System Contracts)** — 철학을 집행 가능한 계약으로 변환
    [./concepts/system-contracts.md](./concepts/system-contracts.md)
 3. **Business of Agents** — 공통 모델과 표준 용어
    [./concepts/business-of-agents.md](./concepts/business-of-agents.md)
-4. **명시적 비목표 (Sharp Non-goals)** — 드리프트를 막기 위한 제외 항목  
+4. **명시적 비목표 (Sharp Non-goals)** — 드리프트를 막기 위한 제외 항목
    [./help/non-goals.md](./help/non-goals.md)
-5. **아키텍처** — 현재 레이어 모델과 코드 현실  
+5. **아키텍처** — 현재 레이어 모델과 코드 현실
    [./architecture.md](./architecture.md)
-6. **에이전트 / 채팅 / 워크 / 옵저브** — top-level product surface  
+6. **에이전트 / 채팅 / 워크 / 옵저브** — top-level product surface
    [./agent.md](./agent.md), [./chat.md](./chat.md), [./work.md](./work.md), [./observe.md](./observe.md)
-7. **개발 가이드 / 빠른 시작** — 로컬 작업 흐름과 기여 루프  
+7. **개발 가이드 / 빠른 시작** — 로컬 작업 흐름과 기여 루프
    [./development.md](./development.md), [./quickstart.md](./quickstart.md)
 
 ## 역할별 시작점
