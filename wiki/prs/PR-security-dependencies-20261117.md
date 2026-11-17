@@ -7,13 +7,13 @@
 - `Quality target`: Existing behavior and controls pass unchanged; no dismissed alerts or unverifiable fix claims.
 - `Owned boundary`: `package.json`, `pnpm-lock.yaml`, [spec revision 1](../../docs/engineering/security-dependencies-20261117/spec.md), and this frontier's wiki records.
 - `Acceptance criteria`: Requirement-linked evidence in the specification, independent immutable-diff review, and exact-commit trusted CI; draft PR only.
-- `Current status`: `proposed`
-- `Current owner`: `auto-pm`
-- `Accepted specification`: Revision 1, SHA-256 `bcb4d161a13443b458564365379110ff7576acf07a15e07518c000ae48757fe8`, accepted on 2026-11-17 by the delegated project lead after the fresh security-boundary/compatibility investigator reported no blocker within the same-major boundary. This is lead acceptance for routine authorized maintenance, not new human approval. The accepted source content remains immutable in the initial specification commit.
+- `Current status`: `open`
+- `Current owner`: `auto-coding`
+- `Accepted specification`: Revision 2, SHA-256 `b269ef1a57e8d6dbc6ce8640c3a666ecff4e471eee2980672bd7135888043b01`, accepted on 2026-11-17 by the delegated project lead after fresh independent boundary/compatibility review reported no blocker. This is lead acceptance for routine authorized remediation, not new human approval. Revision 1 remains recorded in `cdb463c2e7f8a955deccda85f46523fb72fc310e`; revision 2 is committed before dependent edits.
 - `Baseline`: 38 open Dependabot alert entries (34 unique GHSAs; 1 critical, 14 high, 15 medium, 8 low); readable code scanning and secret scanning each return zero open alerts.
-- `Current quality gap`: Frozen baseline installation passed. Baseline audit reports 54 advisory records, broader than the 38 GitHub entries. Baseline `pnpm check` stops at an unchanged CI policy exception that expired 2026-10-14; component checks remain pending. The current official follow-redirects advisory requires 1.16.2 rather than the proposed 1.16.1, so that target returns to review. Basic-ftp #214 requires a separately reviewed cross-major mechanism.
-- `Latest winning run`: None.
+- `Current quality gap`: Frozen installation and all baseline component checks passed, including 501 tests. The unchanged policy gate fails on the exception that expired 2026-10-14. Proposed specification revision 2 consolidates the wider 49-GHSA registry audit and corrects follow-redirects to 1.16.2; its 16 compatible package targets have reviewed acceptance. Basic-ftp, katex, zod and minimatch range changes remain blocked.
+- `Latest winning run`: No implementation run; baseline recorded in `RUN-20261117-security-dependencies-baseline`.
 - `Latest failed run`: None.
-- `Why this PR is not ready yet`: Revision 1 has lead acceptance, but the current audit requires a corrected follow-redirects target and exposes additional vulnerabilities. No implementation change or published draft PR exists.
+- `Why this PR is not ready yet`: Accepted revision 2 implementation and candidate verification are pending; four range-boundary packages and the unchanged expired policy exception remain explicit blockers.
 - `Open risks`: Existing basic-ftp 5.3.1 is affected and the documented patch is 6.2.4; the unchanged dependency-audit gate will remain failing until that boundary is resolved.
-- `Next action`: Review the follow-redirects target correction and newly observed advisories, trace the basic-ftp consumer, and continue baseline component checks before the bounded implementation.
+- `Next action`: Implement the 16 accepted compatible targets and focused dependency-boundary regression test, then rerun audit and required checks. Any further range-boundary decision returns to a reviewed specification revision.

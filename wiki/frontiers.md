@@ -78,8 +78,8 @@ For each frontier include:
 
 ## PR-security-dependencies-20261117
 
-- current status: `proposed`
-- current owner: `auto-pm`
+- current status: `open`
+- current owner: `auto-coding`
 - primary metric: 37 compatible alert entries (33 unique GHSAs) absent from the candidate graph, with unchanged product and security checks
-- active quality gap: revision 1 has reviewed lead acceptance, but current audit requires a follow-redirects target correction; baseline policy gate has an expired exception; basic-ftp alert #214 needs a separately reviewed major-version decision
-- next action: review the target correction in the [specification](../docs/engineering/security-dependencies-20261117/spec.md), complete baseline evidence, then route the accepted bounded change to `auto-coding`
+- active quality gap: revision 2 has reviewed lead acceptance for 16 compatible package targets; four package range boundaries and the unchanged expired policy exception remain blocked
+- next action: implement only the accepted [specification revision 2](../docs/engineering/security-dependencies-20261117/spec.md), verify the candidate graph and regression controls, and return further range decisions to review
