@@ -74,3 +74,12 @@ For each frontier include:
 - primary metric: openboa agent architecture is re-framed around `agent definition + environment + session + attached resources + event stream`, making the runtime scalable without losing the OpenClaw-aligned `src/agents/` subsystem shape
 - active quality gap: no blocking gap is currently visible inside the owned Agent boundary; the remaining work now belongs to follow-on frontiers around richer session resources, broader session event sources, and thinner capability-aware ingress above the session-first runtime
 - next action: request final signoff on the session-first scalable Agent runtime, then open the next frontier for capability-aware session ingress and resource expansion
+
+
+## PR-security-dependencies-20261117
+
+- current status: `proposed`
+- current owner: `auto-pm`
+- primary metric: 37 compatible alert entries (33 unique GHSAs) absent from the candidate graph, with unchanged product and security checks
+- active quality gap: revision 1 has reviewed lead acceptance, but current audit requires a follow-redirects target correction; baseline policy gate has an expired exception; basic-ftp alert #214 needs a separately reviewed major-version decision
+- next action: review the target correction in the [specification](../docs/engineering/security-dependencies-20261117/spec.md), complete baseline evidence, then route the accepted bounded change to `auto-coding`
