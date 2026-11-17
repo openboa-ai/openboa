@@ -1,0 +1,39 @@
+diff --git a/bin/vendor/converter.js b/bin/vendor/converter.js
+index b5dfd6d25ed77e18e10ed9f91814d8cd7a279711..89885ebce6c0c4f488f65d862578983e5b5e8d0c 100644
+--- a/bin/vendor/converter.js
++++ b/bin/vendor/converter.js
+@@ -6084,1 +6084,2 @@ var ZodArray = class _ZodArray extends ZodType {
+-    const def = this._def;
++    const def = this._def;
++    let exceedsMax = false;
+@@ -6094,1 +6095,2 @@ var ZodArray = class _ZodArray extends ZodType {
+-      const tooBig = ctx.data.length > def.exactLength.value;
++      const tooBig = ctx.data.length > def.exactLength.value;
++      exceedsMax = tooBig;
+@@ -6123,1 +6125,2 @@ var ZodArray = class _ZodArray extends ZodType {
+-      if (ctx.data.length > def.maxLength.value) {
++      if (ctx.data.length > def.maxLength.value) {
++        exceedsMax = true;
+@@ -6134,1 +6137,4 @@ var ZodArray = class _ZodArray extends ZodType {
+-    }
++    }
++    if (exceedsMax) {
++      return INVALID;
++    }
+@@ -6867 +6873 @@ var ZodTuple = class _ZodTuple extends ZodType {
+-    const items = [...ctx.data].map((item, itemIndex) => {
++    const items = (rest ? [...ctx.data] : this._def.items.map((_, index) => ctx.data[index])).map((item, itemIndex) => {
+@@ -7032,1 +7038,2 @@ var ZodSet = class _ZodSet extends ZodType {
+-    const def = this._def;
++    const def = this._def;
++    let exceedsMax = false;
+@@ -7047,1 +7054,2 @@ var ZodSet = class _ZodSet extends ZodType {
+-      if (ctx.data.size > def.maxSize.value) {
++      if (ctx.data.size > def.maxSize.value) {
++        exceedsMax = true;
+@@ -7058,1 +7066,4 @@ var ZodSet = class _ZodSet extends ZodType {
+-    }
++    }
++    if (exceedsMax) {
++      return INVALID;
++    }

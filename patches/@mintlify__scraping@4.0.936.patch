@@ -1,0 +1,21 @@
+diff --git a/bin/assert.d.ts b/bin/assert.d.ts
+index ad95e6758e950d671b699bd4f5c9c531e9d3b91c..9c3924c7a14f0a8f74e78c6bb341038eeb8de467 100644
+--- a/bin/assert.d.ts
++++ b/bin/assert.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/bin/assert.js b/bin/assert.js
+index 4a408850dd9fbc99b41fa513f00e9f924d56d1b2..fa473d9ded7f2c1c128973a2af694a61604f4e96 100644
+--- a/bin/assert.js
++++ b/bin/assert.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/src/assert.ts b/src/assert.ts
+index 7833836cbe52498df64004dadc7979a9db9600f2..bc686647f085496a95df5ecfaf113e3c7cf87558 100644
+--- a/src/assert.ts
++++ b/src/assert.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';

@@ -1,0 +1,151 @@
+diff --git a/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts b/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts
+index 4bd63148edfe4bce10235505ed4728b13e9dfe23..b4267f1d61cc464cc6c45de190cf130e7a3d810b 100644
+--- a/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts
++++ b/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts
+@@ -22 +22 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.js b/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.js
+index d2c71e1155f9c0799b445a8f408e1a594ed53013..76ed064f3d5d68dccb4f549ec91ca50a0ad2d2f2 100644
+--- a/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.js
++++ b/lib/cjs/protocol-parser/generated/webdriver-bidi-bluetooth.js
+@@ -30 +30 @@ exports.Bluetooth = void 0;
+-const zod_1 = __importDefault(require("zod"));
++const zod_1 = __importDefault(require("zod/v3"));
+diff --git a/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.d.ts b/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.d.ts
+index b87bde9cee744dc685be802bacce52144cea77c4..41486c66fb8b335f70b02b3e499b66aad5b14410 100644
+--- a/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.d.ts
++++ b/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.d.ts
+@@ -22 +22 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.js b/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.js
+index d094879d112e4301cd223ab453a0b1cc4017a6a7..c53d9036fbe0f82d86fe7f5b7f7e2e97615d32ee 100644
+--- a/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.js
++++ b/lib/cjs/protocol-parser/generated/webdriver-bidi-permissions.js
+@@ -30 +30 @@ exports.Permissions = exports.PermissionsCommandSchema = void 0;
+-const zod_1 = __importDefault(require("zod"));
++const zod_1 = __importDefault(require("zod/v3"));
+diff --git a/lib/cjs/protocol-parser/generated/webdriver-bidi.d.ts b/lib/cjs/protocol-parser/generated/webdriver-bidi.d.ts
+index 2dd4eeb87cdf76e1b79c381b54a05cb9c7cff679..b695fd8bfad5a9b5db8fdc383b82beff1ed296af 100644
+--- a/lib/cjs/protocol-parser/generated/webdriver-bidi.d.ts
++++ b/lib/cjs/protocol-parser/generated/webdriver-bidi.d.ts
+@@ -22 +22 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/cjs/protocol-parser/generated/webdriver-bidi.js b/lib/cjs/protocol-parser/generated/webdriver-bidi.js
+index ba56f4ea169a18f449f56418f8e03f440dfdca32..6aeb9c4d956a247274d6af5114a8dc5d062b4bce 100644
+--- a/lib/cjs/protocol-parser/generated/webdriver-bidi.js
++++ b/lib/cjs/protocol-parser/generated/webdriver-bidi.js
+@@ -30 +30 @@ exports.WebExtension = exports.WebExtensionResultSchema = exports.WebExtensionCo
+-const zod_1 = __importDefault(require("zod"));
++const zod_1 = __importDefault(require("zod/v3"));
+diff --git a/lib/cjs/protocol-parser/protocol-parser.d.ts b/lib/cjs/protocol-parser/protocol-parser.d.ts
+index 50485d6841dd19e48065a578e3d62c2bfc15afcb..fb4d667ab12760e78af8bbcffa1025919e230289 100644
+--- a/lib/cjs/protocol-parser/protocol-parser.d.ts
++++ b/lib/cjs/protocol-parser/protocol-parser.d.ts
+@@ -21 +21 @@
+-import { z, type ZodType } from 'zod';
++import { z, type ZodType } from 'zod/v3';
+diff --git a/lib/cjs/protocol-parser/protocol-parser.js b/lib/cjs/protocol-parser/protocol-parser.js
+index a58ad447e0e5bc94c182b08820b7ac734988a0b8..667d97f000ae9f74f6fde3b469119189ac71906c 100644
+--- a/lib/cjs/protocol-parser/protocol-parser.js
++++ b/lib/cjs/protocol-parser/protocol-parser.js
+@@ -58 +58 @@ exports.parseObject = parseObject;
+-const zod_1 = require("zod");
++const zod_1 = require("zod/v3");
+diff --git a/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts b/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts
+index 4bd63148edfe4bce10235505ed4728b13e9dfe23..b4267f1d61cc464cc6c45de190cf130e7a3d810b 100644
+--- a/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts
++++ b/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.d.ts
+@@ -22 +22 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.js b/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.js
+index ed2ae4a0e7da75fb69960f1e8147b478d10d2512..3f1b9301202666c57543442bd4467428578555b2 100644
+--- a/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.js
++++ b/lib/esm/protocol-parser/generated/webdriver-bidi-bluetooth.js
+@@ -24 +24 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.d.ts b/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.d.ts
+index b87bde9cee744dc685be802bacce52144cea77c4..41486c66fb8b335f70b02b3e499b66aad5b14410 100644
+--- a/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.d.ts
++++ b/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.d.ts
+@@ -22 +22 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.js b/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.js
+index 03a522584cf1328cb462c6feebed7acc4cc58993..d772d2557a90401435623d1c8f38b1d13a31f615 100644
+--- a/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.js
++++ b/lib/esm/protocol-parser/generated/webdriver-bidi-permissions.js
+@@ -24 +24 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/generated/webdriver-bidi.d.ts b/lib/esm/protocol-parser/generated/webdriver-bidi.d.ts
+index 2dd4eeb87cdf76e1b79c381b54a05cb9c7cff679..b695fd8bfad5a9b5db8fdc383b82beff1ed296af 100644
+--- a/lib/esm/protocol-parser/generated/webdriver-bidi.d.ts
++++ b/lib/esm/protocol-parser/generated/webdriver-bidi.d.ts
+@@ -22 +22 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/generated/webdriver-bidi.js b/lib/esm/protocol-parser/generated/webdriver-bidi.js
+index 134c1490efbcdd14821344d9dadeddf0b2c50fb1..17b50f8b42eb237fcf7062fc0a1ed245cc1fa005 100644
+--- a/lib/esm/protocol-parser/generated/webdriver-bidi.js
++++ b/lib/esm/protocol-parser/generated/webdriver-bidi.js
+@@ -24 +24 @@
+-import z from 'zod';
++import z from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/protocol-parser.d.ts b/lib/esm/protocol-parser/protocol-parser.d.ts
+index 50485d6841dd19e48065a578e3d62c2bfc15afcb..fb4d667ab12760e78af8bbcffa1025919e230289 100644
+--- a/lib/esm/protocol-parser/protocol-parser.d.ts
++++ b/lib/esm/protocol-parser/protocol-parser.d.ts
+@@ -21 +21 @@
+-import { z, type ZodType } from 'zod';
++import { z, type ZodType } from 'zod/v3';
+diff --git a/lib/esm/protocol-parser/protocol-parser.js b/lib/esm/protocol-parser/protocol-parser.js
+index e785b7170e66051585f91191b7e8f9ca716256fe..6d3fe97c3fe5b31a2e59548c7ba1ddc055fd78c6 100644
+--- a/lib/esm/protocol-parser/protocol-parser.js
++++ b/lib/esm/protocol-parser/protocol-parser.js
+@@ -21 +21 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/lib/iife/mapperTab.js b/lib/iife/mapperTab.js
+index baa3a7c52d71978a3dde97c275a745dc067e8bb2..de6815692b28bee79df80a31172e63164cd372c1 100644
+--- a/lib/iife/mapperTab.js
++++ b/lib/iife/mapperTab.js
+@@ -11872,1 +11872,2 @@
+-            const def = this._def;
++            const def = this._def;
++            let exceedsMax = false;
+@@ -11882,1 +11883,2 @@
+-                const tooBig = ctx.data.length > def.exactLength.value;
++                const tooBig = ctx.data.length > def.exactLength.value;
++                exceedsMax = tooBig;
+@@ -11911,1 +11913,2 @@
+-                if (ctx.data.length > def.maxLength.value) {
++                if (ctx.data.length > def.maxLength.value) {
++                    exceedsMax = true;
+@@ -11922,1 +11925,4 @@
+-            }
++            }
++            if (exceedsMax) {
++                return INVALID;
++            }
+@@ -12605 +12611 @@
+-            const items = [...ctx.data]
++            const items = (rest ? [...ctx.data] : this._def.items.map((_, index) => ctx.data[index]))
+@@ -12775,1 +12781,2 @@
+-            const def = this._def;
++            const def = this._def;
++            let exceedsMax = false;
+@@ -12790,1 +12797,2 @@
+-                if (ctx.data.size > def.maxSize.value) {
++                if (ctx.data.size > def.maxSize.value) {
++                    exceedsMax = true;
+@@ -12801,1 +12809,4 @@
+-            }
++            }
++            if (exceedsMax) {
++                return INVALID;
++            }

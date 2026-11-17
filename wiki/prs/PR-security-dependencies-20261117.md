@@ -62,3 +62,12 @@ status fields and the stale introductory gate sentence were reconciled after
 acceptance. Reporter revision 7 is proposed separately at
 `docs/engineering/security-dependencies-20261117-reporter/spec.md`, preserving
 this accepted Zod source while that independent mechanism is reviewed.
+
+Revision 6 is kept in `RUN-20261117-security-zod`: all five parser/bundle copies
+and all 211 import/type files reproduce reviewed bytes in a fresh frozen install;
+48 Zod behavioral controls pass and unfiltered audit exits 0 at every severity.
+Pure insertion patch application was corrected with anchored replacement hunks
+before keep, without changing intended source or excluding hooks. The independently
+accepted reporter revision 7.1 is recorded in `4586036` and implementation now
+passes from auto-pm to the same auto-coding writer. Its policy replacement, full
+exact-head checks, desktop packaging and independent final review remain open.

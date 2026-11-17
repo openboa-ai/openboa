@@ -1,0 +1,10 @@
+diff --git a/dist/prebuild/update/ConfigUpdater.d.ts b/dist/prebuild/update/ConfigUpdater.d.ts
+index 870b9769bef3998ba77259cf7f9fee23ed8df178..e5c2a06b96b4ba70a36d335e6080257eef4fea93 100644
+--- a/dist/prebuild/update/ConfigUpdater.d.ts
++++ b/dist/prebuild/update/ConfigUpdater.d.ts
+@@ -12 +12 @@ export declare class ConfigUpdater<T> {
+-        warnings: import("zod").ZodIssue[];
++        warnings: import("zod/v3").ZodIssue[];
+@@ -17 +17 @@ export declare class ConfigUpdater<T> {
+-        warnings: import("zod").ZodIssue[];
++        warnings: import("zod/v3").ZodIssue[];

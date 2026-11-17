@@ -1,0 +1,117 @@
+diff --git a/src/v3/types.ts b/src/v3/types.ts
+index 17bef73f42205b301bc0de7f3f3eb6608791bda8..fabb3072f29e71967bc3bb71c7ff8959f1dba820 100644
+--- a/src/v3/types.ts
++++ b/src/v3/types.ts
+@@ -2244,1 +2244,2 @@ export class ZodArray<T extends ZodTypeAny, Cardinality extends ArrayCardinality
+-    const def = this._def;
++    const def = this._def;
++    let exceedsMax = false;
+@@ -2256,1 +2257,2 @@ export class ZodArray<T extends ZodTypeAny, Cardinality extends ArrayCardinality
+-      const tooBig = ctx.data.length > def.exactLength.value;
++      const tooBig = ctx.data.length > def.exactLength.value;
++      exceedsMax = tooBig;
+@@ -2287,1 +2289,2 @@ export class ZodArray<T extends ZodTypeAny, Cardinality extends ArrayCardinality
+-      if (ctx.data.length > def.maxLength.value) {
++      if (ctx.data.length > def.maxLength.value) {
++        exceedsMax = true;
+@@ -2299,1 +2302,4 @@ export class ZodArray<T extends ZodTypeAny, Cardinality extends ArrayCardinality
+-
++
++    if (exceedsMax) {
++      return INVALID;
++    }
+@@ -3437 +3443 @@ export class ZodTuple<
+-    const items = ([...ctx.data] as any[])
++    const items = ((rest ? [...ctx.data] : this._def.items.map((_, index) => ctx.data[index])) as any[])
+@@ -3704,1 +3710,2 @@ export class ZodSet<Value extends ZodTypeAny = ZodTypeAny> extends ZodType<
+-    const def = this._def;
++    const def = this._def;
++    let exceedsMax = false;
+@@ -3721,1 +3728,2 @@ export class ZodSet<Value extends ZodTypeAny = ZodTypeAny> extends ZodType<
+-      if (ctx.data.size > def.maxSize.value) {
++      if (ctx.data.size > def.maxSize.value) {
++        exceedsMax = true;
+@@ -3733,1 +3741,4 @@ export class ZodSet<Value extends ZodTypeAny = ZodTypeAny> extends ZodType<
+-
++
++    if (exceedsMax) {
++      return INVALID;
++    }
+diff --git a/v3/types.cjs b/v3/types.cjs
+index 7c3fa90509fe0149fde8ad5e647b9657014c538f..dc831abe5cdbc9bb99d586be2956c909c84d17cc 100644
+--- a/v3/types.cjs
++++ b/v3/types.cjs
+@@ -1773,1 +1773,2 @@ class ZodArray extends ZodType {
+-        const def = this._def;
++        const def = this._def;
++        let exceedsMax = false;
+@@ -1783,1 +1784,2 @@ class ZodArray extends ZodType {
+-            const tooBig = ctx.data.length > def.exactLength.value;
++            const tooBig = ctx.data.length > def.exactLength.value;
++            exceedsMax = tooBig;
+@@ -1812,1 +1814,2 @@ class ZodArray extends ZodType {
+-            if (ctx.data.length > def.maxLength.value) {
++            if (ctx.data.length > def.maxLength.value) {
++                exceedsMax = true;
+@@ -1823,1 +1826,4 @@ class ZodArray extends ZodType {
+-        }
++        }
++        if (exceedsMax) {
++            return parseUtil_js_1.INVALID;
++        }
+@@ -2655 +2661 @@ class ZodTuple extends ZodType {
+-        const items = [...ctx.data]
++        const items = (rest ? [...ctx.data] : this._def.items.map((_, index) => ctx.data[index]))
+@@ -2828,1 +2834,2 @@ class ZodSet extends ZodType {
+-        const def = this._def;
++        const def = this._def;
++        let exceedsMax = false;
+@@ -2843,1 +2850,2 @@ class ZodSet extends ZodType {
+-            if (ctx.data.size > def.maxSize.value) {
++            if (ctx.data.size > def.maxSize.value) {
++                exceedsMax = true;
+@@ -2854,1 +2862,4 @@ class ZodSet extends ZodType {
+-        }
++        }
++        if (exceedsMax) {
++            return parseUtil_js_1.INVALID;
++        }
+diff --git a/v3/types.js b/v3/types.js
+index ea2be4dba5775eabf4d5b5fecdead5e1a0ca52ff..5bf7d1d7279307a36b1dffeb098f6c7d3b7ce72d 100644
+--- a/v3/types.js
++++ b/v3/types.js
+@@ -1752,1 +1752,2 @@ export class ZodArray extends ZodType {
+-        const def = this._def;
++        const def = this._def;
++        let exceedsMax = false;
+@@ -1762,1 +1763,2 @@ export class ZodArray extends ZodType {
+-            const tooBig = ctx.data.length > def.exactLength.value;
++            const tooBig = ctx.data.length > def.exactLength.value;
++            exceedsMax = tooBig;
+@@ -1791,1 +1793,2 @@ export class ZodArray extends ZodType {
+-            if (ctx.data.length > def.maxLength.value) {
++            if (ctx.data.length > def.maxLength.value) {
++                exceedsMax = true;
+@@ -1802,1 +1805,4 @@ export class ZodArray extends ZodType {
+-        }
++        }
++        if (exceedsMax) {
++            return INVALID;
++        }
+@@ -2629 +2635 @@ export class ZodTuple extends ZodType {
+-        const items = [...ctx.data]
++        const items = (rest ? [...ctx.data] : this._def.items.map((_, index) => ctx.data[index]))
+@@ -2799,1 +2805,2 @@ export class ZodSet extends ZodType {
+-        const def = this._def;
++        const def = this._def;
++        let exceedsMax = false;
+@@ -2814,1 +2821,2 @@ export class ZodSet extends ZodType {
+-            if (ctx.data.size > def.maxSize.value) {
++            if (ctx.data.size > def.maxSize.value) {
++                exceedsMax = true;
+@@ -2825,1 +2833,4 @@ export class ZodSet extends ZodType {
+-        }
++        }
++        if (exceedsMax) {
++            return INVALID;
++        }
