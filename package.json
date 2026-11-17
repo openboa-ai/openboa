@@ -67,7 +67,7 @@
     "electron-builder-squirrel-windows": "26.15.3",
     "markdownlint-cli2": "^0.23.2",
     "mintlify": "4.2.773",
-    "playwright": "^1.62.1",
+    "playwright": "^1.65.1",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.5",
     "typescript": "^6.0.3",
@@ -148,7 +148,8 @@
       "@mintlify/scraping@4.0.936": "patches/@mintlify__scraping@4.0.936.patch",
       "@mintlify/link-rot@3.0.1266": "patches/@mintlify__link-rot@3.0.1266.patch",
       "@mintlify/prebuild@1.0.1220": "patches/@mintlify__prebuild@1.0.1220.patch",
-      "chromium-bidi@2.1.2": "patches/chromium-bidi@2.1.2.patch"
+      "chromium-bidi@2.1.2": "patches/chromium-bidi@2.1.2.patch",
+      "playwright-core@1.65.1": "patches/playwright-core@1.65.1.patch"
     }
   }
 }

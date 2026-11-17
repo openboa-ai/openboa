@@ -78,10 +78,10 @@ For each frontier include:
 
 ## PR-security-dependencies-20261117
 
-- current status: `implementation`
-- current owner: `auto-coding`
+- current status: `verification`
+- current owner: `auto-project`
 - primary metric: original 38 alert entries and four subsequent audit GHSAs removed with real shipped-copy and consumer proof, preserving product/security controls
-- active quality gap: clean unpublished 735b202 passes exact-head required local checks, but independent review found a missed Playwright bundled Zod carrier; development-closure medium severity, with no established deployed invocation
-- next action: implement accepted [revision 8](../docs/engineering/security-dependencies-20261117-playwright/spec.md): official same-major Playwright 1.65.1 supplies fixed v4, with one exact v3-only native patch; commit acceptance before dependent edits, then require focused and final-head verification plus reviewer recheck
+- active quality gap: accepted R8 correction passes 14 focused consumer controls, complete audit and fresh 217-file identity verification; final immutable-head checks and reviewer recheck remain
+- next action: freeze the correction for independent reviewer recheck and full exact-head verification; preserve development-only calibration, browser/live-docs coverage limits and no-publication boundary
 
 - revision 5 iteration: kept; three dependency fixes and the exact 17 whitespace paths pass focused consumer checks and the full pre-commit profile; only Zod and expired reporter policy remain open for separately reviewed mechanisms

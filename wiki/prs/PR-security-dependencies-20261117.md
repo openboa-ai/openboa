@@ -99,3 +99,9 @@ exact proposal SHA-256
 The acceptance/source commit precedes all dependent edits and hands auto-pm to
 the sole auto-coding writer. Only the paired official update and v3-only carrier
 patch are authorized; existing controls and the no-publication boundary remain.
+
+R8 is kept in `RUN-20261117-security-playwright`: official 1.65.1 plus the
+v3-only native correction passes 14 actual consumer/API/compiler/legacy controls,
+fresh 217-file native identity verification and unfiltered audit. The correction
+is committed clean for final-head verification and independent reviewer recheck;
+no prior 735b202 receipt is relabelled as evidence for the corrected head.
