@@ -1,7 +1,9 @@
 # Trusted-main read-only reporter replacement specification
 
-- Revision: `7-reporter`
-- Status: `accepted; implementation follows accepted Zod revision 6`
+- Revision: `7.1-reporter`
+- Status: `accepted integration clarification; implementation follows accepted Zod revision 6`
+- Reviewed revision 7.1 proposal SHA-256: `fda3435fc7e1dcecaa22df84e47ade62455c97043ef106075bcd2cf1180256d3`
+- Revision 7.1 acceptance: delegated project lead, `2026-11-17T12:26:00Z`; only the verified nested-evaluator allowance is added
 - Reviewed proposal SHA-256: `ae1e93f97d5c0a84b74a38307a823f63393e6ab0c83a611e5423c139e0e486a3`
 - Acceptance: delegated project lead, `2026-11-17T12:17:03Z`; no settings, writer activation, merge, auto-merge or deployment authority
 - Date: `2026-11-17`
@@ -35,7 +37,13 @@ protection checks, writer OFF gates and fixed PR68 target remain authoritative.
 - P2: Add `scripts/run-merge-canary.py`. Before any API operation, validate strict
   policy mode report-only, exact repository name/ID, real schedule or inputless
   manual context, refs/heads/main, immutable valid workflow/event SHAs and actual
-  clean committed controller checkout. Reject foreign identity, stale controller,
+  clean committed controller checkout. The only permitted untracked root is the
+  fixed nested `.merge-evaluator/` checkout: require a nonsymlink directory, exact
+  pinned evaluator Git revision, clean nested working tree and expected regular
+  module digest before allowing that path. Reject every unrelated untracked source
+  or executable path; do not ignore all untracked files. Run the parent and worker
+  with Python -B / PYTHONDONTWRITEBYTECODE so imports do not create __pycache__
+  before verification. Reject foreign identity, stale controller,
   branch-selected manual execution, malformed IDs and supplied inputs. Reconcile
   current API main before selecting a PR; missing or changed facts deny eligibility.
 - P3: Discover open same-repository PRs against main through bounded authenticated
@@ -140,7 +148,7 @@ outside its mutation boundary.
 
 | Requirement | Evidence |
 | --- | --- |
-| P1-P2 | Positive schedule/main and inputless-main manual controls; before-API denial for branch manual, inputs, wrong repository/ID, stale/mismatched checkout and bad policy mode; exact workflow execution-boundary mutations and no dangerous-trigger ignore. |
+| P1-P2 | Positive schedule/main and inputless-main manual controls; real temporary Git layout permits only a clean exact-pinned nested evaluator checkout and rejects a dirty/mismatched/symlink evaluator or unrelated untracked source; no import-created bytecode; before-API denial for branch manual, inputs, wrong repository/ID, stale/mismatched controller and bad policy mode; exact workflow execution-boundary mutations and no dangerous-trigger ignore. |
 | P3-P5 | Shuffled complete pagination produces stable one-target rotation; valid numbers only; foreign forks, non-main/closed/malformed PRs excluded or denied; duplicate/incomplete discovery cannot yield coverage/eligibility claims; default and fixed68 collector tests unchanged in meaning. |
 | P6-P8 | Fake-clock/opener controls charge discovery+JSON+both ZIP hops, combined bytes and request boundaries; aggregate expanded-size denial precedes decompression; timeout/read-overrun and stalled worker/evaluator controls produce non-positive bounded outcomes without leaked processes. |
 | P5/P9-P10 | Real pinned evaluator adapter still rejects missing/stale/raw-proof defects; fixed argv/numeric paths and token-absent child environment controls; existing positive output, wrong-round handoff, worker/evaluator failure and timeout cannot expose a stale positive as current; atomic completed-file publication; all original protection, bypass and source/evaluator closure requirements retain their values. |
