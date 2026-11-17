@@ -78,3 +78,24 @@ budget and current-round publication controls pass focused evidence tests; the
 obsolete exception is removed and policy validation passes without a renewal.
 The candidate is now frozen for full exact-head verification and independent review.
 Earlier failed/kept iterations above remain historical evidence, not current blockers.
+
+Independent review of unpublished 735b202 found another shipped Zod carrier in
+direct development Playwright. Actual exported Client.complete response parsing
+uses a declared max(100) array before the old bundled v4 enforces its bound.
+Severity is medium in the development closure; no repository/deployed invocation
+is established. The original v3 constructors are dormant shipped copies.
+
+Auto-pm proposes separate revision 8: official same-major Playwright/core 1.65.1
+already supplies fixed v4.6.7 interpreter/compiler behavior, with a single native
+v3-only carrier patch for the remaining original array/set/tuple mechanisms.
+Exact source identities, compatibility caveats and actual consumer/fresh-install
+evidence are defined in its specification. No implementation has started; 735b202
+receipts remain valid for that exact head, and publication stays paused until
+reviewed scope acceptance, correction, final-head verification and reviewer recheck.
+
+Revision 8 R23-R28 was accepted by the delegated lead at 2026-11-17T13:32:03Z,
+exact proposal SHA-256
+`0b285df5bbc78f265b49acde9dc640ab3bcada977fc13a76d8694ba02ad1d314`.
+The acceptance/source commit precedes all dependent edits and hands auto-pm to
+the sole auto-coding writer. Only the paired official update and v3-only carrier
+patch are authorized; existing controls and the no-publication boundary remain.
