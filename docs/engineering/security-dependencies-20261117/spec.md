@@ -1,14 +1,15 @@
 # Dependency security remediation specification
 
-- Revision: `5`
-- Status: `accepted for R11-R15; Zod/reporter mechanisms remain gated`
-- Reviewed content SHA-256: `04a066f3dc24251850d79a58029c5248342c22ac24b693dc8369af41abedc137`
-- Acceptance: delegated project lead, `2026-11-17T11:45:53Z`; routine user-authorized follow-up, not new policy/settings/merge authority
+- Revision: `6`
+- Status: `accepted for R16-R22 Zod remediation; reporter remains gated`
+- Previous accepted revision: `5`, reviewed SHA-256 `04a066f3dc24251850d79a58029c5248342c22ac24b693dc8369af41abedc137`, source commit `ebb6444`, implementation `8e951d8`
+- Reviewed revision 6 proposal SHA-256: `5cf09ad1c08bde3bdff6bdfd182b51d34fc722222e0b3bd705a37586d7701775`
+- Revision 6 acceptance: delegated project lead, `2026-11-17T12:09:25Z`, following independent source/representation review; no new settings, writer, merge or deployment authority
 - Date: `2026-11-17`
 - Repository: `openboa-ai/openboa`
 - Base: `475019c4a4baabaf78fed46110bb2b21fb1afc37`
 - Change: `security-dependencies-20261117`
-- Follow-up base: `b972948cbf72aaf2f0ce8121b32f0cc2b9311aad`
+- Follow-up base: `8e951d8`
 - Delivery: continue draft PR `#78`
 
 ## Intent and baseline
@@ -29,9 +30,9 @@ registry-audit GHSAs, the expired exception and the 17 existing whitespace/EOF
 failures with real fixes. No exception extension, scanner disabling, repository
 settings change, merge, auto-merge or deployment is authorized. Revision 5 permits
 three source-backed dependency fixes and the exact whitespace frontier below.
-Zod and the read-only reporter replacement remain gated for a later reviewed
-revision while their concrete mechanisms are investigated; they are still required
-for completion of the user's overall goal.
+Revision 6 now accepts the concrete Zod mechanism below. The read-only reporter
+replacement remains gated for its separate reviewed specification; both are still
+required for completion of the user's overall goal.
 
 
 ## Authority, data and delivery boundaries
@@ -200,6 +201,120 @@ The whitespace-only frontier is exactly:
   be proposed separately with bounded polling and all original proof/evaluator
   gates retained. No exception renewal, ignored warning, new writer/credential,
   activation of the OFF writer pilot or modification of its fixed PR68 target.
+
+## Revision 6: Zod security and API compatibility
+
+The only remaining npm advisory after revision 5 is GHSA-mrhx-c7xc-m3w5.
+The current global zod 3.25.76 override incorrectly substitutes a v3 root for
+CLI code that declares v4.3.6. Official Zod 4.6.6 contains the upstream v4 bounds
+fix, but its exported v3 implementation still needs a real backport. Upgrading
+its label alone would leave executable v3 copies vulnerable. Latest Mintlify
+4.3.49 still bundles unfixed v3/v4 representations, so a large migration is not
+part of this mechanism.
+
+- R16: Keep Mintlify 4.2.773 and its current consumer versions. Remove the global
+  zod 3.25.76 override. Prefer exact 4.6.6 overrides only for
+  `@mintlify/cli>zod`, `@mintlify/validation>zod`, `@mintlify/scraping>zod`, and
+  `chromium-bidi>zod`. The CLI retains the fixed v4 root API; legacy consumers
+  explicitly import `zod/v3`. All resolved 4.6.6 copies receive the same native
+  patch. If scoped graph resolution is insufficient, return to review with the
+  actual peer/hidden-hoist evidence before considering any wider override. Do
+  not ignore peer checks, fake a version, rename a vulnerable package, remove
+  docs:local, disable validation or substitute an incompatible v4 API blindly.
+- R17: Generate a pnpm-native patch for zod 4.6.6's real legacy implementation in
+  `src/v3/types.ts`, `v3/types.js`, and `v3/types.cjs`. Backport the upstream bounds
+  invariant at the existing parser boundary:
+  - Arrays exceeding `.max()` or exact `.length()` add the existing structured
+    `too_big` issue and return aborted/invalid before allocating or validating
+    child entries. Preserve valid-size parsing/transforms, too-small behavior,
+    paths, bound metadata, error maps and sync/async public APIs.
+  - Sets exceeding `.max()` or exact `.size()` add the existing structured bound
+    issue and abort before enumerating/validating elements. Do not let a dirty
+    raw value reach later refinements or transforms.
+  - Tuples without a rest schema validate only the fixed prefix, rather than
+    spreading or mapping the oversized tail. Preserve the original `too_big`
+    issue together with prefix-validation aggregation and sync/async behavior.
+    Tuples with a rest schema retain their existing semantics.
+  These are parser/control-flow fixes, not arbitrary new application size limits.
+  Unconstrained collections retain their public behavior; rejection follows
+  limits already declared by the caller.
+- R18: Patch every shipped executable legacy representation: the bundled v3
+  Array/Set/Tuple implementations in CLI 4.0.1376's `bin/vendor/converter.js` and
+  Chromium BiDi 2.1.2's distributed IIFE copy receive equivalent parser fixes.
+  Inspect the bundle classes and their actual callers; leave vendor labels,
+  module names and unrelated generated code unchanged. Tests must reach these
+  copies through actual consumer entry points or an extracted unchanged factory
+  boundary with exact source identity, not merely test another library copy.
+- R19: Use native exact-version consumer patches to change only real legacy
+  Zod module specifiers from `zod` to `zod/v3` in
+  `@mintlify/validation@0.1.815`, `@mintlify/scraping@4.0.936`,
+  `chromium-bidi@2.1.2`, `@mintlify/link-rot@3.0.1266` and
+  `@mintlify/prebuild@1.0.1220`. Cover JavaScript ESM/CJS runtime, declarations,
+  import types and export-from forms. Verify each edit is a module-specifier
+  change and preserve the non-specifier syntax/bytes. Do not replace ordinary
+  string data or bundled source labels. Do not alter CLI status's v4 root or
+  Playwright's existing dual v4/v3 type handling. The initial full inventory had
+  239 files / 926 import sites including converter files; reconcile the exact
+  final inventory rather than using those counts as a substitute for coverage.
+- R20: Upgrade only `@mintlify/validation>zod-to-json-schema` from 3.20.4 to the
+  official 3.25.2. Its peer range is `^3.25.28 || ^4`, and its implementation
+  explicitly imports the v3 subpath. This avoids hand-patching the converter's
+  28 source/declaration files. Verify real JSON Schema conversion of the
+  consumer's v3 schemas, references and options; preserve caller-facing exports.
+- R21: Add focused tests in `test/dependency-zod-security.test.ts` for all patched
+  representations and actual consumers. Oversized array/set inputs must produce
+  correct structured bound issues before any element callback/iterator and must
+  not execute later refinements on raw data. Include exact/min/max, nested paths,
+  custom error maps, async parsing, valid-size transforms, unconstrained controls,
+  fixed and rest tuple behavior, invalid prefix issue aggregation and a tail
+  sentinel proving only the fixed prefix was visited. Exercise v4 root interpreter
+  and generated/compiled paths where present, plus actual Mintlify v1/v2 footer
+  max(4) schemas, CLI v4 status-schema initialization, CLI converter, the upgraded
+  JSON Schema converter, and BiDi local/remote mapping-pair schemas/IIFE copies.
+  Compare legitimate behavior and known v3 error/intersection hardening differences
+  explicitly; do not assert byte-identical errors when the fixed upstream API
+  intentionally hardened invalid inputs.
+- R22: Keep every patch exact-version/hash bound through native pnpm metadata.
+  Preserve package licenses, import/export formats, build permissions and the
+  three already fixed dependency boundaries. Before keep, inspect all native
+  patch hunks and remaining imports/bundles, require fresh frozen installation,
+  focused security and consumer tests, and unsuppressed audit with zero Zod
+  findings. Full checks/packaging and one fresh independent final review follow
+  once the separately reviewed reporter mechanism is also complete. A clean
+  audit alone never proves bundled-copy remediation.
+
+### Exact original Zod 4.6.6 legacy source identities
+
+| Path | SHA-256 before native patch |
+| --- | --- |
+| `src/v3/types.ts` | `73b9529564a34fc028a5a62c17e09148747b737039b78b124e84254cb886411a` |
+| `v3/types.js` | `d7214e1dacf9e6e70c9ca80247717b4be13b240510428fef132b7da3260d1a32` |
+| `v3/types.cjs` | `7a2f06d88e280bdd198c60e0d292ed7f1e3993e877be4415de07e6abc7746dd1` |
+
+The source fix is the official
+[Zod bounds correction](https://github.com/colinhacks/zod/commit/a0ebf970f2d752e5f58527cd2942ff48be4f46bd),
+backported to preserve the required v3 API. Native patches may touch only these
+parser mechanisms, the enumerated shipped copies and verified legacy module
+specifiers. Expected native patch packages are zod, the six listed Mintlify/BiDi
+consumers including the CLI bundle, plus the already accepted markdownlint patch.
+No new app source, workflow, evaluator or security-policy edit is authorized here.
+
+### Revision 6 owned paths and acceptance
+
+Allowed paths: `package.json`, `pnpm-lock.yaml`, native `patchedDependencies`
+metadata if pnpm requires it, `patches/` for the exact package versions above,
+`test/dependency-zod-security.test.ts`, necessary dependency-consumer test imports
+when their verified graph route changes, and current specification/wiki records.
+The reporter, exception, writer pilot, fixed PR68 target, required checks and
+repository permissions stay untouched until a separate reviewed spec is accepted.
+
+Acceptance maps R16/R19/R20 to a complete actual runtime/type/bundle inventory and
+real consumer compatibility; R17/R18/R21 to baseline-trigger failure and fixed
+all-representation security controls with legitimate and async positives; R22 to
+native patch/frozen graph/hash evidence, audit zero, final full-check/packaging
+results and independent immutable-diff review. Any missed copy, import-kind change,
+unexplained error-contract change or new peer mismatch returns the mechanism to
+review before widening the patch.
 
 ## Complete baseline alert map
 
