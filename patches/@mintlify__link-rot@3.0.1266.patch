@@ -1,0 +1,16 @@
+diff --git a/dist/static-checking/readConfig.d.ts b/dist/static-checking/readConfig.d.ts
+index 88a885c740fa076a4c41b6435f8cdff5d76db168..f8583e4e2ae9012df1e24ab786379e0ed9b1c078 100644
+--- a/dist/static-checking/readConfig.d.ts
++++ b/dist/static-checking/readConfig.d.ts
+@@ -14 +14 @@ export declare const readResolvedConfigJson: (baseDir: string) => Promise<Resolv
+-export declare const readResolvedConfigJsonAndValidate: (baseDir: string) => Promise<import("zod").SafeParseError<{
++export declare const readResolvedConfigJsonAndValidate: (baseDir: string) => Promise<import("zod/v3").SafeParseError<{
+@@ -3765 +3765 @@ export declare const readResolvedConfigJsonAndValidate: (baseDir: string) => Pro
+-    warnings: import("zod").ZodIssue[];
++    warnings: import("zod/v3").ZodIssue[];
+@@ -7519 +7519 @@ export declare const readResolvedConfigJsonAndValidate: (baseDir: string) => Pro
+-} | import("zod").SafeParseError<{
++} | import("zod/v3").SafeParseError<{
+@@ -7768 +7768 @@ export declare const readResolvedConfigJsonAndValidate: (baseDir: string) => Pro
+-    warnings: import("zod").ZodIssue[];
++    warnings: import("zod/v3").ZodIssue[];

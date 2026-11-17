@@ -1,0 +1,2173 @@
+diff --git a/dist/chat-config/footer.d.ts b/dist/chat-config/footer.d.ts
+index 722518782ef7eba4ffe98ef26bd82c15973922dc..b86574ea9f7690ffcffab9235a048f5823578591 100644
+--- a/dist/chat-config/footer.d.ts
++++ b/dist/chat-config/footer.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/chat-config/footer.js b/dist/chat-config/footer.js
+index b2e4978dd2cfbf501b3c9bb9c405b3a57380c885..74ef634b873089b7cc4eb25c4e3b33b29987657f 100644
+--- a/dist/chat-config/footer.js
++++ b/dist/chat-config/footer.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/chat-config/hero.d.ts b/dist/chat-config/hero.d.ts
+index 4343c20b1bc0c9dfa1ce637194b4b16c2dedb263..aaa4e76ab0d34cff1b92c9858b8045382e583327 100644
+--- a/dist/chat-config/hero.d.ts
++++ b/dist/chat-config/hero.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/chat-config/hero.js b/dist/chat-config/hero.js
+index 5f6e9add9862e60634605a78a3d2e58918a9627e..bd48376772b0ec512a4f0f7b88a6cbf819727e35 100644
+--- a/dist/chat-config/hero.js
++++ b/dist/chat-config/hero.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/chat-config/index.d.ts b/dist/chat-config/index.d.ts
+index 7fee330bd7430d084d7d780c69cf1ef70da7aa56..408c2fbbd9d11d842e0a6e45e3c9d03aa61b2d10 100644
+--- a/dist/chat-config/index.d.ts
++++ b/dist/chat-config/index.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/chat-config/index.js b/dist/chat-config/index.js
+index b31f579dcda953964e593a3e290b93b9b5fadda9..124bd40f40f663b8260d404b144623db01df9ddd 100644
+--- a/dist/chat-config/index.js
++++ b/dist/chat-config/index.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/customErrorMap.d.ts b/dist/mint-config/customErrorMap.d.ts
+index b168a4a34f4cfd29074dcea7c88d6289c4feff90..35f3ff027abf85e337aea6837d93459e8f2802e4 100644
+--- a/dist/mint-config/customErrorMap.d.ts
++++ b/dist/mint-config/customErrorMap.d.ts
+@@ -1 +1 @@
+-import { ZodErrorMap } from 'zod';
++import { ZodErrorMap } from 'zod/v3';
+diff --git a/dist/mint-config/formatIssue.d.ts b/dist/mint-config/formatIssue.d.ts
+index 3cde4450a78e7716dfe000a5116130b070066294..7c37e7621023b30e061f99489ad772295fe16cbf 100644
+--- a/dist/mint-config/formatIssue.d.ts
++++ b/dist/mint-config/formatIssue.d.ts
+@@ -1 +1 @@
+-import { ZodIssue } from 'zod';
++import { ZodIssue } from 'zod/v3';
+diff --git a/dist/mint-config/refinements/refineMissingVersions.d.ts b/dist/mint-config/refinements/refineMissingVersions.d.ts
+index 362fa09968e7051fbe4832b3f7b3066320d542a4..a7ebd77c48518bcfb5ec81351a8abda6e448ad6e 100644
+--- a/dist/mint-config/refinements/refineMissingVersions.d.ts
++++ b/dist/mint-config/refinements/refineMissingVersions.d.ts
+@@ -2 +2 @@ import { VersionType, Navigation } from '@mintlify/models';
+-import { RefinementCtx } from 'zod';
++import { RefinementCtx } from 'zod/v3';
+diff --git a/dist/mint-config/refinements/refineMissingVersions.js b/dist/mint-config/refinements/refineMissingVersions.js
+index e0cb14d1fc66846402da8a8324b8d3608d7cce8a..d7631e96aebef53a0fdb3d2d95b6f19ed3da5bec 100644
+--- a/dist/mint-config/refinements/refineMissingVersions.js
++++ b/dist/mint-config/refinements/refineMissingVersions.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/analytics.d.ts b/dist/mint-config/schemas/v1/analytics.d.ts
+index 6a4b060358d0f183d3591683c0d0b7a56b58a5e0..b6adc301b28e17b638558d8f97c1f1168298a896 100644
+--- a/dist/mint-config/schemas/v1/analytics.d.ts
++++ b/dist/mint-config/schemas/v1/analytics.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/analytics.js b/dist/mint-config/schemas/v1/analytics.js
+index 3c80a3ee8166b3b41ea946549e702d4e6d497805..5c073a0248fc5eaca07ae602304e0a87a825d68b 100644
+--- a/dist/mint-config/schemas/v1/analytics.js
++++ b/dist/mint-config/schemas/v1/analytics.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/anchorColors.d.ts b/dist/mint-config/schemas/v1/anchorColors.d.ts
+index 6f4a829d6540f2e3d7d52c62bc9b1f980af069ec..09fc436664c0e14a5c35ff1d741c9e6338f1597e 100644
+--- a/dist/mint-config/schemas/v1/anchorColors.d.ts
++++ b/dist/mint-config/schemas/v1/anchorColors.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/anchorColors.js b/dist/mint-config/schemas/v1/anchorColors.js
+index 3b7faa27b246bca11e6941649d86d9a4307b886d..7d59bc40e13dadbe838a8ce3e19c2033079f074e 100644
+--- a/dist/mint-config/schemas/v1/anchorColors.js
++++ b/dist/mint-config/schemas/v1/anchorColors.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/anchors.d.ts b/dist/mint-config/schemas/v1/anchors.d.ts
+index 3739c945055b80d644c6ebaf8e40cd0dce1797d4..fc3b831e79675c11cc52edf7cd3b0e4920ac8d17 100644
+--- a/dist/mint-config/schemas/v1/anchors.d.ts
++++ b/dist/mint-config/schemas/v1/anchors.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/anchors.js b/dist/mint-config/schemas/v1/anchors.js
+index 96c4b3798219d9fe5f6d8d443762e2257163cc9c..f537b4d8172cec344b484b3fbe579a1ea19863d8 100644
+--- a/dist/mint-config/schemas/v1/anchors.js
++++ b/dist/mint-config/schemas/v1/anchors.js
+@@ -2 +2 @@ import { iconTypes } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/apiReference.d.ts b/dist/mint-config/schemas/v1/apiReference.d.ts
+index 880a22224256c4b1cc7b82443a493e7ef845d7d3..ac815e95564ecf3066b68c819eb9b2160d5c7874 100644
+--- a/dist/mint-config/schemas/v1/apiReference.d.ts
++++ b/dist/mint-config/schemas/v1/apiReference.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/apiReference.js b/dist/mint-config/schemas/v1/apiReference.js
+index 81e9cb18a7080d6237f2bfd455b55936b6702ea4..13e69d213ed0ef86a5ed0734ef0992bfef9da5b9 100644
+--- a/dist/mint-config/schemas/v1/apiReference.js
++++ b/dist/mint-config/schemas/v1/apiReference.js
+@@ -2 +2 @@ import { apiParamFieldOptions, requestExampleLanguages } from '@mintlify/models'
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/background.d.ts b/dist/mint-config/schemas/v1/background.d.ts
+index e155e6bb159d62faae3558e2db56fcbfa3fd52b7..02b2663badd6b38ddae74fdd887415e06f338ab1 100644
+--- a/dist/mint-config/schemas/v1/background.d.ts
++++ b/dist/mint-config/schemas/v1/background.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/background.js b/dist/mint-config/schemas/v1/background.js
+index 38c683ae58deb45223c0479cec285db9a5374725..e3e460b979ade215602dadcd5b833da57bf41627 100644
+--- a/dist/mint-config/schemas/v1/background.js
++++ b/dist/mint-config/schemas/v1/background.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/basics.d.ts b/dist/mint-config/schemas/v1/basics.d.ts
+index 68420b42b590bbb0e6e2c4232d01034c457330b0..d1ba44de1a0d319910170290f59d6be0ef611720 100644
+--- a/dist/mint-config/schemas/v1/basics.d.ts
++++ b/dist/mint-config/schemas/v1/basics.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/basics.js b/dist/mint-config/schemas/v1/basics.js
+index edde4d33e37aeb534f27394570a9d68ef388d3cd..a5fc7517dfc2ce428cacd8d9b53e9ad0cc6c8f8f 100644
+--- a/dist/mint-config/schemas/v1/basics.js
++++ b/dist/mint-config/schemas/v1/basics.js
+@@ -2 +2 @@ import { codeBlockModes } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/colors.d.ts b/dist/mint-config/schemas/v1/colors.d.ts
+index c01731460b3390e02fa545879ce499ef546b2f19..00ef3061e4782389447103db9c859350ab8764b6 100644
+--- a/dist/mint-config/schemas/v1/colors.d.ts
++++ b/dist/mint-config/schemas/v1/colors.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/colors.js b/dist/mint-config/schemas/v1/colors.js
+index c552853c2390e9dfb80c50edcf207ebffd54cdb4..225e08343428b306fb9459c2ae94c0d811409f71 100644
+--- a/dist/mint-config/schemas/v1/colors.js
++++ b/dist/mint-config/schemas/v1/colors.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/config.d.ts b/dist/mint-config/schemas/v1/config.d.ts
+index 0cdd2dc30f9133fcbab0aed51e469d0988554a2f..b309b632457eb9e5901f3656cadaeae55380f797 100644
+--- a/dist/mint-config/schemas/v1/config.d.ts
++++ b/dist/mint-config/schemas/v1/config.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/config.js b/dist/mint-config/schemas/v1/config.js
+index c297e466ee210b8de8ac44b4e23770b6643d4b3f..1f362cd0afacfdb842eabaa65702486e89bd23c6 100644
+--- a/dist/mint-config/schemas/v1/config.js
++++ b/dist/mint-config/schemas/v1/config.js
+@@ -4 +4 @@ import { roundedOptions } from '@mintlify/models/dist/mintconfig/rounded.js';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/favicon.d.ts b/dist/mint-config/schemas/v1/favicon.d.ts
+index 532e1ff05cc77f174f379c33251b0ef891d35d47..a3e70de820b0fc31432ae8940a60a0cfc1985bb8 100644
+--- a/dist/mint-config/schemas/v1/favicon.d.ts
++++ b/dist/mint-config/schemas/v1/favicon.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/favicon.js b/dist/mint-config/schemas/v1/favicon.js
+index 35ae8311413061b2f2e0f59e83cdd31f9a609aa6..2fd8838dfbc8c684f6b30b333f9a8ecc97c51470 100644
+--- a/dist/mint-config/schemas/v1/favicon.js
++++ b/dist/mint-config/schemas/v1/favicon.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/font.d.ts b/dist/mint-config/schemas/v1/font.d.ts
+index 564ad48affc70cf619119f609d43b0b05831e567..6b72bffd36ced4b2517b8097a7a77b5590ea2f84 100644
+--- a/dist/mint-config/schemas/v1/font.d.ts
++++ b/dist/mint-config/schemas/v1/font.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/font.js b/dist/mint-config/schemas/v1/font.js
+index 7e84c7a377734c6693858b0e05ffe1a17d6b6c24..6ee56d7127d2cf727a6c1ccdfc13e72fa8271d03 100644
+--- a/dist/mint-config/schemas/v1/font.js
++++ b/dist/mint-config/schemas/v1/font.js
+@@ -2 +2 @@ import { fontFormats } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/footer.d.ts b/dist/mint-config/schemas/v1/footer.d.ts
+index 3c7ba551d3364af8abb2ae6d1ff55a9998ea89e7..68a51597806451e6dd2ad436747183a5f7deb932 100644
+--- a/dist/mint-config/schemas/v1/footer.d.ts
++++ b/dist/mint-config/schemas/v1/footer.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/footer.js b/dist/mint-config/schemas/v1/footer.js
+index e36dc964a97c4b92a208db80e940c20c9e03cc75..d1ee46f7c5d9eec4b774dc1cbb198c879794eacb 100644
+--- a/dist/mint-config/schemas/v1/footer.js
++++ b/dist/mint-config/schemas/v1/footer.js
+@@ -2 +2 @@ import { footerSocialKeys } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/hexColor.d.ts b/dist/mint-config/schemas/v1/hexColor.d.ts
+index e005f9698f4e2ca1595c387e11d44cb0476be901..be5275f72f2bbd0db2029c6e4b022570c9073955 100644
+--- a/dist/mint-config/schemas/v1/hexColor.d.ts
++++ b/dist/mint-config/schemas/v1/hexColor.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/hexColor.js b/dist/mint-config/schemas/v1/hexColor.js
+index 9c4470910bca2e244493280999cdde2b097ebe66..2083a815ce2f4373b56a23ee453f477f205d8fc8 100644
+--- a/dist/mint-config/schemas/v1/hexColor.js
++++ b/dist/mint-config/schemas/v1/hexColor.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/integrations.d.ts b/dist/mint-config/schemas/v1/integrations.d.ts
+index 7bda887f255bcbfdbffcd1c47c18df57789f5dc4..03732d8d710879d6679b51bf84f083a47fca3d2b 100644
+--- a/dist/mint-config/schemas/v1/integrations.d.ts
++++ b/dist/mint-config/schemas/v1/integrations.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/integrations.js b/dist/mint-config/schemas/v1/integrations.js
+index 7cb827e3734805d85a8c5340c4d42ad8a0530091..6bed1312b9553b957ce8ad31300f8bee9710cea1 100644
+--- a/dist/mint-config/schemas/v1/integrations.js
++++ b/dist/mint-config/schemas/v1/integrations.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/navigation.d.ts b/dist/mint-config/schemas/v1/navigation.d.ts
+index 1eb251ba1c6be2c801249ae0a049c5ae42ae804b..325d586aea1e60ae975b4e7b1aa08b9b3a5e0f1b 100644
+--- a/dist/mint-config/schemas/v1/navigation.d.ts
++++ b/dist/mint-config/schemas/v1/navigation.d.ts
+@@ -2 +2 @@ import { NavigationGroup } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/navigation.js b/dist/mint-config/schemas/v1/navigation.js
+index a98cef4438f54d07a0a43818025e0e692a3bb528..08c0f7b03a822b65ce78718f398ee1aa480b3ffc 100644
+--- a/dist/mint-config/schemas/v1/navigation.js
++++ b/dist/mint-config/schemas/v1/navigation.js
+@@ -2 +2 @@ import { iconTypes } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/openapiAnchorOrTab.d.ts b/dist/mint-config/schemas/v1/openapiAnchorOrTab.d.ts
+index 3d62cb0356bf149619dd125a637d16268e774aa5..ae02d5a000d11b5b226030a3bd5927e3623cf413 100644
+--- a/dist/mint-config/schemas/v1/openapiAnchorOrTab.d.ts
++++ b/dist/mint-config/schemas/v1/openapiAnchorOrTab.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/openapiAnchorOrTab.js b/dist/mint-config/schemas/v1/openapiAnchorOrTab.js
+index 22bf082a23917662b21afb928115cf5fc5616603..84c361b4cd0ecd057ea6e090b75beb7e5ba19e69 100644
+--- a/dist/mint-config/schemas/v1/openapiAnchorOrTab.js
++++ b/dist/mint-config/schemas/v1/openapiAnchorOrTab.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/openapiString.d.ts b/dist/mint-config/schemas/v1/openapiString.d.ts
+index 85612b9185ba62534d28c0fe6d05592d410e7473..bb77769c8516cf89c149d111a0aa6f11e8d195a2 100644
+--- a/dist/mint-config/schemas/v1/openapiString.d.ts
++++ b/dist/mint-config/schemas/v1/openapiString.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/openapiString.js b/dist/mint-config/schemas/v1/openapiString.js
+index e85b5ec859ca76e8a5deef2b1e4221c4a0da261a..1f902c33530ad1ec3a7a773d9cf9d778ebc4e661 100644
+--- a/dist/mint-config/schemas/v1/openapiString.js
++++ b/dist/mint-config/schemas/v1/openapiString.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/seo.d.ts b/dist/mint-config/schemas/v1/seo.d.ts
+index 87c2c370bc56b6fabda8c82f82f5a1410114a167..e4d6506c9869d347af2c0c70331bbf3c46178ec5 100644
+--- a/dist/mint-config/schemas/v1/seo.d.ts
++++ b/dist/mint-config/schemas/v1/seo.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/seo.js b/dist/mint-config/schemas/v1/seo.js
+index 0fc17f05928ae6557a0a7e1cf65490989c6916ed..e59a2fd5b69c655297e907c05c2c4716d313f9dc 100644
+--- a/dist/mint-config/schemas/v1/seo.js
++++ b/dist/mint-config/schemas/v1/seo.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/sidebar.d.ts b/dist/mint-config/schemas/v1/sidebar.d.ts
+index 1a7a3d321306834a662d62fe532ba185d8d909e8..f968e427e574b0e61d3686683f261d6118110d49 100644
+--- a/dist/mint-config/schemas/v1/sidebar.d.ts
++++ b/dist/mint-config/schemas/v1/sidebar.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/sidebar.js b/dist/mint-config/schemas/v1/sidebar.js
+index 2127650cd332ec64e56952490f3d9add1d35cb13..ac4e1903b0215337e770f246dc8572062d58fb77 100644
+--- a/dist/mint-config/schemas/v1/sidebar.js
++++ b/dist/mint-config/schemas/v1/sidebar.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/tabs.d.ts b/dist/mint-config/schemas/v1/tabs.d.ts
+index f2e4d3841bf6a9bc1a877cce28eda9e50ee5c14a..2f263804bed1abf70f078b7c10115b5e04be9697 100644
+--- a/dist/mint-config/schemas/v1/tabs.d.ts
++++ b/dist/mint-config/schemas/v1/tabs.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/tabs.js b/dist/mint-config/schemas/v1/tabs.js
+index 46cc783f99c7e7b58ac65dfd389092a8a5a22d67..607f44c4633cdad05583be957f3adeae4c207b79 100644
+--- a/dist/mint-config/schemas/v1/tabs.js
++++ b/dist/mint-config/schemas/v1/tabs.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/topbar.d.ts b/dist/mint-config/schemas/v1/topbar.d.ts
+index deaae024601afde58ed3048f6ccd6cd752f7e59f..a865e5915a0f50bcd262e1a4a5523f557a3998ab 100644
+--- a/dist/mint-config/schemas/v1/topbar.d.ts
++++ b/dist/mint-config/schemas/v1/topbar.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/topbar.js b/dist/mint-config/schemas/v1/topbar.js
+index 4aca0e15aa1cef2ff05af7088c610687243300bc..118ab4d73b7df5af7350f92f02fcd4e4c68d7e0b 100644
+--- a/dist/mint-config/schemas/v1/topbar.js
++++ b/dist/mint-config/schemas/v1/topbar.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/versions.d.ts b/dist/mint-config/schemas/v1/versions.d.ts
+index e29fcbc185285affb12ba641bd9f5e2d6a750281..d907201d514577c0c5364cf514aa28c717b06f72 100644
+--- a/dist/mint-config/schemas/v1/versions.d.ts
++++ b/dist/mint-config/schemas/v1/versions.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v1/versions.js b/dist/mint-config/schemas/v1/versions.js
+index e9df7943a5af9d0c0a8174c2cbfa8df531bd623e..43423fa6c1c518f56034c6b246e3a29b7cf3dded 100644
+--- a/dist/mint-config/schemas/v1/versions.js
++++ b/dist/mint-config/schemas/v1/versions.js
+@@ -2 +2 @@ import { locales } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/index.d.ts b/dist/mint-config/schemas/v2/index.d.ts
+index 1a39fcefcac98548ad152e0b477d2825e27f35fe..7dee8d3bd5970dbe09facaf78fd83b199d2c9eae 100644
+--- a/dist/mint-config/schemas/v2/index.d.ts
++++ b/dist/mint-config/schemas/v2/index.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/index.js b/dist/mint-config/schemas/v2/index.js
+index a05ec74db6207a15eab845c0356c3b0fff5b4622..fe447b6a89133a408af05cf34e214be644543f6f 100644
+--- a/dist/mint-config/schemas/v2/index.js
++++ b/dist/mint-config/schemas/v2/index.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/$schema.d.ts b/dist/mint-config/schemas/v2/properties/$schema.d.ts
+index 3845863fd6d8fd74f70c86db8003dd0ff67c9668..da4c015da3368a22454e2dace18cfb7766f73782 100644
+--- a/dist/mint-config/schemas/v2/properties/$schema.d.ts
++++ b/dist/mint-config/schemas/v2/properties/$schema.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/$schema.js b/dist/mint-config/schemas/v2/properties/$schema.js
+index 849fbeed7401b71d23ef5c9a65d9e79ac904308d..97d08fa320ab7dbf5c40dfe85d3a099e4b42f4bc 100644
+--- a/dist/mint-config/schemas/v2/properties/$schema.js
++++ b/dist/mint-config/schemas/v2/properties/$schema.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/api.d.ts b/dist/mint-config/schemas/v2/properties/api.d.ts
+index ebbccc0d70510c766bb198c123279393cc0abd22..d6ca5a5f1a3002475de55b9348e023afbb082539 100644
+--- a/dist/mint-config/schemas/v2/properties/api.d.ts
++++ b/dist/mint-config/schemas/v2/properties/api.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/api.js b/dist/mint-config/schemas/v2/properties/api.js
+index 251ced7638806d44d35c7997552a55186cc2f9ad..d54b771e2986e43c3830810498d84c9a958b492f 100644
+--- a/dist/mint-config/schemas/v2/properties/api.js
++++ b/dist/mint-config/schemas/v2/properties/api.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/appearance.d.ts b/dist/mint-config/schemas/v2/properties/appearance.d.ts
+index ffd11352b8937b817c5aa6452e07dee6702095b8..3ef04b8aed50f911055d17e7a50724ea0f008afc 100644
+--- a/dist/mint-config/schemas/v2/properties/appearance.d.ts
++++ b/dist/mint-config/schemas/v2/properties/appearance.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/appearance.js b/dist/mint-config/schemas/v2/properties/appearance.js
+index 72148d36f13fc0feb68daf98bac34f2c11a27e1c..df7f92bfa15e7c2bee767490945d3943d42b4897 100644
+--- a/dist/mint-config/schemas/v2/properties/appearance.js
++++ b/dist/mint-config/schemas/v2/properties/appearance.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/background.d.ts b/dist/mint-config/schemas/v2/properties/background.d.ts
+index ad8e5355e56a9ac557d42bb71c3d1307c68ce7c4..61e155bafeb9f55cb600d6896535c4ac4a048231 100644
+--- a/dist/mint-config/schemas/v2/properties/background.d.ts
++++ b/dist/mint-config/schemas/v2/properties/background.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/background.js b/dist/mint-config/schemas/v2/properties/background.js
+index 2df752bcdb94cd5a9254703e68a8db078835db71..563831f1d01c85ab6d874f0a970f0e67dbb97cb8 100644
+--- a/dist/mint-config/schemas/v2/properties/background.js
++++ b/dist/mint-config/schemas/v2/properties/background.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/banner.d.ts b/dist/mint-config/schemas/v2/properties/banner.d.ts
+index eb561bd0e4f1ade2bd39b84e68a7caa00691d8b6..dbf776636e723d2d00b7562fce1e1fbc47fa8cf2 100644
+--- a/dist/mint-config/schemas/v2/properties/banner.d.ts
++++ b/dist/mint-config/schemas/v2/properties/banner.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/banner.js b/dist/mint-config/schemas/v2/properties/banner.js
+index db9f62650fe8a56d78a54e3c6c31f7fb495b5e42..a6ca37d10f5b1982dc20cb3569f4f629cd2819ef 100644
+--- a/dist/mint-config/schemas/v2/properties/banner.js
++++ b/dist/mint-config/schemas/v2/properties/banner.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/colors.d.ts b/dist/mint-config/schemas/v2/properties/colors.d.ts
+index 036f3a3dcf4abc19c5261ecfc84a478b17abae28..5c454fd868bcbac1db64571f63f815c6e9df0767 100644
+--- a/dist/mint-config/schemas/v2/properties/colors.d.ts
++++ b/dist/mint-config/schemas/v2/properties/colors.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/colors.js b/dist/mint-config/schemas/v2/properties/colors.js
+index c6a64fee1de0909bab0707d2260f4114e3d60c41..cce15619749520ec71ea9e4110a8b41a1fcd616f 100644
+--- a/dist/mint-config/schemas/v2/properties/colors.js
++++ b/dist/mint-config/schemas/v2/properties/colors.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/contextual.d.ts b/dist/mint-config/schemas/v2/properties/contextual.d.ts
+index 382b0c932ce2a90f73ae3b83ca798d451e621a60..de1701dbff00e44494aa3f698408c7f1fe95767b 100644
+--- a/dist/mint-config/schemas/v2/properties/contextual.d.ts
++++ b/dist/mint-config/schemas/v2/properties/contextual.d.ts
+@@ -2 +2 @@ import { contextualDisplayOptions, contextualOptions } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/contextual.js b/dist/mint-config/schemas/v2/properties/contextual.js
+index 00af2e281b6b70439cd772497c0a4203089f93b8..34a1bd14ea8c5826b92f0c3c8bbeb56cac14e2d1 100644
+--- a/dist/mint-config/schemas/v2/properties/contextual.js
++++ b/dist/mint-config/schemas/v2/properties/contextual.js
+@@ -2 +2 @@ import { contextualDisplayOptions, contextualOptions } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/description.d.ts b/dist/mint-config/schemas/v2/properties/description.d.ts
+index c5e1ed0c79f6e95afbf60dba5f68ce811aa14035..393553f7b1512df82b5e2e15d5d82062a6954d3c 100644
+--- a/dist/mint-config/schemas/v2/properties/description.d.ts
++++ b/dist/mint-config/schemas/v2/properties/description.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/description.js b/dist/mint-config/schemas/v2/properties/description.js
+index f02634bdae5537ebe2257ed2af7efa7706de8222..4b62b1ff5f872620249e85d4c4e0fa34ea340cd0 100644
+--- a/dist/mint-config/schemas/v2/properties/description.js
++++ b/dist/mint-config/schemas/v2/properties/description.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/errors.d.ts b/dist/mint-config/schemas/v2/properties/errors.d.ts
+index 6750789a8ad13988acda1d31c5ef6b4e73764dd1..f470892aa8db6d86c0327e3f04bf8f8f529978e6 100644
+--- a/dist/mint-config/schemas/v2/properties/errors.d.ts
++++ b/dist/mint-config/schemas/v2/properties/errors.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/errors.js b/dist/mint-config/schemas/v2/properties/errors.js
+index f6dcf0375168a650ad20187e5c317d2b539a42b6..a56e37fed39617b179f98d31f1a9cace6af83822 100644
+--- a/dist/mint-config/schemas/v2/properties/errors.js
++++ b/dist/mint-config/schemas/v2/properties/errors.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/favicon.d.ts b/dist/mint-config/schemas/v2/properties/favicon.d.ts
+index 1fb00b884825d277af5654198a08de2895e29943..7670bdda3c53111b0e1fbbc80ea082a3836e4a57 100644
+--- a/dist/mint-config/schemas/v2/properties/favicon.d.ts
++++ b/dist/mint-config/schemas/v2/properties/favicon.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/favicon.js b/dist/mint-config/schemas/v2/properties/favicon.js
+index c888de10a115e4422fb3428c23f86868bc174373..dd00fb8ac506d61ead65b41f66be1bdb46ead81d 100644
+--- a/dist/mint-config/schemas/v2/properties/favicon.js
++++ b/dist/mint-config/schemas/v2/properties/favicon.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/feedback.d.ts b/dist/mint-config/schemas/v2/properties/feedback.d.ts
+index 0801f099adef707e2592d86b16d24f115d24949f..458d93c25a27429aacb276556f9b82b18c288a0c 100644
+--- a/dist/mint-config/schemas/v2/properties/feedback.d.ts
++++ b/dist/mint-config/schemas/v2/properties/feedback.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/feedback.js b/dist/mint-config/schemas/v2/properties/feedback.js
+index 91b75fc96b7ac84328c18a1085ae2487d7afb697..87b7be3bd3dd93f6f79765034b2ffa463a642d39 100644
+--- a/dist/mint-config/schemas/v2/properties/feedback.js
++++ b/dist/mint-config/schemas/v2/properties/feedback.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/fonts/index.d.ts b/dist/mint-config/schemas/v2/properties/fonts/index.d.ts
+index a628e37bc05585b1fcc2cfb13cd258529b780725..4fcc950789650c5b3884ab64db139e755eb353cc 100644
+--- a/dist/mint-config/schemas/v2/properties/fonts/index.d.ts
++++ b/dist/mint-config/schemas/v2/properties/fonts/index.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/fonts/index.js b/dist/mint-config/schemas/v2/properties/fonts/index.js
+index 9cccdaa197efecc67b25685edfea5af9e2657591..c21a50d72d96761639fd1eb547967c42bff21396 100644
+--- a/dist/mint-config/schemas/v2/properties/fonts/index.js
++++ b/dist/mint-config/schemas/v2/properties/fonts/index.js
+@@ -2 +2 @@ import { fontFormats } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/fonts/source.d.ts b/dist/mint-config/schemas/v2/properties/fonts/source.d.ts
+index 0a07186374d887e07d97cea50fd92cbda1818e22..2d1fabdf39f41770c6618d53ffab65cd4c0f42c9 100644
+--- a/dist/mint-config/schemas/v2/properties/fonts/source.d.ts
++++ b/dist/mint-config/schemas/v2/properties/fonts/source.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/fonts/source.js b/dist/mint-config/schemas/v2/properties/fonts/source.js
+index 1ea4e8899057b2f67d52a616bac07812d01417e2..0098d9b8c49f58ae60d7f2c95c3b9cc2a875e0b5 100644
+--- a/dist/mint-config/schemas/v2/properties/fonts/source.js
++++ b/dist/mint-config/schemas/v2/properties/fonts/source.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/footer.d.ts b/dist/mint-config/schemas/v2/properties/footer.d.ts
+index b3ee93dffeca9ae3bc958e73ec03b274e70170fe..a9749bd52c2e3493b944892ad66a0557391a6df7 100644
+--- a/dist/mint-config/schemas/v2/properties/footer.d.ts
++++ b/dist/mint-config/schemas/v2/properties/footer.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/footer.js b/dist/mint-config/schemas/v2/properties/footer.js
+index d3fb303a7570ce6a8b91805eed9ceb6f37be77a5..2ad4cc5b9a5fc3f5b29e797da43e7623444ee9ac 100644
+--- a/dist/mint-config/schemas/v2/properties/footer.js
++++ b/dist/mint-config/schemas/v2/properties/footer.js
+@@ -2 +2 @@ import { footerSocialKeys } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/icons.d.ts b/dist/mint-config/schemas/v2/properties/icons.d.ts
+index 417a0f63eeb9854889d468ee17b3c1700fffd0fc..4988f64f8e4acb0edf807644ab625e533ea3a9fe 100644
+--- a/dist/mint-config/schemas/v2/properties/icons.d.ts
++++ b/dist/mint-config/schemas/v2/properties/icons.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/icons.js b/dist/mint-config/schemas/v2/properties/icons.js
+index 66214d93b92d431613a3329f04b0d482086cef36..ab89eb399e0eb69e968cc71ff958a311a9e3daf9 100644
+--- a/dist/mint-config/schemas/v2/properties/icons.js
++++ b/dist/mint-config/schemas/v2/properties/icons.js
+@@ -2 +2 @@ import { iconLibraries } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/integrations.d.ts b/dist/mint-config/schemas/v2/properties/integrations.d.ts
+index fbd0c6e7313db266f483217235a376354af8bcf0..7c76ba876dcbe88e8ab788b6a4b002b49f44b0e9 100644
+--- a/dist/mint-config/schemas/v2/properties/integrations.d.ts
++++ b/dist/mint-config/schemas/v2/properties/integrations.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/integrations.js b/dist/mint-config/schemas/v2/properties/integrations.js
+index af368965200b8c568cd286c47f4b8d58bf788f7d..5162bc6f96b22935549c2868d1a8ffb2ae23e14f 100644
+--- a/dist/mint-config/schemas/v2/properties/integrations.js
++++ b/dist/mint-config/schemas/v2/properties/integrations.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/interaction.d.ts b/dist/mint-config/schemas/v2/properties/interaction.d.ts
+index e4a88aee0809c64b1e1b0152aa87fd05296a6e29..5b412da2496b8a27312bd172b3d8eb84d6e7962e 100644
+--- a/dist/mint-config/schemas/v2/properties/interaction.d.ts
++++ b/dist/mint-config/schemas/v2/properties/interaction.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/interaction.js b/dist/mint-config/schemas/v2/properties/interaction.js
+index bf52461765c34309603f04e5b3f72ab41f624cd5..7cb6f9fa79f34e7d91b56116b140ae1f02640b1a 100644
+--- a/dist/mint-config/schemas/v2/properties/interaction.js
++++ b/dist/mint-config/schemas/v2/properties/interaction.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/logo.d.ts b/dist/mint-config/schemas/v2/properties/logo.d.ts
+index c1192c114bbfa9b35f2b968153777e6ecb3a8376..bc7859d3349d7fd578a5599c3265e62baaca1895 100644
+--- a/dist/mint-config/schemas/v2/properties/logo.d.ts
++++ b/dist/mint-config/schemas/v2/properties/logo.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/logo.js b/dist/mint-config/schemas/v2/properties/logo.js
+index 13391e7aab324e12316ea0c1504a71ac92371015..c6c651ff1c3b0ed16a0ca9c6c81ce3ef7b902342 100644
+--- a/dist/mint-config/schemas/v2/properties/logo.js
++++ b/dist/mint-config/schemas/v2/properties/logo.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/markdown.d.ts b/dist/mint-config/schemas/v2/properties/markdown.d.ts
+index d7a9cc3d977b2265895f31a9e58a8293ed513b06..17ba180e7b175d424b6c23529e11bc2c4dd5e016 100644
+--- a/dist/mint-config/schemas/v2/properties/markdown.d.ts
++++ b/dist/mint-config/schemas/v2/properties/markdown.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/markdown.js b/dist/mint-config/schemas/v2/properties/markdown.js
+index 767ca19c1060faa75641f5423dcc0622606a06c3..65fdad1402f66c109151527bafa8c1cbc8489854 100644
+--- a/dist/mint-config/schemas/v2/properties/markdown.js
++++ b/dist/mint-config/schemas/v2/properties/markdown.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/metadata.d.ts b/dist/mint-config/schemas/v2/properties/metadata.d.ts
+index e4ca0558143f3cfa82c73a32936251c3b2e24379..4d7bed8f7e6b2e6f75daefb443b0d770bdfaece5 100644
+--- a/dist/mint-config/schemas/v2/properties/metadata.d.ts
++++ b/dist/mint-config/schemas/v2/properties/metadata.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/metadata.js b/dist/mint-config/schemas/v2/properties/metadata.js
+index 25a7c93ae2f241269167fff468b5783c71620a89..2d044c1df85de5670cedc05ae2851ad4621d85c9 100644
+--- a/dist/mint-config/schemas/v2/properties/metadata.js
++++ b/dist/mint-config/schemas/v2/properties/metadata.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/name.d.ts b/dist/mint-config/schemas/v2/properties/name.d.ts
+index f718891b3adc93c7461ddfc55510da25102c3da8..614fbef854349f90c1406bbf81f289fc58cb04fc 100644
+--- a/dist/mint-config/schemas/v2/properties/name.d.ts
++++ b/dist/mint-config/schemas/v2/properties/name.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/name.js b/dist/mint-config/schemas/v2/properties/name.js
+index bab29fcd6e967393b56e2d695a9f219ce82abb3f..a6017933f81fabfa9cfa22ec656a696eeaabf839 100644
+--- a/dist/mint-config/schemas/v2/properties/name.js
++++ b/dist/mint-config/schemas/v2/properties/name.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navbar.d.ts b/dist/mint-config/schemas/v2/properties/navbar.d.ts
+index 3efbd5624538f9144560b03b5aaf9b095d5626ed..a2603543b5d7e4ab631fee806dbc394cba3bc55d 100644
+--- a/dist/mint-config/schemas/v2/properties/navbar.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navbar.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navbar.js b/dist/mint-config/schemas/v2/properties/navbar.js
+index 766f12a588eef586ca2be3b3bfe4c6e51a62e8f8..369884da153bfdaeb581984eb8286c75f8b44dae 100644
+--- a/dist/mint-config/schemas/v2/properties/navbar.js
++++ b/dist/mint-config/schemas/v2/properties/navbar.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/anchors.d.ts b/dist/mint-config/schemas/v2/properties/navigation/anchors.d.ts
+index 371bb4cb1a93a1a0230095cbb9025659fb820892..3a61bfae16152574e6dbd3472031a646f62b08d1 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/anchors.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/anchors.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/anchors.js b/dist/mint-config/schemas/v2/properties/navigation/anchors.js
+index 9326f4e44f244f81bea81e4bc0c49ce647117716..e6b810a2bca152da4fbf7609c7025d225d1a8f02 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/anchors.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/anchors.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/divisionNav.d.ts b/dist/mint-config/schemas/v2/properties/navigation/divisionNav.d.ts
+index 40bd50a0b504c0745408e0c9d9e13457f275ea41..a87b8584735e0893254b45bc6a6bb6c9e36740f9 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/divisionNav.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/divisionNav.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/divisionNav.js b/dist/mint-config/schemas/v2/properties/navigation/divisionNav.js
+index 46c5317b592fc1d5839ff0447cd3ae5fe0be632e..18625c5e79de8c36e21e74346512a0173fe0efa4 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/divisionNav.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/divisionNav.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/dropdown.d.ts b/dist/mint-config/schemas/v2/properties/navigation/dropdown.d.ts
+index e4c943d8dbebc2d29aa6407a262dcfd20d6431ce..0bd52589ee771573173f4453758b600243eba94a 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/dropdown.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/dropdown.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/dropdown.js b/dist/mint-config/schemas/v2/properties/navigation/dropdown.js
+index 3100223f6535b692883c006bb9d5371d2cfe7782..b0ec551475f8a114e334a84248fc9e919cb3b6dd 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/dropdown.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/dropdown.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/global.d.ts b/dist/mint-config/schemas/v2/properties/navigation/global.d.ts
+index d2463a6ad4b6bd5b616579fe61d689665b58a622..d71e979fb4c72b346ece61deb90f8d943fb29feb 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/global.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/global.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/global.js b/dist/mint-config/schemas/v2/properties/navigation/global.js
+index 82b8ea9a671f638e0a048c4fc96653bd3f8f6264..f279196e896a7e7a7d34856b3c16f987dd5dbc5f 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/global.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/global.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/groups.d.ts b/dist/mint-config/schemas/v2/properties/navigation/groups.d.ts
+index 33316d062c942b74dc8528d7730f3e8880e4ffb5..2f3353e1d938c42f529a9539865f065add256021 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/groups.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/groups.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/groups.js b/dist/mint-config/schemas/v2/properties/navigation/groups.js
+index 59fc994f15c5f0ac5aedcb102900532a87364b09..25aa475f71955dd4646e863de5a9bed14387fde6 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/groups.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/groups.js
+@@ -12 +12 @@ var __rest = (this && this.__rest) || function (s, e) {
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/index.d.ts b/dist/mint-config/schemas/v2/properties/navigation/index.d.ts
+index f2e8d6c12dede6de5a81eed46cb3983be46438e2..80c81f8726f5037376275c6f1b4584c0efef773a 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/index.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/index.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/index.js b/dist/mint-config/schemas/v2/properties/navigation/index.js
+index 5c7e7aca060646f250225c67739620afd193a8d7..1a61c01bcd9ecc6ac098a8b798a6a61633bf09a3 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/index.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/index.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/languages.d.ts b/dist/mint-config/schemas/v2/properties/navigation/languages.d.ts
+index c0f3e9f0c0b81d7c5525613fccff798c9839b10a..13f7b1bc86a56081affa96e00d943d0e97d27049 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/languages.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/languages.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/languages.js b/dist/mint-config/schemas/v2/properties/navigation/languages.js
+index 8e0d12a688d555371c6f5263f60662db7193608a..086b40ac4aa200bcfc51c98a1763213ff69c5daa 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/languages.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/languages.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/menu.d.ts b/dist/mint-config/schemas/v2/properties/navigation/menu.d.ts
+index 85f62347399568c5ade255b916818165e989cebb..2bcf4f2b1f6eb0eafcbf4060ad0552a9300e83a5 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/menu.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/menu.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/menu.js b/dist/mint-config/schemas/v2/properties/navigation/menu.js
+index 598e9032e907ce04b57345fcab8745f39b35cf46..5e1d471990c715237d5ee0c397d5427851aef17f 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/menu.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/menu.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/pages.d.ts b/dist/mint-config/schemas/v2/properties/navigation/pages.d.ts
+index 55eda37a383d972bcebc147fe7d8d65e32a7fa04..5d4865a8fc14dab5b0ef4af28d8ea0d4a1e2db53 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/pages.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/pages.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/pages.js b/dist/mint-config/schemas/v2/properties/navigation/pages.js
+index b5de2f454e4169bec14ea12de59dd23ac04fda76..7231b07fc444d7e1640a1cfbf971d7176cf8cea6 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/pages.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/pages.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/products.d.ts b/dist/mint-config/schemas/v2/properties/navigation/products.d.ts
+index 49e56a012ba97ceda26f0f43e83b004cdc16dde3..cd16c9492ac49aa537fd4b2f603811e8fb717187 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/products.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/products.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/products.js b/dist/mint-config/schemas/v2/properties/navigation/products.js
+index b9e2919bf1b7c9bea3668a45d7899ff6b591b465..2d3b3bbaa79e32b7d781999137d713513a3f04f6 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/products.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/products.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/sourceRef.d.ts b/dist/mint-config/schemas/v2/properties/navigation/sourceRef.d.ts
+index 60f22fd05a89cd63c9815d1bb51cdaeacb3e51e9..3047b9fdf412e407c919914b6f0855cc264d9fed 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/sourceRef.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/sourceRef.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/sourceRef.js b/dist/mint-config/schemas/v2/properties/navigation/sourceRef.js
+index 63c0beb1b31663c2abba48667b43ba5f60cd4bb9..0ae5daf2cb79074fb2190e9693e755d97e951f1c 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/sourceRef.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/sourceRef.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/tabs.d.ts b/dist/mint-config/schemas/v2/properties/navigation/tabs.d.ts
+index 1b4c0f8b9d173174556de44303fe6e71ee0c559f..6e264cae4a9b7ca5374945c1718874fb7c51fdec 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/tabs.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/tabs.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/tabs.js b/dist/mint-config/schemas/v2/properties/navigation/tabs.js
+index 8feef926c66551089cee23910c57da65753931cb..0b93589e332fd5069010ac5d990b3591b976ee64 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/tabs.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/tabs.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/version.d.ts b/dist/mint-config/schemas/v2/properties/navigation/version.d.ts
+index fa4b5ba7da3dfc7f7b2cee485022809e9a562f69..68954d561ac1c01320344dad0a8db4926b23fc40 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/version.d.ts
++++ b/dist/mint-config/schemas/v2/properties/navigation/version.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/navigation/version.js b/dist/mint-config/schemas/v2/properties/navigation/version.js
+index 0c1e1ba9e14ec941b514bdfd688f0df0f74d49d4..dafe780981736f042f22581000c3f38d78f87330 100644
+--- a/dist/mint-config/schemas/v2/properties/navigation/version.js
++++ b/dist/mint-config/schemas/v2/properties/navigation/version.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/public.d.ts b/dist/mint-config/schemas/v2/properties/public.d.ts
+index 47020543a0451b789b3a383be2c3f7890e724e61..653cba0515653272552f0eb6ea4e015f74d40335 100644
+--- a/dist/mint-config/schemas/v2/properties/public.d.ts
++++ b/dist/mint-config/schemas/v2/properties/public.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/public.js b/dist/mint-config/schemas/v2/properties/public.js
+index ffbeb1855519dc34e5fc7bd1cc9080f069749ad6..e7a6d63ec8e6a857f795b1ad42a762121bfe3f99 100644
+--- a/dist/mint-config/schemas/v2/properties/public.js
++++ b/dist/mint-config/schemas/v2/properties/public.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/redirects.d.ts b/dist/mint-config/schemas/v2/properties/redirects.d.ts
+index 88af2facead236441711e68c88eb0ba0b62f2acf..64de6ca66f5957c2cf92ca990918c2e57dcaa604 100644
+--- a/dist/mint-config/schemas/v2/properties/redirects.d.ts
++++ b/dist/mint-config/schemas/v2/properties/redirects.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/redirects.js b/dist/mint-config/schemas/v2/properties/redirects.js
+index 66a593a5260643777b4a3877ca1d58625bb7d2b2..d427a39584e8f8073a7ee59a67dd8e5a43125764 100644
+--- a/dist/mint-config/schemas/v2/properties/redirects.js
++++ b/dist/mint-config/schemas/v2/properties/redirects.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/asyncapi.d.ts b/dist/mint-config/schemas/v2/properties/reusable/asyncapi.d.ts
+index 6132efb15aa0474771fbdb341a4dd056e27671c7..515315085b809e3d18726af53ccd2b8d48e42e24 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/asyncapi.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/asyncapi.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/asyncapi.js b/dist/mint-config/schemas/v2/properties/reusable/asyncapi.js
+index 02e1cb94f86433142d513bfa979c3d1c03616627..1188e8888e87626340ef21e34cac5e7aa5e6e4fe 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/asyncapi.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/asyncapi.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/color.d.ts b/dist/mint-config/schemas/v2/properties/reusable/color.d.ts
+index 68b095d88a9d2f9ef4470f9825a236b450e581cd..9ff66ce1a6e60b4d14697a5a116d3608ddae007c 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/color.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/color.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/color.js b/dist/mint-config/schemas/v2/properties/reusable/color.js
+index c299b88468feec7a661f93498617453caef3bbff..c9c914b4a078ecc432dcbf217e5f248ead9abfc5 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/color.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/color.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/graphql.d.ts b/dist/mint-config/schemas/v2/properties/reusable/graphql.d.ts
+index 16f2191f7a8f4ca620d3570d24502276e4d12c1c..a3041653f6e1b85513bb9c73b33c5227c329ec66 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/graphql.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/graphql.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/graphql.js b/dist/mint-config/schemas/v2/properties/reusable/graphql.js
+index 7593ee06bd07de8e5d3fe18272792fee4c4e5bc6..381b55ffe0b2ef23cbb6dd754a0e787d3e509eeb 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/graphql.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/graphql.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/hidden.d.ts b/dist/mint-config/schemas/v2/properties/reusable/hidden.d.ts
+index f608e6d9b1076ed13fea90b9b3f1f5eb860635c0..f5c4f6a3971d1fd9727b3dc7243b7f5b1a98031a 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/hidden.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/hidden.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/hidden.js b/dist/mint-config/schemas/v2/properties/reusable/hidden.js
+index e3444b0bf1bb0f711c1adc48f3408bfe7775d4f7..ae08e112477e2c9fce88b95a921b996f9e6dbcc3 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/hidden.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/hidden.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/href.d.ts b/dist/mint-config/schemas/v2/properties/reusable/href.d.ts
+index 1e7e7cd004e614bf828b3e9133a13750851f9769..f0b5da3b24234d68fe01928fc325821248ec6cf9 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/href.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/href.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/href.js b/dist/mint-config/schemas/v2/properties/reusable/href.js
+index 97b5f54172884dd266659b4382a2c57cf42b2ba2..01e6ec0aa0550048d99e57bb796951bbe88ec6e4 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/href.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/href.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/icon.d.ts b/dist/mint-config/schemas/v2/properties/reusable/icon.d.ts
+index 62709d070d0a99916718ca59eb0c1c11c3ba4247..0c5351cbd729691824f6c4b4c9b1b680cda6dce2 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/icon.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/icon.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/icon.js b/dist/mint-config/schemas/v2/properties/reusable/icon.js
+index c3be3b845f6e61c28564809b620366516ccb34d4..b147a9bb98b86a4f261019dfd718098518d03f50 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/icon.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/icon.js
+@@ -2 +2 @@ import { iconTypes, iconLibraries } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/openapi.d.ts b/dist/mint-config/schemas/v2/properties/reusable/openapi.d.ts
+index 9a1b00100dd15fb9b3465eca27158afa0145bd77..1be1bfc6fc9dfe21039656675f4f8f42e03e5607 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/openapi.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/openapi.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/openapi.js b/dist/mint-config/schemas/v2/properties/reusable/openapi.js
+index 6bd82b9fa5c9a25b57c5403f77bf56cc8cd0834d..a99b246cd0a790ff58b2aab3f3346e5d6c0f43ce 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/openapi.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/openapi.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/page.d.ts b/dist/mint-config/schemas/v2/properties/reusable/page.d.ts
+index 43e016afdf6c17738f9f1fc1e5a043d645c5e25d..39462ddd22755b9977515b7e5c67a2fb32370f9a 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/page.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/page.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/page.js b/dist/mint-config/schemas/v2/properties/reusable/page.js
+index e1966cd319318ae30fb245ee286429784910b88e..dbff15947cd867f61502f26167241900f5e6c464 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/page.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/page.js
+@@ -2 +2 @@ import { apiPlaygroundDisplayTypes, iconTypes } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/safeUrl.d.ts b/dist/mint-config/schemas/v2/properties/reusable/safeUrl.d.ts
+index cc6fda0a5cd9c438b3e5d8b80c9dd79587039143..b42fd88fe4321c43a81cea802d2d392fdd61ef79 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/safeUrl.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/safeUrl.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/safeUrl.js b/dist/mint-config/schemas/v2/properties/reusable/safeUrl.js
+index e41a95f187de2c96f80b1185878c9ccd810a119d..4b2b936b2c54a3cffc98eb3e43d0d0eac89db536 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/safeUrl.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/safeUrl.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/sdk.d.ts b/dist/mint-config/schemas/v2/properties/reusable/sdk.d.ts
+index f63c29a50220cc94039af0c88721e4d1b03604d0..c3ef09aacc470ecf6beaf7279f9ee2b3691d6dd6 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/sdk.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/sdk.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/sdk.js b/dist/mint-config/schemas/v2/properties/reusable/sdk.js
+index f70d28ffc2f73017006a3b2baac2281d89da564a..ebe63007196f750ab78c61b3a6a874f036d18c41 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/sdk.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/sdk.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/searchable.d.ts b/dist/mint-config/schemas/v2/properties/reusable/searchable.d.ts
+index a70f2c87a87ccf944f0d7f2a3d34178fb8f96896..c74769e7c3134015b197141ba1e4d3feea7dd03f 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/searchable.d.ts
++++ b/dist/mint-config/schemas/v2/properties/reusable/searchable.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/reusable/searchable.js b/dist/mint-config/schemas/v2/properties/reusable/searchable.js
+index cc31011ceb62cd5afef27f860595f803810fade2..e45805e8273df426b3657950280b55d64080168c 100644
+--- a/dist/mint-config/schemas/v2/properties/reusable/searchable.js
++++ b/dist/mint-config/schemas/v2/properties/reusable/searchable.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/search.d.ts b/dist/mint-config/schemas/v2/properties/search.d.ts
+index 6f65fa4dfa5650f97de1da5b305831262a64c308..720aa652eca66eb82064ce4d954a6354906edd86 100644
+--- a/dist/mint-config/schemas/v2/properties/search.d.ts
++++ b/dist/mint-config/schemas/v2/properties/search.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/search.js b/dist/mint-config/schemas/v2/properties/search.js
+index f156fe9e562d017d09b77ddf7721ad8ae509c655..346458cd4ac013f718ea8ab5614672699ee63b77 100644
+--- a/dist/mint-config/schemas/v2/properties/search.js
++++ b/dist/mint-config/schemas/v2/properties/search.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/seo.d.ts b/dist/mint-config/schemas/v2/properties/seo.d.ts
+index 3e3d3cb2a6e05263b91ef6cb2072ef24ba104cdf..b2ac0bc8eca75aff2af9ce8265e2b59f2505c3e9 100644
+--- a/dist/mint-config/schemas/v2/properties/seo.d.ts
++++ b/dist/mint-config/schemas/v2/properties/seo.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/seo.js b/dist/mint-config/schemas/v2/properties/seo.js
+index 72ef70c3bb7d436d847ee40db929c39b176b4bac..7b3e82ab1aeb91c24371d8cf3aa7352599468904 100644
+--- a/dist/mint-config/schemas/v2/properties/seo.js
++++ b/dist/mint-config/schemas/v2/properties/seo.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/styling.d.ts b/dist/mint-config/schemas/v2/properties/styling.d.ts
+index dbe5d93e5d9652a095765f771c7b13ca655f3e78..6973e19c21e8dae190f5676ed3f11e7a27aa05c3 100644
+--- a/dist/mint-config/schemas/v2/properties/styling.d.ts
++++ b/dist/mint-config/schemas/v2/properties/styling.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/styling.js b/dist/mint-config/schemas/v2/properties/styling.js
+index cb192af2719c484e606c6a15fcb4363d08a36719..c1966c534a6332412226e2768f10ab4cbbb666af 100644
+--- a/dist/mint-config/schemas/v2/properties/styling.js
++++ b/dist/mint-config/schemas/v2/properties/styling.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/thumbnails.d.ts b/dist/mint-config/schemas/v2/properties/thumbnails.d.ts
+index ef9cf92b6f9414fbf4ccd3b76bea02766288d1a8..f2783834dcd7a44c51316360602cac6f5d528ee0 100644
+--- a/dist/mint-config/schemas/v2/properties/thumbnails.d.ts
++++ b/dist/mint-config/schemas/v2/properties/thumbnails.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/thumbnails.js b/dist/mint-config/schemas/v2/properties/thumbnails.js
+index c1831bb8fb0da95a5971d3f1bd9ceafff313507e..a56db3dd6716e63181659a3c4d85f8b0da9ffd1a 100644
+--- a/dist/mint-config/schemas/v2/properties/thumbnails.js
++++ b/dist/mint-config/schemas/v2/properties/thumbnails.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/variables.d.ts b/dist/mint-config/schemas/v2/properties/variables.d.ts
+index a76917f2084efcab7192b60680fd05f96d631e9c..fee9135774e30bb03bfc3e326c78856d013f4445 100644
+--- a/dist/mint-config/schemas/v2/properties/variables.d.ts
++++ b/dist/mint-config/schemas/v2/properties/variables.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/variables.js b/dist/mint-config/schemas/v2/properties/variables.js
+index ff2e73ee244efdc1ce1b3b4ad786b88c52ce7411..37b373da1e9e845d66447df3ec5b5eb264c72491 100644
+--- a/dist/mint-config/schemas/v2/properties/variables.js
++++ b/dist/mint-config/schemas/v2/properties/variables.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/variations.d.ts b/dist/mint-config/schemas/v2/properties/variations.d.ts
+index 7038a90d5e5ab8d30a93a44d48f1cfa16e3faf55..312f02e07b392b6417f52031060ac722b25a9ec6 100644
+--- a/dist/mint-config/schemas/v2/properties/variations.d.ts
++++ b/dist/mint-config/schemas/v2/properties/variations.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/properties/variations.js b/dist/mint-config/schemas/v2/properties/variations.js
+index dd89d215d327c893e7852b690daca1045578d8c7..106aeee35c296ea7b4f43d5c563bf9dd6f8a7642 100644
+--- a/dist/mint-config/schemas/v2/properties/variations.js
++++ b/dist/mint-config/schemas/v2/properties/variations.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/almond.d.ts b/dist/mint-config/schemas/v2/themes/almond.d.ts
+index ecce0e1bc929fb8b11b2ae2ef75201c65508048c..b1494f1f5444b716d0562260b4c39f44fefe0926 100644
+--- a/dist/mint-config/schemas/v2/themes/almond.d.ts
++++ b/dist/mint-config/schemas/v2/themes/almond.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/almond.js b/dist/mint-config/schemas/v2/themes/almond.js
+index e815654c3f49c5de97d744ef3bbc0b1dfff9fd3c..353f9104fc98b32059978bb4db564a146651c92b 100644
+--- a/dist/mint-config/schemas/v2/themes/almond.js
++++ b/dist/mint-config/schemas/v2/themes/almond.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/aspen.d.ts b/dist/mint-config/schemas/v2/themes/aspen.d.ts
+index 18e73f9a64a058ea384da82a94f12f9186faba6f..11634e12178d4c6ee4a6266cc9e45ca1466cac11 100644
+--- a/dist/mint-config/schemas/v2/themes/aspen.d.ts
++++ b/dist/mint-config/schemas/v2/themes/aspen.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/aspen.js b/dist/mint-config/schemas/v2/themes/aspen.js
+index b6e5eeb18300927dc6ec169250bb39db65f276d0..af7fa1bb153652f3e312551b7dec11afb8208deb 100644
+--- a/dist/mint-config/schemas/v2/themes/aspen.js
++++ b/dist/mint-config/schemas/v2/themes/aspen.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/linden.d.ts b/dist/mint-config/schemas/v2/themes/linden.d.ts
+index 195662fda00bee15b367a8f99e73e905160fc1f6..4685c18817143411aea7de972b6c3f97de1511dc 100644
+--- a/dist/mint-config/schemas/v2/themes/linden.d.ts
++++ b/dist/mint-config/schemas/v2/themes/linden.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/linden.js b/dist/mint-config/schemas/v2/themes/linden.js
+index c155aa6813c49e432de3641626ac289024cb1ad0..702a30a6454c286e97c96de58905f49d8a155b19 100644
+--- a/dist/mint-config/schemas/v2/themes/linden.js
++++ b/dist/mint-config/schemas/v2/themes/linden.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/luma.d.ts b/dist/mint-config/schemas/v2/themes/luma.d.ts
+index 7b28499d906e31fd3bcb60088e64d42adaa2a66a..325461f83dfb1b71b34768571cc2b1510fa7ef40 100644
+--- a/dist/mint-config/schemas/v2/themes/luma.d.ts
++++ b/dist/mint-config/schemas/v2/themes/luma.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/luma.js b/dist/mint-config/schemas/v2/themes/luma.js
+index d64ca08a72da6a8993d19bd6d917935a60f40983..4a2b632f38c2527eb44a5d8e05f7761c3d81379b 100644
+--- a/dist/mint-config/schemas/v2/themes/luma.js
++++ b/dist/mint-config/schemas/v2/themes/luma.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/maple.d.ts b/dist/mint-config/schemas/v2/themes/maple.d.ts
+index c2b0831a649e67a40f4376c2b1717034092855fd..d54a3d91e79d3318870aaa9c302500a7114264d2 100644
+--- a/dist/mint-config/schemas/v2/themes/maple.d.ts
++++ b/dist/mint-config/schemas/v2/themes/maple.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/maple.js b/dist/mint-config/schemas/v2/themes/maple.js
+index 3b40a66c81d27e0048bc1c512d49f565b9914f91..9fc9ce2458830bdf01783a5a8adf01c623719937 100644
+--- a/dist/mint-config/schemas/v2/themes/maple.js
++++ b/dist/mint-config/schemas/v2/themes/maple.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/mint.d.ts b/dist/mint-config/schemas/v2/themes/mint.d.ts
+index 419f415c3a7c22bce2a9f4a6829edfe4411d6fbd..6ab18086ea608617201bde28193a906dc80ee5d4 100644
+--- a/dist/mint-config/schemas/v2/themes/mint.d.ts
++++ b/dist/mint-config/schemas/v2/themes/mint.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/mint.js b/dist/mint-config/schemas/v2/themes/mint.js
+index 3717fef6b1fb7cf21e0e156d453f51a75a500232..2b2e67048daaa82ab2d4d164380ef3416e7908ee 100644
+--- a/dist/mint-config/schemas/v2/themes/mint.js
++++ b/dist/mint-config/schemas/v2/themes/mint.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/palm.d.ts b/dist/mint-config/schemas/v2/themes/palm.d.ts
+index d6793b03e2e59b328e83438126c80947ef6d4440..ae79713dd62f2c7d61dee88845c2717e23f68702 100644
+--- a/dist/mint-config/schemas/v2/themes/palm.d.ts
++++ b/dist/mint-config/schemas/v2/themes/palm.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/palm.js b/dist/mint-config/schemas/v2/themes/palm.js
+index 42432664de74952643589a2efbedbc15453d78f3..c3589304e6ae5e91c75f0ad2fad82e457f863351 100644
+--- a/dist/mint-config/schemas/v2/themes/palm.js
++++ b/dist/mint-config/schemas/v2/themes/palm.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/reusable/index.d.ts b/dist/mint-config/schemas/v2/themes/reusable/index.d.ts
+index afe3675a62f38c503ba349e84d98982561d6288e..58588c19282a30034b110a077dea6da11e1fd279 100644
+--- a/dist/mint-config/schemas/v2/themes/reusable/index.d.ts
++++ b/dist/mint-config/schemas/v2/themes/reusable/index.d.ts
+@@ -2,9 +2,9 @@ export declare const standardConfigSchema: {
+-    $schema: import("zod").ZodDefault<import("zod").ZodOptional<import("zod").ZodString>>;
+-    name: import("zod").ZodString;
+-    public: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-    description: import("zod").ZodOptional<import("zod").ZodString>;
+-    colors: import("zod").ZodObject<{
+-        primary: import("zod").ZodString;
+-        light: import("zod").ZodOptional<import("zod").ZodString>;
+-        dark: import("zod").ZodOptional<import("zod").ZodString>;
+-    }, "strict", import("zod").ZodTypeAny, {
++    $schema: import("zod/v3").ZodDefault<import("zod/v3").ZodOptional<import("zod/v3").ZodString>>;
++    name: import("zod/v3").ZodString;
++    public: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++    description: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++    colors: import("zod/v3").ZodObject<{
++        primary: import("zod/v3").ZodString;
++        light: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        dark: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++    }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -19,5 +19,5 @@ export declare const standardConfigSchema: {
+-    logo: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodString, import("zod").ZodObject<{
+-        light: import("zod").ZodString;
+-        dark: import("zod").ZodString;
+-        href: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodString, string, string>>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    logo: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodString, import("zod/v3").ZodObject<{
++        light: import("zod/v3").ZodString;
++        dark: import("zod/v3").ZodString;
++        href: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -32,4 +32,4 @@ export declare const standardConfigSchema: {
+-    favicon: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodString, import("zod").ZodObject<{
+-        light: import("zod").ZodString;
+-        dark: import("zod").ZodString;
+-    }, "strip", import("zod").ZodTypeAny, {
++    favicon: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodString, import("zod/v3").ZodObject<{
++        light: import("zod/v3").ZodString;
++        dark: import("zod/v3").ZodString;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -42,5 +42,5 @@ export declare const standardConfigSchema: {
+-    api: import("zod").ZodOptional<import("zod").ZodObject<{
+-        openapi: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodString, string, string>, import("zod").ZodArray<import("zod").ZodEffects<import("zod").ZodString, string, string>, "many">, import("zod").ZodObject<{
+-            source: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-            directory: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strict", import("zod").ZodTypeAny, {
++    api: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        openapi: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, import("zod/v3").ZodArray<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, "many">, import("zod/v3").ZodObject<{
++            source: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++            directory: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -53,4 +53,4 @@ export declare const standardConfigSchema: {
+-        asyncapi: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodString, string, string>, import("zod").ZodArray<import("zod").ZodEffects<import("zod").ZodString, string, string>, "many">, import("zod").ZodObject<{
+-            source: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-            directory: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strict", import("zod").ZodTypeAny, {
++        asyncapi: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, import("zod/v3").ZodArray<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, "many">, import("zod/v3").ZodObject<{
++            source: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++            directory: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -63,4 +63,4 @@ export declare const standardConfigSchema: {
+-        params: import("zod").ZodOptional<import("zod").ZodObject<{
+-            expanded: import("zod").ZodOptional<import("zod").ZodEnum<["all", "closed"]>>;
+-            post: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        params: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            expanded: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["all", "closed"]>>;
++            post: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodString, "many">>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -73,5 +73,5 @@ export declare const standardConfigSchema: {
+-        playground: import("zod").ZodOptional<import("zod").ZodObject<{
+-            display: import("zod").ZodOptional<import("zod").ZodEnum<["interactive", "simple", "none", "auth"]>>;
+-            proxy: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-            credentials: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        playground: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            display: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["interactive", "simple", "none", "auth"]>>;
++            proxy: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++            credentials: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -86,6 +86,6 @@ export declare const standardConfigSchema: {
+-        examples: import("zod").ZodOptional<import("zod").ZodObject<{
+-            defaults: import("zod").ZodOptional<import("zod").ZodEnum<["required", "all"]>>;
+-            languages: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>;
+-            prefill: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-            autogenerate: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        examples: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            defaults: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["required", "all"]>>;
++            languages: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodString, "many">>;
++            prefill: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++            autogenerate: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -102,6 +102,6 @@ export declare const standardConfigSchema: {
+-        url: import("zod").ZodOptional<import("zod").ZodEnum<["full"]>>;
+-        mdx: import("zod").ZodOptional<import("zod").ZodObject<{
+-            auth: import("zod").ZodOptional<import("zod").ZodObject<{
+-                method: import("zod").ZodOptional<import("zod").ZodEnum<["bearer", "basic", "key", "cobo"]>>;
+-                name: import("zod").ZodOptional<import("zod").ZodString>;
+-            }, "strip", import("zod").ZodTypeAny, {
++        url: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["full"]>>;
++        mdx: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            auth: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++                method: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["bearer", "basic", "key", "cobo"]>>;
++                name: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -114,2 +114,2 @@ export declare const standardConfigSchema: {
+-            server: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodString, import("zod").ZodArray<import("zod").ZodString, "many">]>>;
+-        }, "strip", import("zod").ZodTypeAny, {
++            server: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodString, import("zod/v3").ZodArray<import("zod/v3").ZodString, "many">]>>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -128 +128 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -193,4 +193,4 @@ export declare const standardConfigSchema: {
+-    appearance: import("zod").ZodOptional<import("zod").ZodObject<{
+-        default: import("zod").ZodOptional<import("zod").ZodEnum<["system", "light", "dark"]>>;
+-        strict: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    appearance: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        default: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["system", "light", "dark"]>>;
++        strict: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -203,5 +203,5 @@ export declare const standardConfigSchema: {
+-    background: import("zod").ZodOptional<import("zod").ZodObject<{
+-        image: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodString, import("zod").ZodObject<{
+-            light: import("zod").ZodString;
+-            dark: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++    background: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        image: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodString, import("zod/v3").ZodObject<{
++            light: import("zod/v3").ZodString;
++            dark: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -214,5 +214,5 @@ export declare const standardConfigSchema: {
+-        decoration: import("zod").ZodOptional<import("zod").ZodEnum<["gradient", "grid", "windows"]>>;
+-        color: import("zod").ZodOptional<import("zod").ZodObject<{
+-            light: import("zod").ZodOptional<import("zod").ZodString>;
+-            dark: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strict", import("zod").ZodTypeAny, {
++        decoration: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["gradient", "grid", "windows"]>>;
++        color: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            light: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            dark: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -225 +225 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -246,7 +246,7 @@ export declare const standardConfigSchema: {
+-    navbar: import("zod").ZodOptional<import("zod").ZodObject<{
+-        links: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodUnion<[import("zod").ZodObject<{
+-            icon: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodString, string, string>, import("zod").ZodObject<{
+-                style: import("zod").ZodOptional<import("zod").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
+-                name: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-                library: import("zod").ZodOptional<import("zod").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
+-            }, "strip", import("zod").ZodTypeAny, {
++    navbar: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        links: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodUnion<[import("zod/v3").ZodObject<{
++            icon: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, import("zod/v3").ZodObject<{
++                style: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
++                name: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++                library: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -261 +261 @@ export declare const standardConfigSchema: {
+-            href: import("zod").ZodEffects<import("zod").ZodString, string, string>;
++            href: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
+@@ -263,3 +263,3 @@ export declare const standardConfigSchema: {
+-            label: import("zod").ZodOptional<import("zod").ZodString>;
+-            type: import("zod").ZodLiteral<"github">;
+-        }, "strip", import("zod").ZodTypeAny, {
++            label: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            type: import("zod/v3").ZodLiteral<"github">;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -283,6 +283,6 @@ export declare const standardConfigSchema: {
+-        }>, import("zod").ZodObject<{
+-            icon: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodString, string, string>, import("zod").ZodObject<{
+-                style: import("zod").ZodOptional<import("zod").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
+-                name: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-                library: import("zod").ZodOptional<import("zod").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
+-            }, "strip", import("zod").ZodTypeAny, {
++        }>, import("zod/v3").ZodObject<{
++            icon: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, import("zod/v3").ZodObject<{
++                style: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
++                name: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++                library: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -297 +297 @@ export declare const standardConfigSchema: {
+-            href: import("zod").ZodEffects<import("zod").ZodString, string, string>;
++            href: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
+@@ -299,3 +299,3 @@ export declare const standardConfigSchema: {
+-            label: import("zod").ZodOptional<import("zod").ZodString>;
+-            type: import("zod").ZodLiteral<"discord">;
+-        }, "strip", import("zod").ZodTypeAny, {
++            label: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            type: import("zod/v3").ZodLiteral<"discord">;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -319,6 +319,6 @@ export declare const standardConfigSchema: {
+-        }>, import("zod").ZodObject<{
+-            icon: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodString, string, string>, import("zod").ZodObject<{
+-                style: import("zod").ZodOptional<import("zod").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
+-                name: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-                library: import("zod").ZodOptional<import("zod").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
+-            }, "strip", import("zod").ZodTypeAny, {
++        }>, import("zod/v3").ZodObject<{
++            icon: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, import("zod/v3").ZodObject<{
++                style: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
++                name: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++                library: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -333 +333 @@ export declare const standardConfigSchema: {
+-            href: import("zod").ZodEffects<import("zod").ZodString, string, string>;
++            href: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
+@@ -335,3 +335,3 @@ export declare const standardConfigSchema: {
+-            label: import("zod").ZodString;
+-            type: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strip", import("zod").ZodTypeAny, {
++            label: import("zod/v3").ZodString;
++            type: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -356,5 +356,5 @@ export declare const standardConfigSchema: {
+-        primary: import("zod").ZodOptional<import("zod").ZodDiscriminatedUnion<"type", [import("zod").ZodObject<{
+-            type: import("zod").ZodLiteral<"button">;
+-            label: import("zod").ZodString;
+-            href: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        primary: import("zod/v3").ZodOptional<import("zod/v3").ZodDiscriminatedUnion<"type", [import("zod/v3").ZodObject<{
++            type: import("zod/v3").ZodLiteral<"button">;
++            label: import("zod/v3").ZodString;
++            href: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -368,5 +368,5 @@ export declare const standardConfigSchema: {
+-        }>, import("zod").ZodObject<{
+-            type: import("zod").ZodLiteral<"github">;
+-            label: import("zod").ZodOptional<import("zod").ZodString>;
+-            href: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        }>, import("zod/v3").ZodObject<{
++            type: import("zod/v3").ZodLiteral<"github">;
++            label: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            href: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -380,5 +380,5 @@ export declare const standardConfigSchema: {
+-        }>, import("zod").ZodObject<{
+-            type: import("zod").ZodLiteral<"discord">;
+-            label: import("zod").ZodOptional<import("zod").ZodString>;
+-            href: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        }>, import("zod/v3").ZodObject<{
++            type: import("zod/v3").ZodLiteral<"discord">;
++            label: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            href: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -393 +393 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -478,5 +478,5 @@ export declare const standardConfigSchema: {
+-    navigation: import("zod").ZodUnion<[import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    navigation: import("zod/v3").ZodUnion<[import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -484,2 +484,2 @@ export declare const standardConfigSchema: {
+-        products: import("zod").ZodArray<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").ProductNavigation<"default">, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").ProductNavigation<"default">>, "many">;
+-    }, "strip", import("zod").ZodTypeAny, {
++        products: import("zod/v3").ZodArray<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").ProductNavigation<"default">, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").ProductNavigation<"default">>, "many">;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -497,5 +497,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -503,2 +503,2 @@ export declare const standardConfigSchema: {
+-        languages: import("zod").ZodArray<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").LanguageNavigation<"default">, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").LanguageNavigation<"default">>, "many">;
+-    }, "strip", import("zod").ZodTypeAny, {
++        languages: import("zod/v3").ZodArray<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").LanguageNavigation<"default">, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").LanguageNavigation<"default">>, "many">;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -516,5 +516,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -522,2 +522,2 @@ export declare const standardConfigSchema: {
+-        versions: import("zod").ZodArray<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").VersionNavigation<"default">, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").VersionNavigation<"default">>, "many">;
+-    }, "strip", import("zod").ZodTypeAny, {
++        versions: import("zod/v3").ZodArray<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").VersionNavigation<"default">, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").VersionNavigation<"default">>, "many">;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -535,5 +535,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -541,2 +541,2 @@ export declare const standardConfigSchema: {
+-        tabs: import("zod").ZodArray<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").TabNavigation<"default">, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").TabNavigation<"default">>, "many">;
+-    }, "strip", import("zod").ZodTypeAny, {
++        tabs: import("zod/v3").ZodArray<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").TabNavigation<"default">, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").TabNavigation<"default">>, "many">;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -554,5 +554,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -560,2 +560,2 @@ export declare const standardConfigSchema: {
+-        dropdowns: import("zod").ZodArray<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").DropdownNavigation<"default">, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").DropdownNavigation<"default">>, "many">;
+-    }, "strip", import("zod").ZodTypeAny, {
++        dropdowns: import("zod/v3").ZodArray<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").DropdownNavigation<"default">, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").DropdownNavigation<"default">>, "many">;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -573,5 +573,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -579,2 +579,2 @@ export declare const standardConfigSchema: {
+-        anchors: import("zod").ZodArray<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").AnchorNavigation<"default">, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").AnchorNavigation<"default">>, "many">;
+-    }, "strip", import("zod").ZodTypeAny, {
++        anchors: import("zod/v3").ZodArray<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").AnchorNavigation<"default">, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").AnchorNavigation<"default">>, "many">;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -592,5 +592,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -598 +598 @@ export declare const standardConfigSchema: {
+-        groups: import("zod").ZodArray<import("zod").ZodType<{
++        groups: import("zod/v3").ZodArray<import("zod/v3").ZodType<{
+@@ -626 +626 @@ export declare const standardConfigSchema: {
+-        }, import("zod").ZodTypeDef, {
++        }, import("zod/v3").ZodTypeDef, {
+@@ -655 +655 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -723,5 +723,5 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        directory: import("zod").ZodOptional<import("zod").ZodEnum<["none", "accordion", "card"]>>;
+-        global: import("zod").ZodOptional<import("zod").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
+-        graphql: import("zod").ZodOptional<import("zod").ZodNever>;
+-        sdk: import("zod").ZodOptional<import("zod").ZodNever>;
++    }>, import("zod/v3").ZodObject<{
++        directory: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["none", "accordion", "card"]>>;
++        global: import("zod/v3").ZodOptional<import("zod/v3").ZodType<import("../../properties/navigation/divisionNav.js").GlobalNavigation, import("zod/v3").ZodTypeDef, import("../../properties/navigation/divisionNav.js").GlobalNavigation>>;
++        graphql: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
++        sdk: import("zod/v3").ZodOptional<import("zod/v3").ZodNever>;
+@@ -729 +729 @@ export declare const standardConfigSchema: {
+-        pages: import("zod").ZodArray<import("zod").ZodType<string | ({
++        pages: import("zod/v3").ZodArray<import("zod/v3").ZodType<string | ({
+@@ -757 +757 @@ export declare const standardConfigSchema: {
+-        }), import("zod").ZodTypeDef, string | ({
++        }), import("zod/v3").ZodTypeDef, string | ({
+@@ -786 +786 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -855,8 +855,8 @@ export declare const standardConfigSchema: {
+-    footer: import("zod").ZodOptional<import("zod").ZodObject<{
+-        socials: import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodEnum<["x", "website", "facebook", "youtube", "discord", "slack", "github", "linkedin", "instagram", "hacker-news", "medium", "telegram", "twitter", "x-twitter", "earth-americas", "bluesky", "threads", "reddit", "podcast"]>, import("zod").ZodEffects<import("zod").ZodEffects<import("zod").ZodString, string, string>, string, string>>>;
+-        links: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodObject<{
+-            header: import("zod").ZodOptional<import("zod").ZodString>;
+-            items: import("zod").ZodArray<import("zod").ZodObject<{
+-                label: import("zod").ZodString;
+-                href: import("zod").ZodEffects<import("zod").ZodEffects<import("zod").ZodString, string, string>, string, string>;
+-            }, "strip", import("zod").ZodTypeAny, {
++    footer: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        socials: import("zod/v3").ZodOptional<import("zod/v3").ZodRecord<import("zod/v3").ZodEnum<["x", "website", "facebook", "youtube", "discord", "slack", "github", "linkedin", "instagram", "hacker-news", "medium", "telegram", "twitter", "x-twitter", "earth-americas", "bluesky", "threads", "reddit", "podcast"]>, import("zod/v3").ZodEffects<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, string, string>>>;
++        links: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodObject<{
++            header: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            items: import("zod/v3").ZodArray<import("zod/v3").ZodObject<{
++                label: import("zod/v3").ZodString;
++                href: import("zod/v3").ZodEffects<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, string, string>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -869 +869 @@ export declare const standardConfigSchema: {
+-        }, "strip", import("zod").ZodTypeAny, {
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -882 +882 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -901,3 +901,3 @@ export declare const standardConfigSchema: {
+-    search: import("zod").ZodOptional<import("zod").ZodObject<{
+-        prompt: import("zod").ZodOptional<import("zod").ZodString>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    search: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        prompt: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -908,10 +908,10 @@ export declare const standardConfigSchema: {
+-    seo: import("zod").ZodOptional<import("zod").ZodObject<{
+-        metatags: import("zod").ZodOptional<import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodString>>>;
+-        organization: import("zod").ZodOptional<import("zod").ZodObject<{
+-            id: import("zod").ZodOptional<import("zod").ZodString>;
+-            name: import("zod").ZodOptional<import("zod").ZodString>;
+-            legalName: import("zod").ZodOptional<import("zod").ZodString>;
+-            url: import("zod").ZodOptional<import("zod").ZodString>;
+-            logo: import("zod").ZodOptional<import("zod").ZodString>;
+-            sameAs: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>;
+-        }, "strip", import("zod").ZodTypeAny, {
++    seo: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        metatags: import("zod/v3").ZodOptional<import("zod/v3").ZodOptional<import("zod/v3").ZodRecord<import("zod/v3").ZodString, import("zod/v3").ZodString>>>;
++        organization: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            id: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            name: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            legalName: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            url: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            logo: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            sameAs: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodString, "many">>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -932,3 +932,3 @@ export declare const standardConfigSchema: {
+-        indexing: import("zod").ZodOptional<import("zod").ZodEnum<["navigable", "all"]>>;
+-        trailingSlash: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-    }, "strip", import("zod").ZodTypeAny, {
++        indexing: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["navigable", "all"]>>;
++        trailingSlash: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -959,6 +959,6 @@ export declare const standardConfigSchema: {
+-    fonts: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodObject<{
+-        family: import("zod").ZodString;
+-        weight: import("zod").ZodOptional<import("zod").ZodNumber>;
+-        source: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodString, string, string>>;
+-        format: import("zod").ZodOptional<import("zod").ZodEnum<["woff", "woff2"]>>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    fonts: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodObject<{
++        family: import("zod/v3").ZodString;
++        weight: import("zod/v3").ZodOptional<import("zod/v3").ZodNumber>;
++        source: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>>;
++        format: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["woff", "woff2"]>>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -984,7 +984,7 @@ export declare const standardConfigSchema: {
+-    }>, import("zod").ZodObject<{
+-        heading: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodObject<{
+-            family: import("zod").ZodString;
+-            weight: import("zod").ZodOptional<import("zod").ZodNumber>;
+-            source: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodString, string, string>>;
+-            format: import("zod").ZodOptional<import("zod").ZodEnum<["woff", "woff2"]>>;
+-        }, "strip", import("zod").ZodTypeAny, {
++    }>, import("zod/v3").ZodObject<{
++        heading: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodObject<{
++            family: import("zod/v3").ZodString;
++            weight: import("zod/v3").ZodOptional<import("zod/v3").ZodNumber>;
++            source: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>>;
++            format: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["woff", "woff2"]>>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1011,6 +1011,6 @@ export declare const standardConfigSchema: {
+-        body: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodObject<{
+-            family: import("zod").ZodString;
+-            weight: import("zod").ZodOptional<import("zod").ZodNumber>;
+-            source: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodString, string, string>>;
+-            format: import("zod").ZodOptional<import("zod").ZodEnum<["woff", "woff2"]>>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        body: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodObject<{
++            family: import("zod/v3").ZodString;
++            weight: import("zod/v3").ZodOptional<import("zod/v3").ZodNumber>;
++            source: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>>;
++            format: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["woff", "woff2"]>>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1037 +1037 @@ export declare const standardConfigSchema: {
+-    }, "strict", import("zod").ZodTypeAny, {
++    }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -1064,3 +1064,3 @@ export declare const standardConfigSchema: {
+-    icons: import("zod").ZodOptional<import("zod").ZodObject<{
+-        library: import("zod").ZodEnum<["fontawesome", "lucide", "tabler"]>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    icons: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        library: import("zod/v3").ZodEnum<["fontawesome", "lucide", "tabler"]>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1071,7 +1071,7 @@ export declare const standardConfigSchema: {
+-    styling: import("zod").ZodOptional<import("zod").ZodObject<{
+-        eyebrows: import("zod").ZodOptional<import("zod").ZodEnum<["section", "breadcrumbs"]>>;
+-        codeblocks: import("zod").ZodUnion<[import("zod").ZodOptional<import("zod").ZodEnum<["system", "dark"]>>, import("zod").ZodObject<{
+-            theme: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEnum<["andromeeda", "aurora-x", "ayu-dark", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dark-plus", "dracula", "dracula-soft", "everforest-dark", "everforest-light", "github-dark", "github-dark-default", "github-dark-dimmed", "github-dark-high-contrast", "github-light", "github-light-default", "github-light-high-contrast", "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-soft", "gruvbox-light-hard", "gruvbox-light-medium", "gruvbox-light-soft", "houston", "kanagawa-dragon", "kanagawa-lotus", "kanagawa-wave", "laserwave", "light-plus", "material-theme", "material-theme-darker", "material-theme-lighter", "material-theme-ocean", "material-theme-palenight", "min-dark", "min-light", "monokai", "night-owl", "nord", "one-dark-pro", "one-light", "plastic", "poimandres", "red", "rose-pine", "rose-pine-dawn", "rose-pine-moon", "slack-dark", "slack-ochin", "snazzy-light", "solarized-dark", "solarized-light", "synthwave-84", "tokyo-night", "vesper", "vitesse-black", "vitesse-dark", "vitesse-light", "css-variables"]>, import("zod").ZodObject<{
+-                light: import("zod").ZodEnum<["andromeeda", "aurora-x", "ayu-dark", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dark-plus", "dracula", "dracula-soft", "everforest-dark", "everforest-light", "github-dark", "github-dark-default", "github-dark-dimmed", "github-dark-high-contrast", "github-light", "github-light-default", "github-light-high-contrast", "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-soft", "gruvbox-light-hard", "gruvbox-light-medium", "gruvbox-light-soft", "houston", "kanagawa-dragon", "kanagawa-lotus", "kanagawa-wave", "laserwave", "light-plus", "material-theme", "material-theme-darker", "material-theme-lighter", "material-theme-ocean", "material-theme-palenight", "min-dark", "min-light", "monokai", "night-owl", "nord", "one-dark-pro", "one-light", "plastic", "poimandres", "red", "rose-pine", "rose-pine-dawn", "rose-pine-moon", "slack-dark", "slack-ochin", "snazzy-light", "solarized-dark", "solarized-light", "synthwave-84", "tokyo-night", "vesper", "vitesse-black", "vitesse-dark", "vitesse-light", "css-variables"]>;
+-                dark: import("zod").ZodEnum<["andromeeda", "aurora-x", "ayu-dark", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dark-plus", "dracula", "dracula-soft", "everforest-dark", "everforest-light", "github-dark", "github-dark-default", "github-dark-dimmed", "github-dark-high-contrast", "github-light", "github-light-default", "github-light-high-contrast", "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-soft", "gruvbox-light-hard", "gruvbox-light-medium", "gruvbox-light-soft", "houston", "kanagawa-dragon", "kanagawa-lotus", "kanagawa-wave", "laserwave", "light-plus", "material-theme", "material-theme-darker", "material-theme-lighter", "material-theme-ocean", "material-theme-palenight", "min-dark", "min-light", "monokai", "night-owl", "nord", "one-dark-pro", "one-light", "plastic", "poimandres", "red", "rose-pine", "rose-pine-dawn", "rose-pine-moon", "slack-dark", "slack-ochin", "snazzy-light", "solarized-dark", "solarized-light", "synthwave-84", "tokyo-night", "vesper", "vitesse-black", "vitesse-dark", "vitesse-light", "css-variables"]>;
+-            }, "strip", import("zod").ZodTypeAny, {
++    styling: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        eyebrows: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["section", "breadcrumbs"]>>;
++        codeblocks: import("zod/v3").ZodUnion<[import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["system", "dark"]>>, import("zod/v3").ZodObject<{
++            theme: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEnum<["andromeeda", "aurora-x", "ayu-dark", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dark-plus", "dracula", "dracula-soft", "everforest-dark", "everforest-light", "github-dark", "github-dark-default", "github-dark-dimmed", "github-dark-high-contrast", "github-light", "github-light-default", "github-light-high-contrast", "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-soft", "gruvbox-light-hard", "gruvbox-light-medium", "gruvbox-light-soft", "houston", "kanagawa-dragon", "kanagawa-lotus", "kanagawa-wave", "laserwave", "light-plus", "material-theme", "material-theme-darker", "material-theme-lighter", "material-theme-ocean", "material-theme-palenight", "min-dark", "min-light", "monokai", "night-owl", "nord", "one-dark-pro", "one-light", "plastic", "poimandres", "red", "rose-pine", "rose-pine-dawn", "rose-pine-moon", "slack-dark", "slack-ochin", "snazzy-light", "solarized-dark", "solarized-light", "synthwave-84", "tokyo-night", "vesper", "vitesse-black", "vitesse-dark", "vitesse-light", "css-variables"]>, import("zod/v3").ZodObject<{
++                light: import("zod/v3").ZodEnum<["andromeeda", "aurora-x", "ayu-dark", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dark-plus", "dracula", "dracula-soft", "everforest-dark", "everforest-light", "github-dark", "github-dark-default", "github-dark-dimmed", "github-dark-high-contrast", "github-light", "github-light-default", "github-light-high-contrast", "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-soft", "gruvbox-light-hard", "gruvbox-light-medium", "gruvbox-light-soft", "houston", "kanagawa-dragon", "kanagawa-lotus", "kanagawa-wave", "laserwave", "light-plus", "material-theme", "material-theme-darker", "material-theme-lighter", "material-theme-ocean", "material-theme-palenight", "min-dark", "min-light", "monokai", "night-owl", "nord", "one-dark-pro", "one-light", "plastic", "poimandres", "red", "rose-pine", "rose-pine-dawn", "rose-pine-moon", "slack-dark", "slack-ochin", "snazzy-light", "solarized-dark", "solarized-light", "synthwave-84", "tokyo-night", "vesper", "vitesse-black", "vitesse-dark", "vitesse-light", "css-variables"]>;
++                dark: import("zod/v3").ZodEnum<["andromeeda", "aurora-x", "ayu-dark", "catppuccin-frappe", "catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dark-plus", "dracula", "dracula-soft", "everforest-dark", "everforest-light", "github-dark", "github-dark-default", "github-dark-dimmed", "github-dark-high-contrast", "github-light", "github-light-default", "github-light-high-contrast", "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-soft", "gruvbox-light-hard", "gruvbox-light-medium", "gruvbox-light-soft", "houston", "kanagawa-dragon", "kanagawa-lotus", "kanagawa-wave", "laserwave", "light-plus", "material-theme", "material-theme-darker", "material-theme-lighter", "material-theme-ocean", "material-theme-palenight", "min-dark", "min-light", "monokai", "night-owl", "nord", "one-dark-pro", "one-light", "plastic", "poimandres", "red", "rose-pine", "rose-pine-dawn", "rose-pine-moon", "slack-dark", "slack-ochin", "snazzy-light", "solarized-dark", "solarized-light", "synthwave-84", "tokyo-night", "vesper", "vitesse-black", "vitesse-dark", "vitesse-light", "css-variables"]>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1084,3 +1084,3 @@ export declare const standardConfigSchema: {
+-            languages: import("zod").ZodOptional<import("zod").ZodObject<{
+-                custom: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodString, "many">>;
+-            }, "strip", import("zod").ZodTypeAny, {
++            languages: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++                custom: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodString, "many">>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1091 +1091 @@ export declare const standardConfigSchema: {
+-        }, "strip", import("zod").ZodTypeAny, {
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1108,2 +1108,2 @@ export declare const standardConfigSchema: {
+-        latex: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-    }, "strip", import("zod").ZodTypeAny, {
++        latex: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1134,5 +1134,5 @@ export declare const standardConfigSchema: {
+-    redirects: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodArray<import("zod").ZodObject<{
+-        source: import("zod").ZodString;
+-        destination: import("zod").ZodString;
+-        permanent: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    redirects: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodArray<import("zod/v3").ZodObject<{
++        source: import("zod/v3").ZodString;
++        destination: import("zod/v3").ZodString;
++        permanent: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1155,4 +1155,4 @@ export declare const standardConfigSchema: {
+-    integrations: import("zod").ZodOptional<import("zod").ZodObject<{
+-        adobe: import("zod").ZodOptional<import("zod").ZodObject<{
+-            launchUrl: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++    integrations: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        adobe: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            launchUrl: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1163,3 +1163,3 @@ export declare const standardConfigSchema: {
+-        amplitude: import("zod").ZodOptional<import("zod").ZodObject<{
+-            apiKey: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        amplitude: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            apiKey: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1170,3 +1170,3 @@ export declare const standardConfigSchema: {
+-        clarity: import("zod").ZodOptional<import("zod").ZodObject<{
+-            projectId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        clarity: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            projectId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1177,3 +1177,3 @@ export declare const standardConfigSchema: {
+-        clearbit: import("zod").ZodOptional<import("zod").ZodObject<{
+-            publicApiKey: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        clearbit: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            publicApiKey: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1184,3 +1184,3 @@ export declare const standardConfigSchema: {
+-        fathom: import("zod").ZodOptional<import("zod").ZodObject<{
+-            siteId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        fathom: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            siteId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1191,3 +1191,3 @@ export declare const standardConfigSchema: {
+-        frontchat: import("zod").ZodOptional<import("zod").ZodObject<{
+-            snippetId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        frontchat: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            snippetId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1198,3 +1198,3 @@ export declare const standardConfigSchema: {
+-        ga4: import("zod").ZodOptional<import("zod").ZodObject<{
+-            measurementId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        ga4: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            measurementId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1205,3 +1205,3 @@ export declare const standardConfigSchema: {
+-        gtm: import("zod").ZodOptional<import("zod").ZodObject<{
+-            tagId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        gtm: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            tagId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1212,3 +1212,3 @@ export declare const standardConfigSchema: {
+-        heap: import("zod").ZodOptional<import("zod").ZodObject<{
+-            appId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        heap: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            appId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1219,4 +1219,4 @@ export declare const standardConfigSchema: {
+-        hightouch: import("zod").ZodOptional<import("zod").ZodObject<{
+-            writeKey: import("zod").ZodString;
+-            apiHost: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        hightouch: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            writeKey: import("zod/v3").ZodString;
++            apiHost: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1229,4 +1229,4 @@ export declare const standardConfigSchema: {
+-        hotjar: import("zod").ZodOptional<import("zod").ZodObject<{
+-            hjid: import("zod").ZodString;
+-            hjsv: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        hotjar: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            hjid: import("zod/v3").ZodString;
++            hjsv: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1239,3 +1239,3 @@ export declare const standardConfigSchema: {
+-        intercom: import("zod").ZodOptional<import("zod").ZodObject<{
+-            appId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        intercom: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            appId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1246,3 +1246,3 @@ export declare const standardConfigSchema: {
+-        koala: import("zod").ZodOptional<import("zod").ZodObject<{
+-            publicApiKey: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        koala: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            publicApiKey: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1253,3 +1253,3 @@ export declare const standardConfigSchema: {
+-        logrocket: import("zod").ZodOptional<import("zod").ZodObject<{
+-            appId: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        logrocket: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            appId: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1260,4 +1260,4 @@ export declare const standardConfigSchema: {
+-        mixpanel: import("zod").ZodOptional<import("zod").ZodObject<{
+-            projectToken: import("zod").ZodString;
+-            region: import("zod").ZodOptional<import("zod").ZodEnum<["us", "eu", "in"]>>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        mixpanel: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            projectToken: import("zod/v3").ZodString;
++            region: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["us", "eu", "in"]>>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1270,5 +1270,5 @@ export declare const standardConfigSchema: {
+-        onetrust: import("zod").ZodOptional<import("zod").ZodObject<{
+-            domainScript: import("zod").ZodString;
+-            categoryId: import("zod").ZodOptional<import("zod").ZodString>;
+-            scriptSource: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodString, string, string>>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        onetrust: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            domainScript: import("zod/v3").ZodString;
++            categoryId: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            scriptSource: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1283,3 +1283,3 @@ export declare const standardConfigSchema: {
+-        pirsch: import("zod").ZodOptional<import("zod").ZodObject<{
+-            id: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        pirsch: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            id: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1290,5 +1290,5 @@ export declare const standardConfigSchema: {
+-        posthog: import("zod").ZodOptional<import("zod").ZodObject<{
+-            apiKey: import("zod").ZodString;
+-            apiHost: import("zod").ZodOptional<import("zod").ZodString>;
+-            sessionRecording: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        posthog: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            apiKey: import("zod/v3").ZodString;
++            apiHost: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            sessionRecording: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1303,4 +1303,4 @@ export declare const standardConfigSchema: {
+-        plausible: import("zod").ZodOptional<import("zod").ZodObject<{
+-            domain: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-            server: import("zod").ZodOptional<import("zod").ZodEffects<import("zod").ZodString, string, string>>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        plausible: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            domain: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++            server: import("zod/v3").ZodOptional<import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1313,3 +1313,3 @@ export declare const standardConfigSchema: {
+-        segment: import("zod").ZodOptional<import("zod").ZodObject<{
+-            key: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++        segment: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            key: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1320,3 +1320,3 @@ export declare const standardConfigSchema: {
+-        telemetry: import("zod").ZodOptional<import("zod").ZodObject<{
+-            enabled: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        telemetry: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            enabled: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1327,4 +1327,4 @@ export declare const standardConfigSchema: {
+-        cookies: import("zod").ZodOptional<import("zod").ZodObject<{
+-            key: import("zod").ZodOptional<import("zod").ZodString>;
+-            value: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        cookies: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            key: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            value: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1337,4 +1337,4 @@ export declare const standardConfigSchema: {
+-        transcend: import("zod").ZodOptional<import("zod").ZodObject<{
+-            bundleId: import("zod").ZodString;
+-            analyticsPurpose: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strip", import("zod").ZodTypeAny, {
++        transcend: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            bundleId: import("zod/v3").ZodString;
++            analyticsPurpose: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1347 +1347 @@ export declare const standardConfigSchema: {
+-    }, "strict", import("zod").ZodTypeAny, {
++    }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -1508,8 +1508,8 @@ export declare const standardConfigSchema: {
+-    banner: import("zod").ZodOptional<import("zod").ZodObject<{
+-        content: import("zod").ZodString;
+-        dismissible: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-        type: import("zod").ZodOptional<import("zod").ZodEnum<["info", "warning", "critical"]>>;
+-        color: import("zod").ZodOptional<import("zod").ZodObject<{
+-            light: import("zod").ZodOptional<import("zod").ZodString>;
+-            dark: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strict", import("zod").ZodTypeAny, {
++    banner: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        content: import("zod/v3").ZodString;
++        dismissible: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++        type: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["info", "warning", "critical"]>>;
++        color: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            light: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            dark: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strict", import("zod/v3").ZodTypeAny, {
+@@ -1522 +1522 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1539,6 +1539,6 @@ export declare const standardConfigSchema: {
+-    errors: import("zod").ZodOptional<import("zod").ZodObject<{
+-        '404': import("zod").ZodObject<{
+-            redirect: import("zod").ZodDefault<import("zod").ZodOptional<import("zod").ZodBoolean>>;
+-            title: import("zod").ZodOptional<import("zod").ZodString>;
+-            description: import("zod").ZodOptional<import("zod").ZodString>;
+-        }, "strip", import("zod").ZodTypeAny, {
++    errors: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        '404': import("zod/v3").ZodObject<{
++            redirect: import("zod/v3").ZodDefault<import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>>;
++            title: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++            description: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1553 +1553 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1566,9 +1566,9 @@ export declare const standardConfigSchema: {
+-    contextual: import("zod").ZodOptional<import("zod").ZodObject<{
+-        options: import("zod").ZodEffects<import("zod").ZodArray<import("zod").ZodUnion<[import("zod").ZodEnum<["copy", "assistant", "view", "download-pdf", "download-spec", "chatgpt", "claude", "perplexity", "grok", "aistudio", "devin", "windsurf", "mcp", "add-mcp", "cursor", "vscode", "devin-mcp"]>, import("zod").ZodObject<{
+-            title: import("zod").ZodString;
+-            description: import("zod").ZodString;
+-            icon: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodEffects<import("zod").ZodString, string, string>, import("zod").ZodObject<{
+-                style: import("zod").ZodOptional<import("zod").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
+-                name: import("zod").ZodEffects<import("zod").ZodString, string, string>;
+-                library: import("zod").ZodOptional<import("zod").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
+-            }, "strip", import("zod").ZodTypeAny, {
++    contextual: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        options: import("zod/v3").ZodEffects<import("zod/v3").ZodArray<import("zod/v3").ZodUnion<[import("zod/v3").ZodEnum<["copy", "assistant", "view", "download-pdf", "download-spec", "chatgpt", "claude", "perplexity", "grok", "aistudio", "devin", "windsurf", "mcp", "add-mcp", "cursor", "vscode", "devin-mcp"]>, import("zod/v3").ZodObject<{
++            title: import("zod/v3").ZodString;
++            description: import("zod/v3").ZodString;
++            icon: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>, import("zod/v3").ZodObject<{
++                style: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["brands", "duotone", "light", "regular", "sharp-duotone-solid", "sharp-light", "sharp-regular", "sharp-solid", "sharp-thin", "solid", "thin"]>>;
++                name: import("zod/v3").ZodEffects<import("zod/v3").ZodString, string, string>;
++                library: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["fontawesome", "lucide", "tabler"]>>;
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1583,6 +1583,6 @@ export declare const standardConfigSchema: {
+-            href: import("zod").ZodUnion<[import("zod").ZodString, import("zod").ZodObject<{
+-                base: import("zod").ZodString;
+-                query: import("zod").ZodOptional<import("zod").ZodArray<import("zod").ZodObject<{
+-                    key: import("zod").ZodString;
+-                    value: import("zod").ZodString;
+-                }, "strip", import("zod").ZodTypeAny, {
++            href: import("zod/v3").ZodUnion<[import("zod/v3").ZodString, import("zod/v3").ZodObject<{
++                base: import("zod/v3").ZodString;
++                query: import("zod/v3").ZodOptional<import("zod/v3").ZodArray<import("zod/v3").ZodObject<{
++                    key: import("zod/v3").ZodString;
++                    value: import("zod/v3").ZodString;
++                }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1595 +1595 @@ export declare const standardConfigSchema: {
+-            }, "strip", import("zod").ZodTypeAny, {
++            }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1608 +1608 @@ export declare const standardConfigSchema: {
+-        }, "strip", import("zod").ZodTypeAny, {
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1669,2 +1669,2 @@ export declare const standardConfigSchema: {
+-        display: import("zod").ZodDefault<import("zod").ZodOptional<import("zod").ZodEnum<["header", "toc"]>>>;
+-    }, "strip", import("zod").ZodTypeAny, {
++        display: import("zod/v3").ZodDefault<import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<["header", "toc"]>>>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1707,6 +1707,6 @@ export declare const standardConfigSchema: {
+-    thumbnails: import("zod").ZodOptional<import("zod").ZodObject<{
+-        appearance: import("zod").ZodOptional<import("zod").ZodEnum<[import("../../properties/thumbnails.js").ThumbnailAppearance.Light, import("../../properties/thumbnails.js").ThumbnailAppearance.Dark]>>;
+-        background: import("zod").ZodOptional<import("zod").ZodString>;
+-        fonts: import("zod").ZodOptional<import("zod").ZodObject<{
+-            family: import("zod").ZodString;
+-        }, "strip", import("zod").ZodTypeAny, {
++    thumbnails: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        appearance: import("zod/v3").ZodOptional<import("zod/v3").ZodEnum<[import("../../properties/thumbnails.js").ThumbnailAppearance.Light, import("../../properties/thumbnails.js").ThumbnailAppearance.Dark]>>;
++        background: import("zod/v3").ZodOptional<import("zod/v3").ZodString>;
++        fonts: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++            family: import("zod/v3").ZodString;
++        }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1717 +1717 @@ export declare const standardConfigSchema: {
+-    }, "strip", import("zod").ZodTypeAny, {
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1730,3 +1730,3 @@ export declare const standardConfigSchema: {
+-    interaction: import("zod").ZodOptional<import("zod").ZodObject<{
+-        drilldown: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    interaction: import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        drilldown: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1737,3 +1737,3 @@ export declare const standardConfigSchema: {
+-    metadata: import("zod").ZodOptional<import("zod").ZodOptional<import("zod").ZodObject<{
+-        timestamp: import("zod").ZodDefault<import("zod").ZodOptional<import("zod").ZodBoolean>>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    metadata: import("zod/v3").ZodOptional<import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        timestamp: import("zod/v3").ZodDefault<import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+@@ -1744,5 +1744,5 @@ export declare const standardConfigSchema: {
+-    variables: import("zod").ZodOptional<import("zod").ZodRecord<import("zod").ZodString, import("zod").ZodString>>;
+-    markdown: import("zod").ZodOptional<import("zod").ZodOptional<import("zod").ZodObject<{
+-        schema: import("zod").ZodOptional<import("zod").ZodBoolean>;
+-        instructions: import("zod").ZodOptional<import("zod").ZodUnion<[import("zod").ZodString, import("zod").ZodArray<import("zod").ZodString, "many">]>>;
+-    }, "strip", import("zod").ZodTypeAny, {
++    variables: import("zod/v3").ZodOptional<import("zod/v3").ZodRecord<import("zod/v3").ZodString, import("zod/v3").ZodString>>;
++    markdown: import("zod/v3").ZodOptional<import("zod/v3").ZodOptional<import("zod/v3").ZodObject<{
++        schema: import("zod/v3").ZodOptional<import("zod/v3").ZodBoolean>;
++        instructions: import("zod/v3").ZodOptional<import("zod/v3").ZodUnion<[import("zod/v3").ZodString, import("zod/v3").ZodArray<import("zod/v3").ZodString, "many">]>>;
++    }, "strip", import("zod/v3").ZodTypeAny, {
+diff --git a/dist/mint-config/schemas/v2/themes/sequoia.d.ts b/dist/mint-config/schemas/v2/themes/sequoia.d.ts
+index cdf06f1463255e3d138441e1287d7309d7b9bf25..24d472baee4fcfcb1a8a5a436f64e37b26151537 100644
+--- a/dist/mint-config/schemas/v2/themes/sequoia.d.ts
++++ b/dist/mint-config/schemas/v2/themes/sequoia.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/sequoia.js b/dist/mint-config/schemas/v2/themes/sequoia.js
+index de79ca8671765e96e3856892174fe19ce945cdc4..5a3504ab233617bd1110060004ea98fc5648fb65 100644
+--- a/dist/mint-config/schemas/v2/themes/sequoia.js
++++ b/dist/mint-config/schemas/v2/themes/sequoia.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/themes.d.ts b/dist/mint-config/schemas/v2/themes/themes.d.ts
+index b1978f4233ab09794e725ba04684fc763416626a..3ab16b613d613f333230d43ace26f9697f3dc3c2 100644
+--- a/dist/mint-config/schemas/v2/themes/themes.d.ts
++++ b/dist/mint-config/schemas/v2/themes/themes.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/themes.js b/dist/mint-config/schemas/v2/themes/themes.js
+index 43cf18cf2cafccc001af48ab51176358b0dc1c1b..4960b08d71ef04757aadc611aa30efc7d9c058c1 100644
+--- a/dist/mint-config/schemas/v2/themes/themes.js
++++ b/dist/mint-config/schemas/v2/themes/themes.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/willow.d.ts b/dist/mint-config/schemas/v2/themes/willow.d.ts
+index f30242e42d7a6d275bfa6e0ba9ab1863d4a26217..34d5641fa87410f93bc6b9e08ff096a5cd740938 100644
+--- a/dist/mint-config/schemas/v2/themes/willow.d.ts
++++ b/dist/mint-config/schemas/v2/themes/willow.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/schemas/v2/themes/willow.js b/dist/mint-config/schemas/v2/themes/willow.js
+index 5de44090d4d6a801fea806adbb91d6a1a2317a06..8333a281b892397a02a0eee8db4e486c9791eb92 100644
+--- a/dist/mint-config/schemas/v2/themes/willow.js
++++ b/dist/mint-config/schemas/v2/themes/willow.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/validateConfig.d.ts b/dist/mint-config/validateConfig.d.ts
+index 8ca6792f69731b549274b6208bfef35c678b8980..49bd23e5b7f5c2ff143c03be76a7d8fb1c74820b 100644
+--- a/dist/mint-config/validateConfig.d.ts
++++ b/dist/mint-config/validateConfig.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/validateConfig.js b/dist/mint-config/validateConfig.js
+index 853d672d923f43f810c5c9026326edd0031c629e..390d1d75284de8b94ac134ae8a463ddc63d7ec87 100644
+--- a/dist/mint-config/validateConfig.js
++++ b/dist/mint-config/validateConfig.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/warnings/aggregateWarnings.d.ts b/dist/mint-config/warnings/aggregateWarnings.d.ts
+index 6b147bb8c282ce269ce1f9581d737a8508eed711..b5f5b93bfc10945fc840195180fd698aa0664010 100644
+--- a/dist/mint-config/warnings/aggregateWarnings.d.ts
++++ b/dist/mint-config/warnings/aggregateWarnings.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/mint-config/warnings/warnAnchorUrls.js b/dist/mint-config/warnings/warnAnchorUrls.js
+index 4317b1fc509d877958ddff20b569369e6d3251bb..3e8e9a8a8fe66850cf0ec77406a4b072f5a53830 100644
+--- a/dist/mint-config/warnings/warnAnchorUrls.js
++++ b/dist/mint-config/warnings/warnAnchorUrls.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/openapi/parseXMint.js b/dist/openapi/parseXMint.js
+index 079b4786f960190b5fc097a887c43b1901a91a4e..bd8375d22635b9ae4a3c442b8215a63a540bdcf9 100644
+--- a/dist/openapi/parseXMint.js
++++ b/dist/openapi/parseXMint.js
+@@ -2 +2 @@ import { apiPlaygroundDisplayTypes, iconTypes } from '@mintlify/models';
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/types/oauthCookie.d.ts b/dist/types/oauthCookie.d.ts
+index 36db08ad02dc3b78aa86673bca399ec7cf4d2f4f..429fea2980cd186fe880622122f24930bab18066 100644
+--- a/dist/types/oauthCookie.d.ts
++++ b/dist/types/oauthCookie.d.ts
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';
+diff --git a/dist/types/oauthCookie.js b/dist/types/oauthCookie.js
+index f802c7433e3d4d854a37544e004458f2cbb449f6..844bc3a5b847c373ae3b717aeb6b0d7353538fea 100644
+--- a/dist/types/oauthCookie.js
++++ b/dist/types/oauthCookie.js
+@@ -1 +1 @@
+-import { z } from 'zod';
++import { z } from 'zod/v3';

@@ -34,4 +34,3 @@ body:
       placeholder: Any alternatives evaluated?
     validations:
       required: false
-

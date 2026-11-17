@@ -34,4 +34,3 @@ body:
       placeholder: Node version, OS, commit hash
     validations:
       required: true
-

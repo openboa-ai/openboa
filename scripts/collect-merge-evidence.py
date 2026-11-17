@@ -427,7 +427,7 @@ def validate_policy(policy):
             raise EvidenceError("invalid_policy_budget")
 
 
-def collect(policy, event, context, api, pilot_number=None):
+def collect(policy, event, context, api, pilot_number=None, *, report_number=None):
     """Return observations even when incomplete; no eligibility is invented here."""
     result = {"schemaVersion": 1, "collector": {"mode": "report-only", "startedAt": timestamp(),
                                                 "principal": dict(REPORT_PRINCIPAL)},
@@ -447,11 +447,23 @@ def collect(policy, event, context, api, pilot_number=None):
         repo = policy["repository"]
         prefix = "/repos/" + repo["fullName"]
         result["repository"] = dict(repo)
-        polling = pilot_number is not None
+        reporting = report_number is not None
+        polling = pilot_number is not None or reporting
+        if pilot_number is not None and reporting:
+            raise EvidenceError("selection_modes_conflict")
         if (context.get("GITHUB_REPOSITORY") != repo["fullName"]
                 or event.get("repository", {}).get("id") != repo["id"]):
             raise EvidenceError("controller_event_identity_mismatch")
-        if polling:
+        if reporting:
+            if (not positive_int(report_number) or policy.get("mode") != "report-only"
+                    or repo["fullName"] != "openboa-ai/openboa" or repo["id"] != 1214829403
+                    or context.get("GITHUB_EVENT_NAME") not in ("schedule", "workflow_dispatch")
+                    or context.get("GITHUB_REF") != "refs/heads/main"
+                    or event.get("inputs") not in (None, {})):
+                raise EvidenceError("report_selection_context_invalid")
+            result["collector"]["selection"] = {"kind": "rotating-report", "number": report_number,
+                                                "event": context["GITHUB_EVENT_NAME"]}
+        elif polling:
             # This is an explicit, fixed pilot selection, not a synthetic webhook.
             if (type(pilot_number) is not int or pilot_number != 68
                     or repo["fullName"] != "openboa-ai/openboa" or repo["id"] != 1214829403
@@ -474,8 +486,8 @@ def collect(policy, event, context, api, pilot_number=None):
         specs = {entry["id"]: entry for entry in policy["workflows"]}
         trigger = None
         if polling:
-            number = pilot_number
-            pull = api.get(prefix + "/pulls/68")
+            number = report_number if reporting else pilot_number
+            pull = api.get(prefix + f"/pulls/{number}")
             associations = [{"id": pull.get("id"), "number": number}]
             observed_repository = pull.get("base", {}).get("repo", {})
         else:

@@ -1,9 +1,9 @@
 name: merge-canary
 
-on: # zizmor: ignore[dangerous-triggers] Reviewed read-only default-source reporter; scope and re-review boundary: .github/MERGE_CANARY.md
-  workflow_run:
-    workflows: [ci, codeql, PR Convention, CodeQL - Code Quality]
-    types: [completed]
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,16 +12,16 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: merge-canary-${{ github.event.workflow_run.head_sha }}
-  cancel-in-progress: true
+  group: merge-canary-reporter
+  cancel-in-progress: false
 
 jobs:
   report:
-    if: github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'dynamic'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      # workflow_run executes the default-branch controller, never the PR revision.
+      # Only an immutable main-branch controller and pinned evaluator execute.
       - name: Checkout trusted controller
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,34 +53,25 @@ jobs:
           PYTHONDONTWRITEBYTECODE: "1"
         run: |
           node --test test/merge-canary-adapter.test.mjs
-          python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'
+          python3 -B -m unittest discover -s test -p 'test_collect_merge_evidence.py'
+          python3 -B -m unittest discover -s test -p 'test_run_merge_canary.py'
 
-      - name: Collect current platform observations
+      - name: Report one rotating current PR
+        id: canary
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
+          PYTHONDONTWRITEBYTECODE: "1"
         run: |
-          python3 scripts/collect-merge-evidence.py \
-            --policy .github/merge-canary-policy.json \
+          python3 -I -B scripts/run-merge-canary.py \
             --event "$GITHUB_EVENT_PATH" \
-            --output "$RUNNER_TEMP/merge-canary/observations.json"
-
-      - name: Evaluate report-only eligibility
-        if: always() && !cancelled()
-        env:
-          GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}
-        run: |
-          node scripts/evaluate-merge-canary.mjs \
-            --policy .github/merge-canary-policy.json \
-            --observations "$RUNNER_TEMP/merge-canary/observations.json" \
-            --evaluator .merge-evaluator/lib/evaluate-merge-evidence.mjs \
-            --output "$RUNNER_TEMP/merge-canary/report.json"
+            --output "$RUNNER_TEMP/merge-canary-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
 
       - name: Upload bounded canary report
-        if: always() && !cancelled()
+        if: always() && !cancelled() && steps.canary.outputs.report-path != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: merge-canary-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/merge-canary/
+          path: ${{ steps.canary.outputs.report-path }}
           if-no-files-found: error
           retention-days: 7

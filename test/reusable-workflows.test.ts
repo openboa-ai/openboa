@@ -87,6 +87,21 @@ describe("reusable validation source binding", () => {
     expect(harness).not.toContain("actions: write")
     expect(harness).not.toContain("contents: write")
   })
+
+  it("validates the reporting runner in both trusted and candidate evidence lanes", () => {
+    const reporter = readWorkflow("merge-canary")
+    const harness = readWorkflow("reusable-validation")
+    for (const workflow of [reporter, harness]) {
+      expect(workflow).toContain(
+        "python3 -B -m unittest discover -s test -p 'test_run_merge_canary.py'",
+      )
+      expect(workflow).toContain('PYTHONDONTWRITEBYTECODE: "1"')
+    }
+    expect(harness).toContain('- "scripts/run-merge-canary.py"')
+    expect(harness).toContain('- "test/test_run_merge_canary.py"')
+    expect(reporter).toContain("python3 -I -B scripts/run-merge-canary.py")
+    expect(reporter).not.toContain("workflow_run:")
+  })
 })
 
 describe("genuine reusable CodeQL output validation", () => {

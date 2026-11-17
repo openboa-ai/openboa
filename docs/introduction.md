@@ -108,13 +108,13 @@ The repo also already carries a browser host and a first desktop packaging path 
 
 ## Read in this order
 
-1. **Core Doctrine** — strategic invariants and decision baseline  
+1. **Core Doctrine** — strategic invariants and decision baseline
    [./concepts/core-doctrine.md](./concepts/core-doctrine.md)
-2. **System Contracts** — philosophy translated into enforceable contracts  
+2. **System Contracts** — philosophy translated into enforceable contracts
    [./concepts/system-contracts.md](./concepts/system-contracts.md)
 3. **Business of Agents** — shared model and canonical terms
    [./concepts/business-of-agents.md](./concepts/business-of-agents.md)
-4. **Sharp Non-goals** — explicit exclusions to prevent drift  
+4. **Sharp Non-goals** — explicit exclusions to prevent drift
    [./help/non-goals.md](./help/non-goals.md)
 5. **Architecture** — the current layer model and code reality
    [./architecture.md](./architecture.md)

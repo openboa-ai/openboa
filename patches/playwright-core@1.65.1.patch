@@ -1,0 +1,39 @@
+diff --git a/lib/utilsBundle.js b/lib/utilsBundle.js
+index 342d9421fb569002546958146efaf8b8cf8b3b8b..0abad09284efeed74a589d7c3e7214d870e443a4 100644
+--- a/lib/utilsBundle.js
++++ b/lib/utilsBundle.js
+@@ -80639,1 +80639,2 @@ var ZodArray2 = class _ZodArray extends ZodType2 {
+-    const def = this._def;
++    const def = this._def;
++    let exceedsMax = false;
+@@ -80649,1 +80650,2 @@ var ZodArray2 = class _ZodArray extends ZodType2 {
+-      const tooBig = ctx.data.length > def.exactLength.value;
++      const tooBig = ctx.data.length > def.exactLength.value;
++      exceedsMax = tooBig;
+@@ -80678,1 +80680,2 @@ var ZodArray2 = class _ZodArray extends ZodType2 {
+-      if (ctx.data.length > def.maxLength.value) {
++      if (ctx.data.length > def.maxLength.value) {
++        exceedsMax = true;
+@@ -80689,1 +80692,4 @@ var ZodArray2 = class _ZodArray extends ZodType2 {
+-    }
++    }
++    if (exceedsMax) {
++      return INVALID2;
++    }
+@@ -81426 +81432 @@ var ZodTuple2 = class _ZodTuple extends ZodType2 {
+-    const items = [...ctx.data].map((item, itemIndex) => {
++    const items = (rest ? [...ctx.data] : this._def.items.map((_, index) => ctx.data[index])).map((item, itemIndex) => {
+@@ -81591,1 +81597,2 @@ var ZodSet2 = class _ZodSet extends ZodType2 {
+-    const def = this._def;
++    const def = this._def;
++    let exceedsMax = false;
+@@ -81606,1 +81613,2 @@ var ZodSet2 = class _ZodSet extends ZodType2 {
+-      if (ctx.data.size > def.maxSize.value) {
++      if (ctx.data.size > def.maxSize.value) {
++        exceedsMax = true;
+@@ -81617,1 +81625,4 @@ var ZodSet2 = class _ZodSet extends ZodType2 {
+-    }
++    }
++    if (exceedsMax) {
++      return INVALID2;
++    }

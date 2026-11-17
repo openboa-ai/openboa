@@ -15,16 +15,22 @@ remain manual. Changes to workflows, scripts, dependencies or application code
 are ineligible for this policy. In particular, the PR adding this infrastructure
 cannot qualify itself.
 
-## Reviewed trigger exception
+## Trusted-main polling
 
-The single inline `dangerous-triggers` exception on this reporter's `on:` line
-was explicitly approved for this read-only data flow. It acknowledges Zizmor's
-[broad workflow_run warning](https://docs.zizmor.sh/audits/#dangerous-triggers),
-not a blanket claim that this trigger is safe. The original unmodified warning
-was observed on draft PR67 at commit `4e11cbe397edddbff0ab41f0e3a68d9ce2c39c75`.
-No other audit, severity threshold, workflow or scanner is excluded.
-The existing CI exception policy records owner `@SonSangjoon`, PR67 and an
-expiry of 2026-10-14 in `.github/ci-exceptions.json`; expiry fails the policy gate.
+The reporter uses the schedule `7,22,37,52 * * * *` and an inputless manual
+trigger, both restricted to `refs/heads/main`. It has no completion-event listener
+or dangerous-trigger suppression. The former workflow_run exception is removed
+with its actual trigger replacement, rather than renewed. The fixed concurrency
+group queues rounds without cancelling an active round.
+
+Each round discovers open same-repository PRs against main with bounded GET
+pagination, excludes foreign/fork targets, sorts positive numeric PR identities
+and selects one using the trusted workflow run number. The summary records
+discovered, selected, deferred and excluded targets and explicit partial coverage.
+Unprocessed PRs have no eligibility verdict. With a stable N-PR list, rotation
+requires up to N successful consecutive polling rounds. Failed, skipped or
+cancelled runs, queueing, scheduling delays and list changes extend that time;
+this is not a 15-minute all-PR SLA. Scheduling permits up to 96 events per day.
 
 Only the immutable default-branch workflow revision and the exact reviewed
 central evaluator SHA/digest execute. Permissions are read-only, checkout
@@ -35,7 +41,39 @@ Regression tests pin the reviewed workflow bytes and reject boundary mutations;
 they are a trusted-source regression tripwire, not an exhaustive malicious-YAML
 security parser. Any future write/merge
 authority, new executable source, cache or event-data execution requires a new
-security review; this exception does not authorize it.
+security review.
+
+Before API discovery, the runner verifies the exact repository/event/main identity,
+committed controller revision and clean Git layout. The sole permitted untracked
+root is the fixed `.merge-evaluator/` checkout, whose own Git revision, clean tree
+and regular module digest must match the pin. Unrelated untracked or ignored
+sources, symlinks, branch-selected manual runs and supplied inputs are rejected.
+Python bytecode writes are disabled for the runner and its validation imports.
+
+Discovery and the selected PR share at most 100 GET requests, a 25 MiB acceptance
+limit for JSON plus compressed ZIP response bodies, and a 100 MiB aggregate
+expanded-ZIP reservation. Expanded sizes are reserved before any decompression.
+A single overflow-detection byte can exceed the response acceptance limit only
+when it is charged and immediately rejects the round; this is not a strict
+25 MiB transport guarantee. A read that fails after consuming unknown partial
+data poisons the round budget, records its offered allowance as unknown, and
+prevents further I/O. The reporter adapter leaves default collector and writer
+API counter behavior unchanged.
+
+An outer 120-second watchdog owns only its reporter worker process group,
+including the evaluator. Timeout or worker failure terminates that owned group.
+The existing Node evaluator receives fixed arguments and no GITHUB_TOKEN. All
+existing source, artifact, SARIF, protection and current-principal bypass gates
+remain required; selecting a PR does not make it eligible.
+
+Every round exclusively creates a fresh output root bound to repository, run ID,
+attempt, controller revision and a fresh identity. Completed files are published
+atomically only after validating that round's handoff. Existing roots are rejected,
+and no upload path is advertised for them. Failures remove owned staged reports
+and internal handoffs, then publish a current non-positive partial summary. Old
+positive files and unfinished positive handoffs cannot become current evidence.
+These boundaries are covered by offline controls; actual scheduled operation
+still requires observation after a separately authorized merge.
 
 The exact CLI policy is `2.27.1`, verified from hosted raw SARIF in PR67's
 reusable-validation run `36720718062`. The pinned action's declared default was
@@ -117,7 +155,8 @@ events per day. While OFF, no runner or API polling job starts. Future activatio
 would consume runner time for preparation, evidence collection and dispatch
 observation; this change provisions no paid service. This deliberately removes the privileged
 PR-completion listener; it does not suppress its former scanner findings.
-The existing read-only reporter and its separately approved exception are unchanged.
+The independent read-only reporter uses the trusted-main rotation above; its
+selection does not activate the writer or change its fixed target.
 
 The variable `OPENBOA_README_WRITER_ENABLED == true` is required before even the
 read-only preparation job checks out code. The tracked policy additionally has

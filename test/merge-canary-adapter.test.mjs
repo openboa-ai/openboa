@@ -488,23 +488,33 @@ test("collector infrastructure failure takes precedence over additional missing-
 function assertReporterBoundary(workflow, policy, evaluatorBytes) {
   // Pin the reviewed source, so alternative YAML spellings cannot escape these
   // readable assertions. This is a regression tripwire, not a malicious-YAML parser.
-  assert.equal(digest(workflow), "e214d66f85d6139123b238cb931900027f3b864755aaf12baccaa65b25d7c880")
+  assert.equal(digest(workflow), "39bebf563c94fba34acafbbcf6407e36e81cb19538d173154a0dd9437994d887")
   // Flow-style steps/jobs and YAML aliases are outside this reviewed block-style contract.
-  assert.doesNotMatch(
+  assert.doesNotMatch(workflow, /^\s*(?:-\s*\{|(?:jobs|steps|report):\s*[[{]|<<:|[^#\n]*:\s*[&*])/m)
+  assert.match(
     workflow,
-    /^\s*(?:-\s*\{|(?:jobs|steps|report):\s*[\[{]|<<:|[^#\n]*:\s*[&*])/m,
+    /^on:\n {2}schedule:\n {4}- cron: "7,22,37,52 \* \* \* \*"\n {2}workflow_dispatch:\n\n/m,
   )
-  assert.match(workflow, /^on: # zizmor: ignore\[dangerous-triggers\] /m)
-  assert.equal((workflow.match(/zizmor: ignore/g) ?? []).length, 1)
-  const permissions = workflow.match(/^permissions:\n((?:  [^\n]+\n)+)/m)?.[1]
+  assert.doesNotMatch(workflow, /zizmor: ignore|workflow_run|pull_request_target|inputs:/)
+  assert.match(workflow, /group: merge-canary-reporter\n {2}cancel-in-progress: false/)
+  assert.match(
+    workflow,
+    /if: github\.ref == 'refs\/heads\/main' && \(github\.event_name == 'schedule' \|\| github\.event_name == 'workflow_dispatch'\)/,
+  )
+  assert.match(
+    workflow,
+    /if: always\(\) && !cancelled\(\) && steps\.canary\.outputs\.report-path != ''/,
+  )
+  assert.match(workflow, /path: \$\{\{ steps\.canary\.outputs\.report-path \}\}/)
+  const permissions = workflow.match(/^permissions:\n((?: {2}[^\n]+\n)+)/m)?.[1]
   assert.equal(
     permissions,
     "  contents: read\n  actions: read\n  checks: read\n  pull-requests: read\n",
   )
   assert.equal((workflow.match(/^\s*permissions:/gm) ?? []).length, 1)
   assert.deepEqual(
-    [...workflow.matchAll(/^  ([a-z_-]+):$/gm)].map((m) => m[1]),
-    ["workflow_run", "report"],
+    [...workflow.matchAll(/^ {2}([a-z_-]+):$/gm)].map((m) => m[1]),
+    ["schedule", "workflow_dispatch", "report"],
   )
   assert.match(workflow, /ref: \$\{\{ github\.workflow_sha \}\}/)
   assert.ok(workflow.includes(`ref: ${policy.evaluator.revision}`))
@@ -514,10 +524,10 @@ function assertReporterBoundary(workflow, policy, evaluatorBytes) {
   assert.match(workflow, /package-manager-cache: false/)
   assert.doesNotMatch(
     workflow,
-    /secrets:|: write\b|write-all|actions\/cache@|\s+cache:|cache-dependency-path:|workflow_dispatch|pull_request_target/,
+    /secrets:|: write\b|write-all|actions\/cache@|\s+cache:|cache-dependency-path:|pull_request_target/,
   )
   assert.deepEqual(
-    [...workflow.matchAll(/          ref: (.+)/g)].map((m) => m[1]),
+    [...workflow.matchAll(/ {10}ref: (.+)/g)].map((m) => m[1]),
     ["${{ github.workflow_sha }}", policy.evaluator.revision],
   )
   const allowedActions = [
@@ -531,25 +541,24 @@ function assertReporterBoundary(workflow, policy, evaluatorBytes) {
     [...workflow.matchAll(/^\s*(?:- )?uses: (\S+)/gm)].map((m) => m[1]),
     allowedActions,
   )
-  const commands = [...workflow.matchAll(/^        run: \|\n((?:          [^\n]*\n)+)/gm)].map(
-    (m) => m[1].trim().replace(/\s+/g, " "),
+  const commands = [...workflow.matchAll(/^ {8}run: \|\n((?: {10}[^\n]*\n)+)/gm)].map((m) =>
+    m[1].trim().replace(/\s+/g, " "),
   )
   assert.deepEqual(commands, [
-    "node --test test/merge-canary-adapter.test.mjs python3 -m unittest discover -s test -p 'test_collect_merge_evidence.py'",
-    'python3 scripts/collect-merge-evidence.py \\ --policy .github/merge-canary-policy.json \\ --event "$GITHUB_EVENT_PATH" \\ --output "$RUNNER_TEMP/merge-canary/observations.json"',
-    'node scripts/evaluate-merge-canary.mjs \\ --policy .github/merge-canary-policy.json \\ --observations "$RUNNER_TEMP/merge-canary/observations.json" \\ --evaluator .merge-evaluator/lib/evaluate-merge-evidence.mjs \\ --output "$RUNNER_TEMP/merge-canary/report.json"',
+    "node --test test/merge-canary-adapter.test.mjs python3 -B -m unittest discover -s test -p 'test_collect_merge_evidence.py' python3 -B -m unittest discover -s test -p 'test_run_merge_canary.py'",
+    'python3 -I -B scripts/run-merge-canary.py \\ --event "$GITHUB_EVENT_PATH" \\ --output "$RUNNER_TEMP/merge-canary-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"',
   ])
-  assert.equal((workflow.match(/^\s*(?:- )?run:/gm) ?? []).length, 3)
-  const environments = [...workflow.matchAll(/^        env:\n((?:          [^\n]+\n)+)/gm)].map(
-    (m) => m[1].trim().replace(/\s+/g, " "),
+  assert.equal((workflow.match(/^\s*(?:- )?run:/gm) ?? []).length, 2)
+  const environments = [...workflow.matchAll(/^ {8}env:\n((?: {10}[^\n]+\n)+)/gm)].map((m) =>
+    m[1].trim().replace(/\s+/g, " "),
   )
   assert.deepEqual(environments, [
     'MERGE_EVALUATOR_MODULE: ${{ github.workspace }}/.merge-evaluator/lib/evaluate-merge-evidence.mjs PYTHONDONTWRITEBYTECODE: "1"',
-    "GITHUB_TOKEN: ${{ github.token }} GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}",
-    "GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }}",
+    'GITHUB_TOKEN: ${{ github.token }} GITHUB_WORKFLOW_SHA: ${{ github.workflow_sha }} PYTHONDONTWRITEBYTECODE: "1"',
   ])
-  assert.equal((workflow.match(/^\s*env:/gm) ?? []).length, 3)
+  assert.equal((workflow.match(/^\s*env:/gm) ?? []).length, 2)
   assert.equal(policy.mode, "report-only")
+  assert.ok(policy.controlPaths.includes("scripts/run-merge-canary.py"))
 }
 function reporterFixture() {
   return {
@@ -563,13 +572,21 @@ function reporterFixture() {
     bytes: readFileSync(process.env.MERGE_EVALUATOR_MODULE),
   }
 }
-test("approved reporter exception retains exact read-only execution boundary", () => {
+test("trusted-main reporter retains exact read-only execution boundary", () => {
   const { workflow, policy, bytes } = reporterFixture()
   assertReporterBoundary(workflow, policy, bytes)
 })
 test("reporter boundary rejects candidate execution, privilege, cache and untrusted-input regressions", () => {
   const { workflow, policy, bytes } = reporterFixture()
   const mutations = [
+    (w) =>
+      w.replace(
+        "workflow_dispatch:",
+        "workflow_dispatch:\n    inputs:\n      number:\n        type: string",
+      ),
+    (w) => w.replace("cancel-in-progress: false", "cancel-in-progress: true"),
+    (w) => w.replace("github.ref == 'refs/heads/main'", "true"),
+    (w) => w.replace("steps.canary.outputs.report-path != ''", "true"),
     (w) => w.replace("github.workflow_sha", "github.event.workflow_run.head_sha"),
     (w) => w.replace(`ref: ${policy.evaluator.revision}`, "ref: main"),
     (w) => w.replace("contents: read", "contents: write"),

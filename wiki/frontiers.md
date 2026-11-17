@@ -74,3 +74,14 @@ For each frontier include:
 - primary metric: openboa agent architecture is re-framed around `agent definition + environment + session + attached resources + event stream`, making the runtime scalable without losing the OpenClaw-aligned `src/agents/` subsystem shape
 - active quality gap: no blocking gap is currently visible inside the owned Agent boundary; the remaining work now belongs to follow-on frontiers around richer session resources, broader session event sources, and thinner capability-aware ingress above the session-first runtime
 - next action: request final signoff on the session-first scalable Agent runtime, then open the next frontier for capability-aware session ingress and resource expansion
+
+
+## PR-security-dependencies-20261117
+
+- current status: `verification`
+- current owner: `auto-project`
+- primary metric: original 38 alert entries and four subsequent audit GHSAs removed with real shipped-copy and consumer proof, preserving product/security controls
+- active quality gap: accepted R8 correction passes 14 focused consumer controls, complete audit and fresh 217-file identity verification; final immutable-head checks and reviewer recheck remain
+- next action: freeze the correction for independent reviewer recheck and full exact-head verification; preserve development-only calibration, browser/live-docs coverage limits and no-publication boundary
+
+- revision 5 iteration: kept; three dependency fixes and the exact 17 whitespace paths pass focused consumer checks and the full pre-commit profile; only Zod and expired reporter policy remain open for separately reviewed mechanisms
