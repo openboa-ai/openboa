@@ -80,6 +80,6 @@ For each frontier include:
 
 - current status: `open`
 - current owner: `auto-coding`
-- primary metric: 37 compatible alert entries (33 unique GHSAs) absent from the candidate graph, with unchanged product and security checks
-- active quality gap: revision 2 has reviewed lead acceptance for 16 compatible package targets; four package range boundaries and the unchanged expired policy exception remain blocked
-- next action: implement only the accepted [specification revision 2](../docs/engineering/security-dependencies-20261117/spec.md), verify the candidate graph and regression controls, and return further range decisions to review
+- primary metric: 38 dependency alert entries (34 unique GHSAs) absent from the candidate graph, with unchanged product and security checks
+- active quality gap: revision 3 has reviewed lead acceptance for 16 compatible package targets plus scoped basic-ftp; three package range boundaries and the unchanged expired policy exception remain blocked
+- next action: implement only the accepted [specification revision 3](../docs/engineering/security-dependencies-20261117/spec.md), verify the candidate graph and regression controls, and return further range decisions to review

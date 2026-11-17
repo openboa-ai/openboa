@@ -1,7 +1,7 @@
 # Dependency security remediation specification
 
-- Revision: `2`
-- Status: `proposed; revision 1 was accepted; revised scope awaits explicit acceptance`
+- Revision: `3`
+- Status: `proposed; revision 2 was accepted; FTP boundary awaits explicit acceptance`
 - Date: `2026-11-17`
 - Repository: `openboa-ai/openboa`
 - Base: `475019c4a4baabaf78fed46110bb2b21fb1afc37`
@@ -51,16 +51,32 @@ results do not establish absence of vulnerabilities beyond their analysis covera
   generated dependency/peer updates required by those releases; inspect and revert
   unrelated graph churn. Do not use a broad latest-version upgrade or an alias to
   an unofficial package.
-- R4: Account for every baseline alert. Alert #214 remains explicitly unresolved:
-  the existing basic-ftp override is 5.3.1, and the currently suitable upstream
-  fix is 6.2.6 (6.2.4 alone introduces another known path-traversal advisory).
-  The sole consumer get-uri 6.0.5 requires ^5.0.2, so the change crosses its range.
-  Also retain explicit unresolved decisions for zod 3.25.76 to 4.6.6,
+- R4: Account for every baseline alert. Replace the global basic-ftp 5.3.1 override
+  with the consumer-scoped `get-uri>basic-ftp: 6.2.6` override. This is the single
+  explicitly reviewed cross-major exception to R1-R3. The only installed consumer,
+  get-uri 6.0.5, uses Client/access/lastMod/list/downloadTo/close, all retained by
+  the verified upstream 6.2.6 API. Version 6.2.4 alone introduces another known
+  path-traversal advisory and is not an acceptable target.
+  Retain explicit unresolved decisions for zod 3.25.76 to 4.6.6,
   minimatch 9.0.9/10.2.6 to 11.0.1, and katex 0.16.47 to 0.18.2.
   Their observed consumers require v3/exact v4, ^9/^10 and ^0.16.0 respectively;
   current global zod v3 overrides already substitute one v4 consumer. A cross-major
   update, removal, patch or consumer migration needs a separately reviewed revision
   with source-backed compatibility evidence. Do not suppress or dismiss any alert.
+- R8: Preserve the upstream secure FTP defaults: do not enable
+  `allowSeparateTransferHost`. Data transfers must never connect to a foreign
+  PASV-advertised host. Upstream 6.2.6 rejects an incompatible advertised host;
+  permitted loopback aliases still connect to the control host. A safe control-host
+  substitution is acceptable; do not invent a requirement to contact split-host
+  data services. No current repository contract requires split-host FTP.
+- R9: In `test/dependency-ftp-security.test.ts`, resolve get-uri through the real
+  docs downloader/proxy consumer chain. Use bounded local fake FTP servers to
+  exercise ordinary same-host downloads and unsupported-MDTM to LIST fallback,
+  malformed MLSD inherited-property facts such as `__proto__`, and an alternate
+  inherited fact representation. Verify no connection to an unrelated advertised
+  data host occurs before any expected rejection or safe substitution, and retain
+  legitimate listings/file bytes. Bind ephemeral loopback ports only, close every
+  socket/server on success and failure, and make no external FTP connection.
 - R5: Retain all existing test/CI/audit controls and behavior. No app/UI refactor,
   workflow or policy changes, alert dismissal, new credentials or security-control
   changes are within this change.
@@ -83,7 +99,7 @@ Each target must be verified against current official registry metadata before u
 
 | Package | Alert identifiers | Baseline to target / disposition |
 | --- | --- | --- |
-| `basic-ftp` | #214 | Blocked: 5.3.1 to 6.2.6 crosses the consumer major boundary |
+| `basic-ftp` | #214 | 5.3.1 to 6.2.6 through the explicitly reviewed get-uri scoped override |
 | `fast-xml-parser` | #213 | 5.7.3 to 5.12.0 |
 | `undici` | #212, #211, #210, #209, #208, #207, #206, #198, #195 | 6.28.1 to 6.29.1; 7.29.1 to 7.30.1 |
 | `fast-uri` | #203, #202, #201, #196 | 3.1.8 to 3.1.9 |
@@ -100,12 +116,12 @@ Each target must be verified against current official registry metadata before u
 
 The 15 additional unique GHSAs below came from the same frozen graph's official
 registry audit. They are not fabricated GitHub alert identifiers. The accepted
-compatible boundary aims to remove 43 of the 49 unique audit GHSAs while retaining
-6 explicit blocked GHSAs in basic-ftp, katex, zod and minimatch.
+revised boundary aims to remove 46 of the 49 unique audit GHSAs while retaining
+3 explicit blocked GHSAs in katex, zod and minimatch.
 
 | Package | Baseline to target / disposition | Additional GHSAs |
 | --- | --- | --- |
-| `basic-ftp` | Blocked 5.3.1 to 6.2.6 outside get-uri ^5.0.2 | GHSA-c475-qrg2-pj4r, GHSA-r4jh-29pc-gfqr |
+| `basic-ftp` | Explicit get-uri-scoped 5.3.1 to 6.2.6 exception, with secure defaults | GHSA-c475-qrg2-pj4r, GHSA-r4jh-29pc-gfqr |
 | `smol-toml` | Existing override 1.7.1 to 1.9.0; markdownlint-cli2 requires exact 1.7.0 | GHSA-r4xh-jqrq-34v2 |
 | `katex` | Blocked 0.16.47 to 0.18.2 outside both consumers' ^0.16.0 range | GHSA-238p-pmpm-9mq7 |
 | `sharp` | Existing override 0.35.4 to 0.35.5, same patch line | GHSA-wq5f-xc86-pv6w |
@@ -148,14 +164,15 @@ Official advisories for the explicit boundaries: [proxy-addr](https://github.com
 | Requirement | Required evidence |
 | --- | --- |
 | R1-R3 | Before/after exact package versions, official registry integrity metadata, reviewed manifest/lockfile diff, unchanged script-permission configuration and frozen install. |
-| R4 | All 38 GitHub alert entries mapped: 37 entries / 33 unique GHSAs patched and #214 blocked; 43 of 49 unique registry-audit GHSAs absent, with every remaining package/version/path reported. |
+| R4 | All 38 GitHub alert entries mapped: 38 entries / 34 unique GHSAs patched; 46 of 49 unique registry-audit GHSAs absent, with every remaining package/version/path reported. |
 | R5-R6 | Run unchanged `pnpm check`; record the baseline expired-exception failure honestly. Separately require formatter, lint, typecheck, web build, full Vitest suite, archive-extraction regression tests, docs lint/link/structure, and macOS desktop packaging; they do not override the aggregate gate. |
 | R7 | Baseline malicious proxy subnets reproduce spoofed client IP while proper subnet controls pass; candidate must reject both attack representations, retain legitimate scoped behavior, and preserve the PHPDoc XML parsing fixture. |
-| R1-R7 | Independent review of the immutable diff and current trusted CI results on the exact draft PR commit before handoff for final human signoff. |
+| R8-R9 | Exact official 6.2.6 API/integrity metadata; real get-uri ordinary and LIST-fallback downloads; malicious inherited MLSD facts handled safely; foreign data-host connection count stays zero; existing secure defaults remain unchanged. |
+| R1-R9 | Independent review of the immutable diff and current trusted CI results on the exact draft PR commit before handoff for final human signoff. |
 
 Record a baseline audit and baseline check results before dependent edits. Run the
 same checks after the bounded update. The unchanged all-severity audit may continue
-to fail for the four blocked packages; report their exact remaining advisories instead
+to fail for the three blocked packages; report their exact remaining advisories instead
 of weakening the gate. The policy gate remains independently blocked by its expired
 exception.
 Full remediation and landing readiness require resolving that boundary separately.
