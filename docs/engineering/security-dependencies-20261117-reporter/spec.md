@@ -168,3 +168,15 @@ all original immutable source/control closure and README-only restrictions remai
 Local mocked tests prove the reviewed boundaries, not actual production execution.
 The first hosted schedule/manual round after a separately authorized merge would
 need observation; this task does not merge or activate the writer.
+
+## Accepted maintenance note
+
+Recorded 2026-11-17T13:59:28Z under the delegated lead's explicit routine
+maintenance acceptance of the existing revision 7.1 mechanism. Remove only the
+unused argparse import in `test/test_run_merge_canary.py`, and add a comment
+inside supervise's ProcessLookupError handler explaining that the exclusively
+owned process group may already have exited, leaving no process to signal.
+Keep runtime cleanup, analyzer rules, all checks, policy and authority unchanged.
+Commit this record before the two edits; then verify the clean correction with
+Python/Node evidence suites, full required checks/audit/packaging and the same
+independent reviewer's small-diff recheck. Parent owns publication; no worker push.

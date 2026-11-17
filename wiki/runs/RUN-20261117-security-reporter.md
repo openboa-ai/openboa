@@ -11,3 +11,9 @@
 - `Focused working-tree evidence`: All 114 Python evidence/reporter/writer/postmerge tests pass, including real temporary nested-Git layouts, strict context denial, rotation/pagination, unknown reads, shared ZIP budgets, token-free fixed argv, stale positive output, positive-handoff failure, stalled evaluator and owned worker/grandchild cleanup. All 9 existing real pinned-evaluator/negative-boundary Node tests pass. All 8 reusable-workflow controls pass, and `pnpm check:policy` passes. These measurements precede this candidate commit and are not described as exact-commit verification.
 - `Decision`: Keep the bounded reporter mechanism and hand the immutable candidate to the lead's one fresh independent reviewer. Stop source/record edits during full final verification. Retain exact-head receipts outside the worktree; any actionable review or test failure requires a bounded correction and a new head.
 - `Remaining verification`: Frozen install and unfiltered audit, complete application/type/style/test/docs checks, unchanged required pre-commit hooks plus actionlint/zizmor/secret checks, unsigned publish-never desktop packaging, exact-head independent review and trusted hosted CI. Actual scheduled operation cannot be observed before a separately authorized merge. No settings change, writer activation, merge, auto-merge or deployment is authorized.
+
+The delegated lead accepted two maintenance corrections within revision 7.1,
+recorded at 2026-11-17T13:59:28Z against published 1c0dd76: remove one unused
+test import and explain the already-exited owned-group ProcessLookupError case
+inside its handler. This record precedes code edits. Cleanup behavior and
+analyzer rules stay unchanged; final-head evidence and reviewer recheck follow.
