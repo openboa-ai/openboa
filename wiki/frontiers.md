@@ -81,5 +81,5 @@ For each frontier include:
 - current status: `open`
 - current owner: `auto-coding`
 - primary metric: 38 dependency alert entries (34 unique GHSAs) absent from the candidate graph, with unchanged product and security checks
-- active quality gap: revision 3 has reviewed lead acceptance for 16 compatible package targets plus scoped basic-ftp; three package range boundaries and the unchanged expired policy exception remain blocked
-- next action: implement only the accepted [specification revision 3](../docs/engineering/security-dependencies-20261117/spec.md), verify the candidate graph and regression controls, and return further range decisions to review
+- active quality gap: revision 4 has reviewed lead acceptance for the candidate after discarding incompatible TOML; four package consumer boundaries and the unchanged expired policy exception remain blocked
+- next action: implement only the accepted [specification revision 4](../docs/engineering/security-dependencies-20261117/spec.md), verify the candidate graph and regression controls, and return further range decisions to review

@@ -1,7 +1,7 @@
 # Dependency security remediation specification
 
-- Revision: `3`
-- Status: `proposed; revision 2 was accepted; FTP boundary awaits explicit acceptance`
+- Revision: `4`
+- Status: `proposed; revision 3 was accepted; failed TOML target is discarded and awaits review`
 - Date: `2026-11-17`
 - Repository: `openboa-ai/openboa`
 - Base: `475019c4a4baabaf78fed46110bb2b21fb1afc37`
@@ -40,7 +40,7 @@ results do not establish absence of vulnerabilities beyond their analysis covera
   their listed patched releases within their existing majors. Keep runtime dependency
   declarations and application, agent, shell, UI and protocol source unchanged.
 - R2: Update existing vulnerable same-major override pins for fast-uri,
-  follow-redirects, markdown-it, undici, body-parser, ip-address, qs, smol-toml,
+  follow-redirects, markdown-it, undici, body-parser, ip-address, qs,
   and the existing sharp override from 0.35.4 to the patch release 0.35.5.
   Refresh source-map-js, proxy-addr and postcss-selector-parser in the lockfile
   within their consumers' compatible ranges. Add only the scoped override
@@ -59,10 +59,17 @@ results do not establish absence of vulnerabilities beyond their analysis covera
   path-traversal advisory and is not an acceptable target.
   Retain explicit unresolved decisions for zod 3.25.76 to 4.6.6,
   minimatch 9.0.9/10.2.6 to 11.0.1, and katex 0.16.47 to 0.18.2.
-  Their observed consumers require v3/exact v4, ^9/^10 and ^0.16.0 respectively;
+  Also preserve smol-toml 1.7.1 after discarding the attempted 1.9.0 update:
+  the actual markdownlint-cli2 0.23.2 / markdownlint 0.41.1 consumer ignores
+  per-rule options from its new null-prototype TOML tables. The isolated real CLI
+  accepts a JSON line_length=120 override but ignores the equivalent TOML override,
+  failing a legitimate 99-character whitespace-separated line at the default 80.
+  The other blocked consumers require v3/exact v4, ^9/^10 and ^0.16.0 respectively;
   current global zod v3 overrides already substitute one v4 consumer. A cross-major
   update, removal, patch or consumer migration needs a separately reviewed revision
-  with source-backed compatibility evidence. Do not suppress or dismiss any alert.
+  with source-backed compatibility evidence. The TOML issue needs an independently
+  reviewed upstream-compatible parser/consumer mechanism; no app-level shim or
+  weakened lint behavior is authorized. Do not suppress or dismiss any alert.
 - R8: Preserve the upstream secure FTP defaults: do not enable
   `allowSeparateTransferHost`. Data transfers must never connect to a foreign
   PASV-advertised host. Upstream 6.2.6 rejects an incompatible advertised host;
@@ -92,6 +99,13 @@ results do not establish absence of vulnerabilities beyond their analysis covera
   compatibility control for the explicitly scoped parser override. No production
   code, test configuration, workflow or evaluator changes are allowed.
 
+- R10: Add only `test/dependency-toml-compatibility.test.ts` to retain the actual
+  markdownlint-cli2 executable boundary: isolated configuration, a default 80-char
+  negative control, equivalent JSON and TOML line_length=120 positive controls,
+  and a whitespace-separated 99-character line. This test must fail with the
+  discarded smol-toml 1.9.0 graph and pass with the preserved compatible baseline.
+  Use a fresh temporary directory and remove it on success or failure.
+
 ## Complete baseline alert map
 
 All entries below refer to the repository's Dependabot alerts and `pnpm-lock.yaml`.
@@ -116,13 +130,13 @@ Each target must be verified against current official registry metadata before u
 
 The 15 additional unique GHSAs below came from the same frozen graph's official
 registry audit. They are not fabricated GitHub alert identifiers. The accepted
-revised boundary aims to remove 46 of the 49 unique audit GHSAs while retaining
-3 explicit blocked GHSAs in katex, zod and minimatch.
+revised boundary aims to remove 45 of the 49 unique audit GHSAs while retaining
+4 explicit blocked GHSAs in katex, zod, minimatch and smol-toml.
 
 | Package | Baseline to target / disposition | Additional GHSAs |
 | --- | --- | --- |
 | `basic-ftp` | Explicit get-uri-scoped 5.3.1 to 6.2.6 exception, with secure defaults | GHSA-c475-qrg2-pj4r, GHSA-r4jh-29pc-gfqr |
-| `smol-toml` | Existing override 1.7.1 to 1.9.0; markdownlint-cli2 requires exact 1.7.0 | GHSA-r4xh-jqrq-34v2 |
+| `smol-toml` | Blocked: preserve 1.7.1; attempted 1.9.0 breaks actual CLI per-rule TOML options | GHSA-r4xh-jqrq-34v2 |
 | `katex` | Blocked 0.16.47 to 0.18.2 outside both consumers' ^0.16.0 range | GHSA-238p-pmpm-9mq7 |
 | `sharp` | Existing override 0.35.4 to 0.35.5, same patch line | GHSA-wq5f-xc86-pv6w |
 | `ip-address` | Existing override 10.7.1 to 10.7.4, within socks ^10.1.1 | GHSA-rxp7-6hxx-x8q5 |
@@ -164,15 +178,27 @@ Official advisories for the explicit boundaries: [proxy-addr](https://github.com
 | Requirement | Required evidence |
 | --- | --- |
 | R1-R3 | Before/after exact package versions, official registry integrity metadata, reviewed manifest/lockfile diff, unchanged script-permission configuration and frozen install. |
-| R4 | All 38 GitHub alert entries mapped: 38 entries / 34 unique GHSAs patched; 46 of 49 unique registry-audit GHSAs absent, with every remaining package/version/path reported. |
+| R4 | All 38 GitHub alert entries mapped: 38 entries / 34 unique GHSAs patched; 45 of 49 unique registry-audit GHSAs absent, with every remaining package/version/path reported. |
 | R5-R6 | Run unchanged `pnpm check`; record the baseline expired-exception failure honestly. Separately require formatter, lint, typecheck, web build, full Vitest suite, archive-extraction regression tests, docs lint/link/structure, and macOS desktop packaging; they do not override the aggregate gate. |
 | R7 | Baseline malicious proxy subnets reproduce spoofed client IP while proper subnet controls pass; candidate must reject both attack representations, retain legitimate scoped behavior, and preserve the PHPDoc XML parsing fixture. |
 | R8-R9 | Exact official 6.2.6 API/integrity metadata; real get-uri ordinary and LIST-fallback downloads; malicious inherited MLSD facts handled safely; foreign data-host connection count stays zero; existing secure defaults remain unchanged. |
-| R1-R9 | Independent review of the immutable diff and current trusted CI results on the exact draft PR commit before handoff for final human signoff. |
+| R10 | Actual CLI2 default-80 negative control fails while equivalent JSON and TOML line_length=120 controls both pass after discarding the incompatible update. |
+| R1-R10 | Independent review of the immutable diff and current trusted CI results on the exact draft PR commit before handoff for final human signoff. |
 
 Record a baseline audit and baseline check results before dependent edits. Run the
 same checks after the bounded update. The unchanged all-severity audit may continue
-to fail for the three blocked packages; report their exact remaining advisories instead
+to fail for the four blocked packages; report their exact remaining advisories instead
 of weakening the gate. The policy gate remains independently blocked by its expired
 exception.
 Full remediation and landing readiness require resolving that boundary separately.
+
+## Observed residual upstream FTP error behavior
+
+get-uri 6.0.5 attaches only a success handler to Client.downloadTo(). A rejected
+transfer can therefore produce an empty stream and an unhandled rejected promise.
+That pre-existing upstream error path is not fixed by this dependency update.
+The foreign-host negative regression exercises the actual get-uri-resolved Client
+promise directly, so rejection is handled and the zero-foreign-connection invariant
+is verified without asserting a nonexistent stream-error contract. Normal get-uri
+and MDTM-to-LIST flows are exercised end to end. No consumer/application workaround
+is included; any error-propagation fix requires a separately reviewed mechanism.
