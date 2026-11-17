@@ -79,7 +79,7 @@ For each frontier include:
 ## PR-security-dependencies-20261117
 
 - current status: `open`
-- current owner: `auto-coding`
+- current owner: `auto-project`
 - primary metric: 38 dependency alert entries (34 unique GHSAs) absent from the candidate graph, with unchanged product and security checks
 - active quality gap: revision 4 has reviewed lead acceptance for the candidate after discarding incompatible TOML; four package consumer boundaries and the unchanged expired policy exception remain blocked
-- next action: implement only the accepted [specification revision 4](../docs/engineering/security-dependencies-20261117/spec.md), verify the candidate graph and regression controls, and return further range decisions to review
+- next action: review the immutable candidate under [specification revision 4](../docs/engineering/security-dependencies-20261117/spec.md), reconcile exact-head evidence and publish draft-only; return remaining consumer and policy boundaries to review
