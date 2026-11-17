@@ -399,6 +399,7 @@ def supervise(arguments, context, deadline):
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
+            # The exclusively owned group may have exited; no process remains to signal.
             pass
         raise C.EvidenceError("round_worker_failed")
     remaining(deadline)

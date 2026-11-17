@@ -1,6 +1,5 @@
 """Offline reporting tests: real Git layouts, transport budgets and owned processes."""
 
-import argparse
 import copy
 import importlib.util
 import io
