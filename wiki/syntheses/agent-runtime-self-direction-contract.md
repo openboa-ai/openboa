@@ -7,7 +7,6 @@ Use it when:
 
 - the repo risks building a timer-driven cron loop instead of a real self-directed runtime
 - implementation needs a durable contract for scheduler, wake queue, and checkpoint behavior
-- external inspiration such as Claude Code, OpenClaw, or Paperclip needs to be translated into openboa-specific runtime rules
 
 This is a working synthesis, not yet the final canonical architecture page.
 

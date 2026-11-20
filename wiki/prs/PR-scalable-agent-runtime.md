@@ -2,7 +2,7 @@
 
 - `Title`: Tighten the Agent layer around a scalable session/resource runtime
 - `Branch`: `codex/scalable-agent-runtime`
-- `Goal`: Move openboa's Agent layer from a strong single-agent MVP toward a scalable runtime model by tightening it around Claude-informed session/resource/event contracts while preserving the OpenClaw-aligned `src/agents/` subsystem shape and keeping provider backends such as Claude and Codex as swappable brains.
+- `Goal`: Move openboa's Agent layer from a strong single-agent MVP toward a scalable runtime model by tightening it around session, resource and event contracts while preserving the existing `src/agents/` subsystem shape and keeping provider backends such as Claude and Codex as swappable brains.
 - `Metric`: openboa agent architecture stops reading like `activation + prompt loop + files` and instead reads like `agent definition + environment + session + attached resources + event stream + tool ownership`, with a clear mapping from current code to the future scalable runtime.
 - `Quality target`: The next agent frontier should preserve domain-agnosticism while making the runtime architecture durable enough for multi-session scale, richer resources, and later `Work`/`Observe` layering without another ground-up rewrite.
 - `Owned boundary`:
@@ -16,9 +16,8 @@
   - `wiki/log.md`
   - `wiki/prs/PR-scalable-agent-runtime.md`
   - `wiki/runs/RUN-20260409-*.md`
-  - `wiki/syntheses/claude-managed-agents-reverse-engineering.md`
 - `Acceptance criteria`:
-  - Claude Managed Agents concepts are translated into explicit openboa runtime contracts before broad refactors begin.
+  - Define explicit openboa runtime contracts before broad refactors begin.
   - The next implementation plan clearly distinguishes `agent definition`, `environment`, `session`, and session-attached resources.
   - The scalable-agent frontier stays inside `src/agents/` and does not smear agent concerns across unrelated top-level directories.
   - Provider backends remain implementation details of the brain layer, not the public runtime architecture.

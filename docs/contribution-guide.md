@@ -10,7 +10,7 @@ summary: "Contribution baseline for the generic PR-centric harness used in this 
 - Keep canonical product and system docs under `docs/`
 - Use lowercase kebab-case file names
 - Keep thread/PR/ticket context out of official doc body
-- Keep technical references in technical docs, not in acknowledgements
+- Keep integration instructions with the relevant technical documentation
 - Prefer updating an existing page over creating a new page unless a clearly bounded new subject exists
 - Do not preserve legacy document structure only for compatibility
 

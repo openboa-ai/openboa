@@ -31,7 +31,6 @@
                 "pages": [
                   "index",
                   "introduction",
-                  "acknowledgements",
                   "architecture",
                   "help/faq"
                 ]
@@ -145,7 +144,6 @@
                 "pages": [
                   "ko/index",
                   "ko/introduction",
-                  "ko/acknowledgements",
                   "ko/architecture",
                   "ko/help/faq"
                 ]

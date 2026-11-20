@@ -18,10 +18,8 @@ Current active synthesis:
   - internal decision rule for when Agent runtime work should stay inside existing seams versus when a truly new openboa primitive can be justified
 - `agent-docs-information-architecture.md`
   - internal design for how the public Agent docs should be structured so meaning, capability model, runtime contract, architecture, and references stay separated and readable
-- `openclaw-agents-source-reading.md`
-  - source-first reading of upstream OpenClaw `src/agents/`, capturing the actual runtime ingress, bootstrap/skills/sandbox/auth seams, and how the embedded runner is assembled before translating anything into openboa
 - `openboa-agent-runtime-integration-design.md`
-  - concrete design for layering openboa self-direction onto the OpenClaw-aligned `agents` subsystem without replacing `agent-command`, `skills`, `sandbox`, `auth-profiles`, or the embedded runner
+  - concrete design for layering openboa self-direction onto the existing `agents` subsystem without replacing `agent-command`, `skills`, `sandbox`, `auth-profiles`, or the embedded runner
 - `chat-layer-contract.md`
   - deeper working contract for `Chat` as the shared office layer, backend truth system, and capability layer above the agent core
 - `chat-purpose-contract.md`

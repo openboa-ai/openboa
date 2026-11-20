@@ -11,7 +11,6 @@ openboa 한국어 문서 진입점입니다.
 
 - [문서 홈](./index.md)
 - [소개](./introduction.md)
-- [감사의 글](./acknowledgements.md)
 - [아키텍처](./architecture.md)
 - [Business of Agents](./concepts/business-of-agents.md)
 - [핵심 원칙 (Core Doctrine)](./concepts/core-doctrine.md)

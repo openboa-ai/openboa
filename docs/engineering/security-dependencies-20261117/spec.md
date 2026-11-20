@@ -185,10 +185,6 @@ The whitespace-only frontier is exactly:
 - `docs/ko/introduction.md`
 - `extensions/.gitkeep`
 - `packages/.gitkeep`
-- `raw/sources/assets/.gitkeep`
-- `raw/sources/inbox/.gitkeep`
-- `raw/sources/library/.gitkeep`
-- `wiki/syntheses/claude-managed-agents-reverse-engineering.md`
 
 ## Gated follow-up mechanisms
 

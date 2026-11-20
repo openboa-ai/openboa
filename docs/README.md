@@ -12,7 +12,6 @@ Mintlify navigation is configured in `docs/docs.json`, and theme styling is defi
 
 - [Docs Portal](./index.md) - Docs home and reading entrypoints.
 - [Introduction](./introduction.md) - High-level project orientation and scope.
-- [Acknowledgements](./acknowledgements.md) - Influences and upstream acknowledgements.
 - [Architecture](./architecture.md) - Current code reality and subsystem boundaries.
 - [Business of Agents](./concepts/business-of-agents.md) - BOA definition and core building blocks.
 - [Core Doctrine](./concepts/core-doctrine.md) - BOA-0 principles and strategic baseline.

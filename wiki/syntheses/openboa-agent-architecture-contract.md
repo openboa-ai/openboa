@@ -4,7 +4,6 @@ This page hardens the internal shape of `src/agents/` for openboa.
 
 Use it when:
 
-- the repo wants to stay structurally close to OpenClaw
 - the team needs a durable answer for where runtime, memory, skills, tools, sandbox, and capabilities should live
 - future implementation work risks scattering agent concerns across top-level directories
 
@@ -25,11 +24,11 @@ That means:
 - tools and sandbox belong under `src/agents/`
 - domain capability bindings still belong under `src/agents/`, even if they point upward to `Chat`, `Work`, or `Observe`
 
-This preserves an OpenClaw-aligned subsystem boundary while still allowing openboa-specific layers.
+This preserves an shared subsystem boundary while still allowing openboa-specific layers.
 
-## OpenClaw-aligned principle
+## shared principle
 
-OpenClaw already groups its agent concerns under one subsystem:
+Openboa groups agent concerns under one subsystem.
 
 - scope and config resolution
 - workspace/bootstrap files
@@ -41,7 +40,7 @@ So openboa should extend that pattern rather than breaking it.
 
 The key difference should be:
 
-- OpenClaw-aligned agent subsystem shape
+- shared agent subsystem shape
 - openboa-specific self-directed runtime and capability layering inside that subsystem
 
 ## Recommended `src/agents/` structure
@@ -227,7 +226,7 @@ Important rule:
 - `skills/` is the loading and packaging machinery
 - specific built-in behavioral packs can still live under `skills/bundled/` or `capabilities/`
 
-OpenClaw-aligned rules:
+shared rules:
 
 - workspace-local skills should override user-global skills
 - user-global skills should override bundled defaults
@@ -523,12 +522,12 @@ That means:
 
 This preserves both:
 
-- OpenClaw-aligned agent subsystem coherence
+- shared agent subsystem coherence
 - openboa-specific layered extensibility
 
 ## Concrete recommendation
 
-If openboa wants to stay close to OpenClaw, the right move is:
+Keep these responsibilities under the agent subsystem.
 
 - keep everything under `src/agents/`
 - do not create a sibling top-level tree for add-ons
@@ -536,4 +535,4 @@ If openboa wants to stay close to OpenClaw, the right move is:
 - keep runtime-native concerns in `runtime/` and `memory/`
 - keep bundled and optional extensions in `capabilities/`
 
-That is the cleanest way to stay structurally aligned with OpenClaw while still making openboa's extensions explicit.
+That is the cleanest way to keep the runtime extensions and owning boundaries explicit.

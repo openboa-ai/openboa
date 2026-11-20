@@ -24,7 +24,7 @@ describe("setup", () => {
     ).resolves.toBeUndefined()
   })
 
-  it("seeds OpenClaw-like workspace bootstrap files for each agent", async () => {
+  it("seeds workspace bootstrap files for each agent", async () => {
     const companyDir = await createCompanyFixture()
     await ensureAgentConfig(companyDir, { agentId: "alpha", provider: "openai-codex" })
 

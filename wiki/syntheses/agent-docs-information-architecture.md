@@ -181,25 +181,9 @@ This is why pages such as `bootstrap`, `resources`, `sandbox`, and `tools` matte
 
 The docs should not feel like generic agent philosophy.
 
-## OpenClaw pattern we are intentionally borrowing
+## Guide structure
 
-The useful OpenClaw documentation pattern is:
-
-- hub page
-- concrete runtime page
-- concrete workspace page
-- concrete memory page
-- separate reference pages
-
-What we should borrow:
-
-- strong page responsibility
-- concrete filesystem/runtime explanations
-- clear reading order
-
-What we should not borrow blindly:
-
-- gateway-first product framing inside Agent docs
+Start with a hub and give runtime, workspace and memory separate pages. Explain each surface through its files, state and behavior.
 
 ## Near-term follow-ups
 
