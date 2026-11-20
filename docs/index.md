@@ -92,7 +92,6 @@ Then use the reference pages:
   </Tab>
   <Tab title="Overview">
     - [Introduction](./introduction.md)
-    - [Acknowledgements](./acknowledgements.md)
     - [Architecture](./architecture.md)
     - [Business of Agents](./concepts/business-of-agents.md)
     - [Core Doctrine](./concepts/core-doctrine.md)

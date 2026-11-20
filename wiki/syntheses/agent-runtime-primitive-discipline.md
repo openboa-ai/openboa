@@ -15,7 +15,7 @@ It should not be promoted into deploy-facing docs.
 
 Managed-agent structure is converging.
 
-Across Anthropic Managed Agents, OpenAI Codex, and OpenClaw-aligned agent systems, the recurring seams are already recognizable:
+The openboa runtime separates these responsibilities.
 
 - durable `session`
 - execution `environment`

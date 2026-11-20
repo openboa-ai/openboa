@@ -72,14 +72,8 @@ Start here when the team is still hardening meaning or architecture before promo
   - internal rule for when Agent work should stay inside existing seams versus when a new primitive is justified
 - `syntheses/agent-docs-information-architecture.md`
   - internal design for how the public Agent docs should be structured and read
-- `syntheses/openclaw-agents-source-reading.md`
-  - source-first reading of upstream OpenClaw `src/agents/`
 - `syntheses/openboa-agent-runtime-integration-design.md`
-  - design for adding self-direction while preserving the OpenClaw-aligned agents subsystem shape
-- `syntheses/claude-managed-agents-reverse-engineering.md`
-  - reverse engineering of Claude Managed Agents and resulting adaptation points
-- `syntheses/claude-managed-agents-gap-analysis.md`
-  - internal frontier-tracking comparison between Claude Managed Agents and the current openboa Agent runtime
+  - design for adding self-direction while preserving the existing agent commands and runtime boundary
 
 ## Working principle
 

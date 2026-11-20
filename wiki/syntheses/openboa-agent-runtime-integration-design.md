@@ -1,32 +1,6 @@
 # openboa Agent Runtime Integration Design
 
-This page turns the upstream OpenClaw source reading into a concrete openboa design.
-
-It answers one question:
-
-- how should openboa add a stronger self-directed agent runtime while staying structurally close to OpenClaw?
-
-Use this page when:
-
-- implementing the next agent-runtime slice
-- deciding where activation queue, scheduler, runtime memory, skills, tools, and sandbox belong
-- reviewing whether a proposed change is preserving or breaking OpenClaw alignment
-
-## Design thesis
-
-openboa should **not** replace the OpenClaw-aligned `agents` subsystem.
-
-Instead it should:
-
-- preserve the OpenClaw-aligned ingress and execution flow
-- add self-direction as a runtime layer inside `src/agents/`
-- keep domain semantics out of the agent core
-- attach chat/work/observe behavior through capability bindings, not through core runtime ownership
-
-So the right design is:
-
-- **OpenClaw-aligned agent subsystem**
-- plus **openboa self-directed runtime add-on inside that same subsystem**
+Add self-direction inside `src/agents/`. Keep `agent-command` as the single-turn entry point and expose product behavior through capability bindings.
 
 ## Non-goals
 
@@ -37,7 +11,7 @@ This design does **not** do the following:
 - let `Chat` or `Work` redefine the agent core
 - bypass `agent-command` with a totally separate daemon-only execution engine
 
-## What must remain OpenClaw-aligned
+## What must remain existing
 
 The following should stay conceptually intact:
 
@@ -57,11 +31,6 @@ The key move is:
 
 - keep **single-turn execution** on the existing command path
 - add **multi-turn self-direction** as a layer above that path
-
-In other words:
-
-- OpenClaw already knows how to run one real turn
-- openboa should add a system that decides **when** and **why** that turn should happen again
 
 So the real openboa addition is:
 
@@ -154,8 +123,6 @@ Purpose:
 - decide if and when a new bounded turn should happen
 - schedule or queue that turn
 - remember runtime-local continuity
-
-This is where openboa becomes more self-directed than vanilla OpenClaw.
 
 ### `memory/`
 
@@ -274,7 +241,7 @@ Purpose:
 This layer should be the bridge between:
 
 - runtime scheduling world
-- existing OpenClaw-aligned command execution world
+- existing existing command execution world
 
 It should **not** reimplement session resolution, skills loading, sandbox creation, or model execution.
 
@@ -336,8 +303,6 @@ Recommended files per agent:
     lessons.jsonl
 ```
 
-This follows the stronger pattern seen across OpenClaw-aligned runtime design, ClawHub self-improving/proactive patterns, and Karpathy-style compiled memory.
-
 ## Where `skills`, `tools`, and `sandbox` fit in the design
 
 ### `skills/`
@@ -376,7 +341,7 @@ In the new design:
 - scheduler never bypasses sandbox
 - runtime ingress still enters the same sandbox resolution path used by normal command execution
 
-This preserves OpenClaw's strongest architectural advantage:
+This preserves one runtime boundary.
 
 - there is still one actual execution boundary
 
@@ -474,7 +439,7 @@ Deliverables:
 
 The single most important choice is this:
 
-**openboa should add self-direction above OpenClaw-aligned bounded execution, not instead of it.**
+**openboa should add self-direction above existing bounded execution, not instead of it.**
 
 That means:
 
@@ -482,4 +447,4 @@ That means:
 - the runtime does not replace `skills/`, `sandbox/`, or `auth-profiles/`
 - `Chat` and `Work` do not leak into the core
 
-If openboa preserves that boundary, it can become more autonomous without losing the shape that already makes OpenClaw's `agents` subsystem coherent.
+If openboa preserves that boundary, it can become more autonomous while keeping the existing agent entry points.

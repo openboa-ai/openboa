@@ -26,7 +26,7 @@ This directory is for:
 
 - public product explanations meant for docs readers
 - polished canonical pages that should live in `docs/`
-- raw imported reference material that should live in `raw/`
+- raw product verification artifacts that belong in `raw/`
 
 ## Directory guide
 

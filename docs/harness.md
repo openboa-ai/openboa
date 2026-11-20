@@ -67,7 +67,7 @@ The harness has one orchestrator and five workers.
 ## Filesystem contract
 
 - `raw/`
-  - immutable sources and evidence
+  - immutable product evidence
 - `wiki/`
   - PR pages, run pages, frontier map, and chronology
 - `.agents/`

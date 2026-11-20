@@ -6,7 +6,6 @@ from runtime-native services plus higher-level capability packs.
 Use it when:
 
 - the repo needs to decide what should be built into the `Agent` runtime by default
-- external skill references risk being translated too literally instead of mapped into openboa structure
 - `self-improving`, `proactive`, or `ontology` ideas need to be mapped into openboa-native runtime design
 
 This is a working synthesis, not yet the final canonical architecture page.
@@ -25,84 +24,12 @@ The deeper question is:
 
 That split matters because some patterns are too fundamental to leave as prompt-only add-ons.
 
-## Strong pattern extraction from the four ClawHub skills
+## Runtime needs
 
-Across the referenced skills, four repeatable ideas show up.
-
-### 1. Runtime continuity requires files that the agent itself updates
-
-Seen in:
-
-- self-improving memory tiers and heartbeat state
-- proactive-agent `SESSION-STATE.md`, `memory/working-buffer.md`, `HEARTBEAT.md`
-- ontology append-only graph files
-
-Common pattern:
-
-- prompt files alone are not enough
-- the runtime needs private persistent artifacts it can update during work
-- the runtime must recover from compaction or context loss by reading those artifacts
-
-Implication for openboa:
-
-- `Agent` needs runtime-owned files and stores, not only one static system prompt
-
-### 2. Self-improvement is partly runtime-native, not just a skill
-
-Seen in:
-
-- self-improving correction logging and tiered memory
-- self-improving-agent `.learnings/` plus promotion into workspace steering files
-- proactive-agent WAL protocol and post-task reflection rules
-
-Common pattern:
-
-- the agent needs a place to capture corrections, failures, and better patterns
-- some of that can later be promoted into longer-lived steering
-- the capture must happen close to the runtime loop, not only through manual user prompting
-
-Implication for openboa:
-
-- correction/error/learning capture should be runtime-adjacent by default
-- promotion can still be a higher-level capability
-
-### 3. Proactivity only works when state and follow-through are explicit
-
-Seen in:
-
-- proactive-agent `SESSION-STATE.md`
-- working buffer and compaction recovery
-- heartbeat checklists
-- reminder hooks in self-improving-agent
-
-Common pattern:
-
-- "be proactive" is not enough as a personality instruction
-- the runtime needs explicit active-state persistence
-- it needs to know what was in progress
-- it needs a bounded follow-up mechanism
-
-Implication for openboa:
-
-- proactivity must be modeled as activation + checkpoint + bounded next move
-- not as a vague instruction in `SOUL.md`
-
-### 4. Structured shared state should be available, but not always injected
-
-Seen in:
-
-- ontology typed graph, append-only graph log, relation schema, validation, and skill contracts
-
-Common pattern:
-
-- freeform notes are not enough for all memory
-- some agent work benefits from typed, queryable, validated state
-- but that state should remain a tool/service, not always-on prompt clutter
-
-Implication for openboa:
-
-- ontology-like structured memory should be available as an optional runtime service
-- it should not be treated as a default prompt dump
+- Persist private state the agent can update and recover after context loss.
+- Capture corrections, failures and durable lessons close to their run.
+- Represent follow-through as activation, checkpoint and a bounded next action.
+- Make typed shared state queryable through services when needed.
 
 ## What openboa should make runtime-native
 
@@ -126,8 +53,6 @@ Without this, there is no self-directed agent.
 
 ### 2. Session-state WAL
 
-Inspired by proactive-agent's `SESSION-STATE.md` and working buffer.
-
 Runtime-native responsibilities:
 
 - capture the current bounded objective
@@ -147,8 +72,6 @@ Recommended openboa split:
 These are runtime files, not optional skills.
 
 ### 3. Learnings inbox
-
-Inspired by self-improving and self-improving-agent.
 
 Runtime-native responsibilities:
 
@@ -170,8 +93,6 @@ This should exist by default for every agent.
 Promotion out of it can be optional and policy-driven.
 
 ### 4. Runtime steering bundle
-
-Inspired by proactive-agent `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `USER.md`, `HEARTBEAT.md`.
 
 Not all of those names should be reused literally, but the concept is correct:
 
@@ -339,22 +260,7 @@ should be runtime surfaces.
 
 Then packs can sit on top and remain composable.
 
-## Karpathy `llm-wiki` implication
-
-Karpathy's `llm-wiki` pattern adds an important memory-layering correction.
-
-Source:
-
-- [Karpathy `llm-wiki`](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-
-The key pattern is:
-
-- immutable raw sources
-- an LLM-maintained compiled wiki
-- a schema layer that tells the LLM how to maintain that wiki
-- index and log files for navigation and chronology
-
-For openboa `Agent`, that means runtime memory should not collapse into one file.
+## Runtime memory layers
 
 The runtime should distinguish at least four memory layers:
 

@@ -37,7 +37,7 @@ Before planning, editing, or reviewing:
 
 | Layer | Purpose | Default use |
 | --- | --- | --- |
-| `raw/` | immutable evidence | provenance, screenshots, logs, imported artifacts |
+| `raw/` | immutable evidence | product screenshots, logs and verification artifacts |
 | `wiki/` | internal working memory | frontier map, PR pages, run pages, synthesis |
 | `.agents/` | behavior and routing | skills, templates, handoff rules, worker behavior |
 | `docs/` | stable canon | product direction, design bar, quality bar, contributor docs |
@@ -195,7 +195,6 @@ Immediate human escalation exists for:
 ## Placement Rules
 
 - new evidence -> `raw/evidence/`
-- imported materials -> `raw/sources/`
 - stable direction and non-goals -> `docs/PRODUCT.md`
 - stable design and interaction bar -> `docs/DESIGN.md`
 - stable quality and acceptance bar -> `docs/QUALITY.md`
@@ -208,7 +207,7 @@ Immediate human escalation exists for:
 
 ## Maintenance Rules
 
-- do not document external product or UI references in maintained project docs
+- record openboa behavior, decisions and verification in project files and change descriptions
 - do not treat chat history as memory
 - do not create a new PR frontier when the current one can be continued safely
 - do not move a PR to `ready-to-land` without explicit final signoff readiness

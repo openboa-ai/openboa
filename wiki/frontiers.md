@@ -71,7 +71,7 @@ For each frontier include:
 
 - current status: `final-signoff`
 - current owner: `human-final-signoff`
-- primary metric: openboa agent architecture is re-framed around `agent definition + environment + session + attached resources + event stream`, making the runtime scalable without losing the OpenClaw-aligned `src/agents/` subsystem shape
+- primary metric: openboa agent architecture is re-framed around `agent definition + environment + session + attached resources + event stream`, making the runtime scalable without losing the existing `src/agents/` entry points
 - active quality gap: no blocking gap is currently visible inside the owned Agent boundary; the remaining work now belongs to follow-on frontiers around richer session resources, broader session event sources, and thinner capability-aware ingress above the session-first runtime
 - next action: request final signoff on the session-first scalable Agent runtime, then open the next frontier for capability-aware session ingress and resource expansion
 

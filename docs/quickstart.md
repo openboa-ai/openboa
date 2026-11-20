@@ -89,7 +89,7 @@ Agent-private state now lives under:
 - `.openboa/agents/<agent-id>/sessions/`
 - `.openboa/agents/<agent-id>/learn/`
 
-Each agent workspace is now seeded with bootstrap files aligned with the OpenClaw reference shape:
+Each agent workspace starts with these bootstrap files.
 
 - `AGENTS.md`
 - `SOUL.md`

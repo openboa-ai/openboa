@@ -3,7 +3,7 @@
 - `Title`: Agent runtime heartbeat and self-direction
 - `Branch`: `codex/agent-runtime-heartbeat`
 - `Goal`: Strengthen the domain-agnostic Agent core so one agent can wake, inspect prior runtime state, run one bounded loop, decide whether to sleep or continue, and persist its checkpoint without relying on Chat semantics.
-- `Metric`: An agent can accept durable activations, execute one bounded runtime tick through an owner-aware scheduler-backed ingress, persist runtime continuity files plus heartbeat/session/scheduler records, request both immediate follow-ups and explicit future queued activations through the runtime contract, capture reusable learnings under `learn/`, and boot with a durable workspace markdown substrate aligned with the OpenClaw reference shape.
+- `Metric`: An agent can accept durable activations, execute one bounded runtime tick through an owner-aware scheduler-backed ingress, persist runtime continuity files plus heartbeat/session/scheduler records, request both immediate follow-ups and explicit future queued activations through the runtime contract, capture reusable learnings under `learn/`, and boot with a durable workspace markdown substrate aligned with the agent reference shape.
 - `Quality target`: Agent runtime should feel like a self-directed execution substrate rather than a one-turn chat helper. It must keep domain knowledge out of the core while making wake reason, checkpoint, follow-up, and runtime limits explicit and testable.
 - `Owned boundary`:
   - `src/agents/agent-config.ts`

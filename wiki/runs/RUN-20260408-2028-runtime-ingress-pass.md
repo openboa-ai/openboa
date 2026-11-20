@@ -1,7 +1,7 @@
 # RUN-20260408-2028-runtime-ingress-pass
 
 - `PR`: `PR-agent-runtime-heartbeat`
-- `Goal`: Add the first OpenClaw-aligned runtime seam above the bounded heartbeat engine so future scheduler work can reuse one canonical runtime path instead of creating a second execution engine.
+- `Goal`: Add the first shared runtime entry point above the bounded heartbeat engine so future scheduler work can reuse one canonical runtime path instead of creating a second execution engine.
 - `Baseline`: The runtime could execute one heartbeat tick directly through `SelfDirectedAgentRuntime`, but there was no explicit ingress layer and no open activation model that could grow into a scheduler queue later.
 - `Change`: Added `src/agents/runtime/activation-intent.ts` and `src/agents/runtime/runtime-ingress.ts`, taught `SelfDirectedAgentRuntime` to run a durable `ActivationIntent`, persisted activation data in heartbeat records, and moved the CLI heartbeat path onto the new ingress.
 - `Quality axis targeted`: architectural seam quality and future scheduler-readiness inside the Agent runtime
